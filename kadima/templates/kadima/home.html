@@ -2,58 +2,66 @@
 {% block content %}
 
       <div class="content">
-        <form method="POST" action="" enctype="multipart/form-data">{% csrf_token %}
-          {% if api_status == 'active' %}
-            <button type="submit" name="connect_ib_api" class="btn btn-danger" > IB API Connected </button>
-          {% else %}
-            <button type="submit" name="connect_ib_api" class="btn btn-default" > Connect API </button>
-          {% endif %}
-        </form>
-
-        <div class="row sticky-top" id="indeces" style="background-color: #1e1d2e;">
-            <div class="col-lg-4 ">
-              <div class="card card-chart " style="background-color:{{ dow_color }};">
-                <div class="card-header">
-                  <h1 class="card-title" style="color: aliceblue;">DOW</h1>
-                  <h3 class="card-title"><i class="text-primary"></i>{{ dow_value }}</h3>
-                  <h1 class="card-title" style="color: black;"><i class="text-primary" style="color: black;"></i>{{ dow_change }}%</h1>
-                </div>
-                <!-- <div class="card-body">
-                  <div class="chart-area">
-                    <canvas id="chartLinePurple"></canvas>
-                  </div>
-                </div> -->
-              </div>
-            </div>
-            <div class="col-lg-4">
-              <div class="card card-chart" style="background-color:{{ snp_color }};">
-                <div class="card-header">
-                  <h1 class="card-title" style="color: aliceblue;">S&P</h1>
-                  <h3 class="card-title"><i class="text-info"></i> {{ snp_value }}</h3>
-                  <h1 class="card-title" style="color: black;"><i class="text-info" style="color: black;"></i> {{ snp_change }}%</h1>
-                </div>
-                <!-- <div class="card-body">
-                  <div class="chart-area">
-                    <canvas id="CountryChart"></canvas>
-                  </div>
-                </div> -->
-              </div>
-            </div>
-            <div class="col-lg-4">
-              <div class="card card-chart" style="background-color:{{ nas_color }};">
-                <div class="card-header">
-                  <h1 class="card-title" style="color: aliceblue;">NASDAQ</h1>
-                  <h3 class="card-title"><i class="text-success"></i> {{ nas_value }}</h3>
-                  <h1 class="card-title" style="color: black;"><i style="color: black;"></i> {{ nas_change }}%</h1>
-                </div>
-                <!-- <div class="card-body">
-                  <div class="chart-area">
-                    <canvas id="chartLineGreen"></canvas>
-                  </div>
-                </div> -->
-              </div>
-            </div>
+        <div class="col-lg-4 ">
+            <form method="POST" action="" enctype="multipart/form-data">{% csrf_token %}
+            {% if ib_api_connected %}
+              <button type="submit" name="connect_ib_api" class="btn btn-success" disabled> IB API Connected </button>
+              <button type="submit" name="disconnect_ib_api" class="btn btn-danger"> Disconnect </button>
+              {% else %}
+              <button type="submit" name="connect_ib_api" class="btn btn-default" > Connect API </button>
+            {% endif %}
+          </form>
+        </div>
+        {% if ib_api_connected %}
+          <div class="row sticky-top" id="indeces" style="background-color: #1e1d2e;">
           </div>
+        {% else %}
+          <div class="row sticky-top" id="indeces_delayed" style="background-color: #1e1d2e;">
+              <div class="col-lg-4 ">
+                <div class="card card-chart " style="background-color:{{ dow_color }};">
+                  <div class="card-header">
+                    <h1 class="card-title" style="color: aliceblue;">DOW</h1>
+                    <h3 class="card-title"><i class="text-primary"></i>{{ dow_value }}</h3>
+                    <h1 class="card-title" style="color: black;"><i class="text-primary" style="color: black;"></i>{{ dow_change }}%</h1>
+                  </div>
+                  <!-- <div class="card-body">
+                    <div class="chart-area">
+                      <canvas id="chartLinePurple"></canvas>
+                    </div>
+                  </div> -->
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <div class="card card-chart" style="background-color:{{ snp_color }};">
+                  <div class="card-header">
+                    <h1 class="card-title" style="color: aliceblue;">S&P</h1>
+                    <h3 class="card-title"><i class="text-info"></i> {{ snp_value }}</h3>
+                    <h1 class="card-title" style="color: black;"><i class="text-info" style="color: black;"></i> {{ snp_change }}%</h1>
+                  </div>
+                  <!-- <div class="card-body">
+                    <div class="chart-area">
+                      <canvas id="CountryChart"></canvas>
+                    </div>
+                  </div> -->
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <div class="card card-chart" style="background-color:{{ nas_color }};">
+                  <div class="card-header">
+                    <h1 class="card-title" style="color: aliceblue;">NASDAQ</h1>
+                    <h3 class="card-title"><i class="text-success"></i> {{ nas_value }}</h3>
+                    <h1 class="card-title" style="color: black;"><i style="color: black;"></i> {{ nas_change }}%</h1>
+                  </div>
+                  <!-- <div class="card-body">
+                    <div class="chart-area">
+                      <canvas id="chartLineGreen"></canvas>
+                    </div>
+                  </div> -->
+                </div>
+              </div>
+            </div>
+        {% endif %}
+
         <div class="row">
             <div class="col-md-5 pr-md-1">
                 <form method="POST" enctype="multipart/form-data">
@@ -90,55 +98,59 @@
                 <p class="category"> Information about individual stocks</p>
               </div>
               <div class="card-body">
-                <div class="table-responsive">
-                  <table id="example" class="table table-striped table-bordered" style="width:100%">
-                    <thead class=" text-primary">
-                      <tr>
-                        <th>
-                          <button type="submit" name="sort_by_date" class="tim-icons icon-minimal-down text-primary"></button>  Date
-                        </th>
-                        <th>
-                          <button type="submit" name="sort_by_stock" class="tim-icons icon-minimal-down text-primary"></button>  Stock Symbol
-                        </th>
-                        <th class="text-center">
-                          <button type="submit" name="sort_by_price" class="tim-icons icon-minimal-down text-primary"></button>  Stock Price
-                        </th>
-                        <th class="text-center">
-                            Week 1
-                        </th>
-                        <th class="text-center">
-                            Week 2
-                        </th>
-                        <th class="text-center">
-                          <button type="submit" name="sort_by_week3" class="tim-icons icon-minimal-down text-primary"></button>  Week 3
-                        </th>
-                        <th class="text-center">
-                            Week 5
-                        </th>
-                        <th class="text-center">
-                          <button type="submit" name="sort_by_gap1" class="tim-icons icon-minimal-down text-primary"></button>  Gap 1
-                        </th>
-                        <th class="text-center">
-                            Gap 2
-                        </th>
-                        <th class="text-center">
-                            Gap 3
-                        </th>
-                        <th>
-                           Earning Call 
-                        </th>
-                        <th>
-                            MACD Clash 
-                         </th>
-                         <th>
-                            MFI Clash
-                         </th>
-                         <th>
-                            Log to History
-                         </th>   
-                      </tr>
-                    </thead>
-                    <tbody>
+                {% if ib_api_connected %}
+                  <div class="table-responsive" id="stocks_table">
+                  </div>
+                {% else %}
+                  <div class="table-responsive" id="stocks_table_delayed">
+                    <table id="example" class="table table-striped table-bordered" style="width:100%">
+                      <thead class=" text-primary">
+                        <tr>
+                          <th>
+                            <button type="submit" name="sort_by_date" class="tim-icons icon-minimal-down text-primary"></button>  Date
+                          </th>
+                          <th>
+                            <button type="submit" name="sort_by_stock" class="tim-icons icon-minimal-down text-primary"></button>  Stock Symbol
+                          </th>
+                          <th class="text-center">
+                            <button type="submit" name="sort_by_price" class="tim-icons icon-minimal-down text-primary"></button>  Stock Price
+                          </th>
+                          <th class="text-center">
+                              Week 1
+                          </th>
+                          <th class="text-center">
+                              Week 2
+                          </th>
+                          <th class="text-center">
+                            <button type="submit" name="sort_by_week3" class="tim-icons icon-minimal-down text-primary"></button>  Week 3
+                          </th>
+                          <th class="text-center">
+                              Week 5
+                          </th>
+                          <th class="text-center">
+                            <button type="submit" name="sort_by_gap1" class="tim-icons icon-minimal-down text-primary"></button>  Gap 1
+                          </th>
+                          <th class="text-center">
+                              Gap 2
+                          </th>
+                          <th class="text-center">
+                              Gap 3
+                          </th>
+                          <th>
+                            Earning Call 
+                          </th>
+                          <th>
+                              MACD Clash 
+                          </th>
+                          <th>
+                              MFI Clash
+                          </th>
+                          <th>
+                              Log to History
+                          </th>   
+                        </tr>
+                      </thead>
+                      <tbody>
                         {% for stock in stocks %}
                             <tr class="border-top border-1">
                                 <td  class="border-top border-1">
@@ -199,8 +211,9 @@
 
                         {% endfor %}
                       </tbody>
-                  </table>
+                    </table> 
                 </div>
+                {% endif %}
               </div>
             </div>
             </form>
@@ -215,7 +228,7 @@
             padding: 0px;
             display: inline-block;
             border-radius: 0px;
-            animation: blinkingBackground 2s infinite;
+            animation: blinkingBackground 4s infinite;
         }
         @keyframes blinkingBackground{
             100%	{ background-color: #04a1d5;}
@@ -227,7 +240,45 @@
         }
 
       </style>
-  
+      <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+      {% if ib_api_connected %}
+        <script type="text/javascript">
+                (function worker() {
+                    $.ajax({
+                    url: 'http://127.0.0.1:8001/stock-data-api/',
+                    success: function(response) {
+                      //console.log(response);
+                        $('#stocks_table').html(response);
+                    }
+                });		
+                // Polling the API page every second
+                setTimeout(worker, 2000);
+            })();
+            /*
+            */
+        </script>
+
+        <script type="text/javascript">
+          (function worker() {
+              $.ajax({
+              url: 'http://127.0.0.1:8001/indeces-data/',
+              success: function(response) {
+             //     console.log(response);
+                  $('#indeces').html(response);
+              }
+          });		
+          // Polling the API page every second
+          setTimeout(worker, 2000);
+      })();
+      /*
+      */
+  </script>
+    {% else %}
+    <script>
+      console.log('POPO');
+    </script>
+      {% endif %}
  
 
 {% endblock content %}

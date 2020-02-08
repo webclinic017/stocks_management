@@ -1,7 +1,7 @@
 from django.shortcuts import render, HttpResponse
 
 import threading
-
+import json
 from time import sleep
 
 from ibapi.client import EClient
@@ -12,14 +12,82 @@ from ibapi.utils import iswrapper #just for decorator
 
 from threading import Timer
 
+from kadima.models import StockData
+# Create and configure logger
+import logging
+LOG_FORMAT = '%(levelname)s %(asctime)s - %(message)s'
+logging.basicConfig(filename='./log.log',level=logging.INFO,format=LOG_FORMAT, filemode='w')
+logger = logging.getLogger()
+
 stock_dick = dict()
+connection_status = False
+
+def api_connection_status():
+    return connection_status
+
+def indeces_data(request):
+    context = {
+        'dow_value': stock_dick[77777], 
+        'snp_value': stock_dick[88888],
+        # 'nsq_value': stock_dick[55555],
+        'connection_stattus': connection_status
+    }
+    return render(request, 'ib_api/indeces.html', context)
 
 
 def stock_data_api(request):
 
+    stocks_db = StockData.objects.filter(table_index=0)
+
+    stocks_db_dict = {}
+    # for i in range(len(stocks_db)):
+    for stock in stocks_db:
+        stocks_db_dict[stock.id] = {
+            'ticker': stock.ticker,
+            'stock_price': stock_dick[stock.id],
+            'table_index': stock.table_index,
+            'stock_date': stock.stock_date,
+            'stock_displayed_date': stock.stock_displayed_date,
+            'stock_trend':   stock.stock_trend, 
+            'macd_trend':  stock.macd_trend, 
+            'money_flow_trend':  stock.money_flow_trend,
+            'week_1': stock.week_1,
+            'week_2': stock.week_2,
+            'week_3': stock.week_3,
+            'week_5': stock.week_5,
+            'week_1_color': stock.week_1_color,
+            'week_2_color': stock.week_2_color,
+            'week_3_color': stock.week_3_color,
+            'week_5_color': stock.week_5_color,
+            'gap_1': stock.gap_1,
+            'gap_2': stock.gap_2,
+            'gap_3': stock.gap_3,
+            'gap_1_color': stock.gap_1_color,
+            'gap_2_color': stock.gap_2_color,
+            'gap_3_color': stock.gap_3_color,
+            'earnings_call': stock.earnings_call,
+            'earnings_call_displayed': stock.earnings_call_displayed,
+            'earnings_warning': stock.earnings_warning,
+            'macd_clash': stock.macd_clash,
+            'mfi_clash': stock.mfi_clash,
+            'macd_color': stock.macd_color,
+            'mfi_color': stock.mfi_color
+        }
+
     context = {
-        'items': stock_dick.items()
+        # 'stocks_streaming': stock_dick.items(), 
+        'dow_value': stock_dick[77777], 
+        'snp_value': stock_dick[88888],
+        # 'nsq_value': stock_dick[55555],
+        'connection_stattus': connection_status,
+        'stocks_processed': stocks_db_dict.items()
     }
+
+    print(f'CONNECTION STATUS: {connection_status}')
+    # with open('ib_api/stocks_data.json', 'w+') as fd:
+    #     json.dump(stock_dick, fd)
+
+
     return render(request, 'ib_api/stock_data_api.html', context)
 
 
@@ -46,7 +114,6 @@ def streaming_stock_data(request, stocks_list=['AAPL']):
             request=request, 
             stock_list=stocks_list, 
             action=action)
-
     
     return render(request, 'ib_api/stock_data.html')
 
@@ -85,6 +152,19 @@ class TestApp(EClient, EWrapper):
         print("Ticket ID: ", reqId, " ","tickType: ", TickTypeEnum.to_str(tickType), "Size: ", size)
 
     @iswrapper
+    def isConnected(self):
+        """Call this function to check if there is a connection with TWS"""
+
+        connConnected = self.conn and self.conn.isConnected()
+        logger.debug("%s isConn: %s, connConnected: %s" % (id(self),
+            self.connState, str(connConnected)))
+        
+        global connection_status
+        connection_status = connConnected
+
+        return EClient.CONNECTED == self.connState and connConnected
+
+    @iswrapper
     def stop(self):
         print('Stopping APP...')
         self.done = True
@@ -119,7 +199,27 @@ def ib_stock_api(old_stocks_list, stocks, action):
             print(f"STOPPING: ***************{stock_id}****************")
             app.cancelMktData(stock_id)
 
-        contract = Contract()
+        print(f"*************** Loading Indeces... ****************")
+
+        contract.symbol = "NDX"
+        contract.secType = "IND"
+        contract.currency = "USD"
+        contract.exchange = "NASDAQ"
+        app.reqMktData(55555, contract, "", False, False, [])
+
+        contract.symbol = "SPX"
+        contract.secType = "IND"
+        contract.currency = "USD"
+        contract.exchange = "CBOE"
+        app.reqMktData(88888, contract, "", False, False, [])
+
+        contract.symbol = "DJX"
+        contract.secType = "IND"
+        contract.currency = "USD"
+        contract.exchange = "CBOE"
+        app.reqMktData(77777, contract, "", False, False, [])
+
+        sleep(2)
 
         rStatus = 200
 
@@ -143,17 +243,12 @@ def ib_stock_api(old_stocks_list, stocks, action):
         #     contract.currency = "USD"
         #     contract.primaryExchange = "NASDAQ"
 
-
-        #     app.reqStatus[rStatus] = 'Sent'
-        #     app.reqMktData(i, contract, "", False, False, [])
-
-
         return
     
     elif action == STOP_API:
         print(f"***************Stopping app****************")
-        app.stop()
-        # app.disconnect()
+        # app.stop()
+        app.disconnect()
 
         return
 

@@ -41,6 +41,7 @@ logger = logging.getLogger()
 TODAY = datetime.datetime.today()
 MAX_PAST = TODAY - timedelta(30)
 UPADATE_STOCKS = 'update'
+STOP_API = 'stop'
 
 
 def history(request):
@@ -120,13 +121,15 @@ def home(request):
     table_index = 0
     context = {}
 
-    if request.session['api_connection'] == True:
-        context['api_status'] = 'active'
+    ib_api_connected = api_connection_status()
+
+    context['ib_api_connected'] = ib_api_connected
 
     indeces = ['^IXIC', '^GSPC', '^DJI']
     today = datetime.datetime.today()
     start_date = TODAY - timedelta(5) 
     end_date = TODAY
+
 
     nasdaq_df = data.get_data_yahoo(indeces[0], start=start_date, end=end_date)
     snp_df = data.get_data_yahoo(indeces[1], start=start_date, end=end_date)
@@ -152,6 +155,8 @@ def home(request):
     context['snp_change'] = float("%0.2f"%(snp_change * 100))
     context['dow_change'] = float("%0.2f"%(dow_change * 100))
 
+    stocks = StockData.objects.filter(table_index=table_index)
+    context['stocks'] = stocks
 
     if request.method == 'POST':
 
@@ -173,16 +178,21 @@ def home(request):
             
             ib_api_wrapper(request, updated_stock_list=current_stocks_list, action=UPADATE_STOCKS)
 
-            request.session['api_connection'] = True
-            print(f'API STATUS: {request.session["api_connection"]}')
-            context['api_status'] = 'active'
-
             stocks = StockData.objects.filter(table_index=table_index)
             context['stocks'] = stocks
-
+            
+            ib_api_connected = api_connection_status()
+            context['ib_api_connected'] = ib_api_connected
+            
             return render(request, 'kadima/home.html', context)
 
-
+        elif 'disconnect_ib_api' in request.POST:
+            print('Stopping the IB API...')
+            ib_api_wrapper(request,action=STOP_API )
+            sleep(2)
+            context['ib_api_connected'] = api_connection_status()
+            return render(request, 'kadima/home.html', context)
+            
         elif 'add_stock' in request.POST:
             stock  = request.POST.get('stock')
             print(f'Stock: {stock}')
@@ -373,7 +383,7 @@ def home(request):
         stocks = StockData.objects.filter(table_index=table_index)
         context['stocks'] = stocks
 
-        return render(request, 'kadima/home.html', context)
+    return render(request, 'kadima/home.html', context)
 
 def week_values(stock_df, week_index):
     if week_index == 1:

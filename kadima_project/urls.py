@@ -27,6 +27,7 @@ urlpatterns = [
     path('history/', views_kadima.history, name='history'),
 
     path('stock-data/', views_ib_api.streaming_stock_data, name='streaming-stock-data'), 
+    path('indeces-data/', views_ib_api.indeces_data, name='indeces-data'), 
     path('stock-data-api/', views_ib_api.stock_data_api, name='stock-data-api'),
     
     # path('bg/', views_ib_api.background_view, name='bg'),
