@@ -16,9 +16,20 @@ class StockData(models.Model):
     money_flow_trend = models.FloatField(null=True)
 
     week_1 = models.FloatField(null=True)
+    week_1_min = models.FloatField(null=True)
+    week_1_max = models.FloatField(null=True)
+
     week_2 = models.FloatField(null=True)
+    week_2_min = models.FloatField(null=True)
+    week_2_max = models.FloatField(null=True)
+
     week_3 = models.FloatField(null=True)
+    week_3_min = models.FloatField(null=True)
+    week_3_max = models.FloatField(null=True)
+
     week_5 = models.FloatField(null=True)
+    week_5_min = models.FloatField(null=True)
+    week_5_max = models.FloatField(null=True)
 
     week_1_color = models.CharField(max_length=100)
     week_2_color = models.CharField(max_length=100)

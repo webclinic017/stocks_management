@@ -94,7 +94,7 @@
                 {% csrf_token %}
             <div class="card  card-plain">
               <div class="card-header">
-                <h4 class="card-title">Stock Table 1</h4>
+                <h4 class="card-title" id="table_index" value="{% url 'stock-data-api' table_index=table_index %}" >Stock Table {{ table_index }}</h4>
                 <p class="category"> Information about individual stocks</p>
               </div>
               <div class="card-body">
@@ -245,8 +245,11 @@
       {% if ib_api_connected %}
         <script type="text/javascript">
                 (function worker() {
+                    let element = document.querySelector('#table_index');
+                    let t_index_url = element.getAttribute('value');
+                    console.log("Table Index URL: " + t_index_url)
                     $.ajax({
-                    url: 'http://127.0.0.1:8001/stock-data-api/',
+                    url: t_index_url,
                     success: function(response) {
                       //console.log(response);
                         $('#stocks_table').html(response);
@@ -270,10 +273,10 @@
           });		
           // Polling the API page every second
           setTimeout(worker, 2000);
-      })();
+          })();
       /*
       */
-  </script>
+        </script>
     {% else %}
     <script>
       console.log('POPO');

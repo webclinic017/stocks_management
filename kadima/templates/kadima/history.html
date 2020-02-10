@@ -7,7 +7,11 @@
             {% csrf_token %}
         <div class="card  card-plain">
             <div class="card-header">
-                <h2 class="card-title">Stock History Table</h2>
+                {% if ib_api_connected %}
+                    <h2 class="card-title">Stock History Table - Streaming</h2>
+                {% else %}
+                    <h2 class="card-title">Stock History Table - Delayed</h2>
+                {% endif %}
             </div>
             <div class="row">
                 <div class="col-md-5 pr-md-1">
@@ -51,137 +55,143 @@
             </div>
         
             <div class="card-body">
-            <div class="table-responsive">
-                <table class="table tablesorter " id="">
-                <thead class=" text-primary">
-                    <tr>
-                    <th>
-                        Date
-                    </th>
-                    <th>
-                        Stock Symbol
-                    </th>
-                    <th class="text-center">
-                        Stock Price
-                    </th>
-                    <th class="text-center">
-                        Week 1
-                    </th>
-                    <th class="text-center">
-                        Week 2
-                    </th>
-                    <th class="text-center">
-                        Week 3
-                    </th>
-                    <th class="text-center">
-                        Week 5
-                    </th>
-                    <th class="text-center">
-                        Gap 1
-                    </th>
-                    <th class="text-center">
-                        Gap 2
-                    </th>
-                    <th class="text-center">
-                        Gap 3
-                    </th>
-                    <th>
-                        Earning Call 
-                    </th>
-                    <th>
-                        Stocks Bought
-                    </th>
-                    <th>
-                        Price per Share
-                    </th>
-                    <th>
-                        Shares Sold
-                    </th>   
-                    <th>
-                        Selling Price
-                    </th>   
-                    <th>
-                        Profit
-                    </th>   
-                    <th>
-                        Dividends
-                    </th>   
-                    <th>
-                        Total Profit
-                    </th>   
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for stock in stocks %}
-                        <tr class="border-top border-1">
-                            <td class="border-top border-1">
-                                {{ stock.stock_date }}
-                            </td>
-                            <td class="border-top border-1">
-                                {{ stock.ticker }}
-                            </td>
-                            <td class="border-top border-1">
-                                {{ stock.stock_price }}
-                            </td>
-                            <td class="border-top border-right border-3" style="background-color: {{ stock.week_1_color }};">
-                                {{ stock.week_1 }}%
-                            </td>
-                            <td class="border-right border-top border-3" style="background-color: {{ stock.week_2_color }}; ">
-                                {{ stock.week_2 }}%
-                            </td >
-                            <td class="border-top border-right border-3" style="background-color: {{ stock.week_3_color }}; ">
-                                {{ stock.week_3 }}%
-                            </td>
-                            <td class="border-top border-right border-3" style="background-color: {{ stock.week_5_color }}; ">
-                                {{ stock.week_5 }}%
-                            </td>
-                            <td class="border-top border-right border-3" style="background-color: {{ stock.gap_1_color }}; ">
-                                {{ stock.gap_1 }}%
-                            </td>
-                            <td class="border-top border-right border-3" style="background-color: {{ stock.gap_2_color }}; ">
-                                {{ stock.gap_2 }}%
-                            </td>
-                            <td class="border-top border-top border-1" class="border-right border-3" style="background-color: {{ stock.gap_3_color }}; ">
-                                {{ stock.gap_3 }}%
-                            </td class="border-top border-top border-1">
-                            <td class="{{ stock.earnings_warning }} border-top border-1" style="height: 100%;">
-                                {{ stock.earnings_call_displayed }}
-                            </td>
-                            <td class="border-top border-1">
-                                <input type="text" class="form-control" name="stocks_bought_{{ stock.id }}" placeholder="{{ stock.stocks_bought }}">
-                            </td>
-                            <td class="border-top border-1">
-                                <input type="text" class="form-control" name="stock_purchase_price_{{ stock.id }}" placeholder="{{ stock.purchase_price }}">
-                            </td>
-                            <td class="border-top border-1">
-                                <input type="text" class="form-control" name="stocks_sold_{{ stock.id }}" placeholder="{{ stock.stocks_sold }}">
-                            </td>
-                            <td class="border-top border-1">
-                                <input type="text" class="form-control" name="selling_price_{{ stock.id }}" placeholder="{{ stock.selling_price }}">
-                            </td>
-                            <td class="border-top border-1">
-                                {{ stock.profit }}
-                            </td>
-                            <td class="border-top border-1">
-                            <input type="text" class="form-control" name="dividends_{{ stock.id }}" placeholder="{{ stock.dividends }}">
-                            </td>
-                            <td class="border-top border-1">
-                                {{ stock.total_profit }}
-                            </td>
-
-                            <td class="border-top border-1">
-                                <button type="submit" value="{{ stock.id }}" name="update_stock_{{ stock.id }}" class="btn btn-fill btn-secondary">Update</button>
-                            </td>
-                            <td class="border-top border-1">
-                                <button type="submit" value="{{ stock.id }}" name="delete_stock" class="tim-icons icon-trash-simple"></button>
-                            </td class="border-top border-1">
-                            
-                        </tr>
-
-                    {% endfor %}
-                    </tbody>
-                </table>
+            {% if ib_api_connected %}
+            <div class="table-responsive" id="stocks_history">
+            <!-- STREAMING DATA -->
             </div>
+            {% else %}
+                <div class="table-responsive" id="stocks_history">
+                    <table class="table tablesorter " id="stocks_history">
+                        <thead class=" text-primary">
+                        <tr>
+                        <th>
+                            Date
+                        </th>
+                        <th>
+                            Stock Symbol
+                        </th>
+                        <th class="text-center">
+                            Stock Price
+                        </th>
+                        <th class="text-center">
+                            Week 1
+                        </th>
+                        <th class="text-center">
+                            Week 2
+                        </th>
+                        <th class="text-center">
+                            Week 3
+                        </th>
+                        <th class="text-center">
+                            Week 5
+                        </th>
+                        <th class="text-center">
+                            Gap 1
+                        </th>
+                        <th class="text-center">
+                            Gap 2
+                        </th>
+                        <th class="text-center">
+                            Gap 3
+                        </th>
+                        <th>
+                            Earning Call 
+                        </th>
+                        <th>
+                            Stocks Bought
+                        </th>
+                        <th>
+                            Price per Share
+                        </th>
+                        <th>
+                            Shares Sold
+                        </th>   
+                        <th>
+                            Selling Price
+                        </th>   
+                        <th>
+                            Profit
+                        </th>   
+                        <th>
+                            Dividends
+                        </th>   
+                        <th>
+                            Total Profit
+                        </th>   
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stock in stocks %}
+                            <tr class="border-top border-1">
+                                <td class="border-top border-1">
+                                    {{ stock.stock_date }}
+                                </td>                            
+                                <td class="border-top border-1">
+                                    {{ stock.ticker }}
+                                </td>
+                                <td class="border-top border-1">
+                                    {{ stock.stock_price }}
+                                </td>
+                                <td class="border-top border-right border-3" style="background-color: {{ stock.week_1_color }};">
+                                    {{ stock.week_1 }}%
+                                </td>
+                                <td class="border-right border-top border-3" style="background-color: {{ stock.week_2_color }}; ">
+                                    {{ stock.week_2 }}%
+                                </td >
+                                <td class="border-top border-right border-3" style="background-color: {{ stock.week_3_color }}; ">
+                                    {{ stock.week_3 }}%
+                                </td>
+                                <td class="border-top border-right border-3" style="background-color: {{ stock.week_5_color }}; ">
+                                    {{ stock.week_5 }}%
+                                </td>
+                                <td class="border-top border-right border-3" style="background-color: {{ stock.gap_1_color }}; ">
+                                    {{ stock.gap_1 }}%
+                                </td>
+                                <td class="border-top border-right border-3" style="background-color: {{ stock.gap_2_color }}; ">
+                                    {{ stock.gap_2 }}%
+                                </td>
+                                <td class="border-top border-top border-1" class="border-right border-3" style="background-color: {{ stock.gap_3_color }}; ">
+                                    {{ stock.gap_3 }}%
+                                </td class="border-top border-top border-1">
+                                <td class="{{ stock.earnings_warning }} border-top border-1" style="height: 100%;">
+                                    {{ stock.earnings_call_displayed }}
+                                </td>
+                                <td class="border-top border-1">
+                                    <input type="text" class="form-control" name="stocks_bought_{{ stock.id }}" placeholder="{{ stock.stocks_bought }}">
+                                </td>
+                                <td class="border-top border-1">
+                                    <input type="text" class="form-control" name="stock_purchase_price_{{ stock.id }}" placeholder="{{ stock.purchase_price }}">
+                                </td>
+                                <td class="border-top border-1">
+                                    <input type="text" class="form-control" name="stocks_sold_{{ stock.id }}" placeholder="{{ stock.stocks_sold }}">
+                                </td>
+                                <td class="border-top border-1">
+                                    <input type="text" class="form-control" name="selling_price_{{ stock.id }}" placeholder="{{ stock.selling_price }}">
+                                </td>
+                                <td class="border-top border-1">
+                                    {{ stock.profit }}
+                                </td>
+                                <td class="border-top border-1">
+                                <input type="text" class="form-control" name="dividends_{{ stock.id }}" placeholder="{{ stock.dividends }}">
+                                </td>
+                                <td class="border-top border-1">
+                                    {{ stock.total_profit }}
+                                </td>
+
+                                <td class="border-top border-1">
+                                    <button type="submit" value="{{ stock.id }}" name="update_stock_{{ stock.id }}" class="btn btn-fill btn-secondary">Update</button>
+                                </td>
+                                <td class="border-top border-1">
+                                    <button type="submit" value="{{ stock.id }}" name="delete_stock" class="tim-icons icon-trash-simple"></button>
+                                </td class="border-top border-1">
+                                
+                            </tr>
+
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
             </div>
         </div>
         </form>
@@ -190,6 +200,25 @@
 </div>
 
 <!-- Source : https://bytutorial.com/blogs/css3/how-to-create-blinking-background-color-and-text-using-css3-animation -->
+{% if ib_api_connected %}
+
+    <script type="text/javascript">
+        (function worker() {
+            $.ajax({
+            url: 'http://127.0.0.1:8001/history-data/',
+            success: function(response) {
+                //console.log(response);
+                $('#stocks_history').html(response);
+            }
+        });		
+        // Polling the API page every second
+        setTimeout(worker, 2000);
+        })();
+    /*
+    */
+    </script>
+{% endif %}
+
 <style>
     .border-3 {
         border-width:1px !important;

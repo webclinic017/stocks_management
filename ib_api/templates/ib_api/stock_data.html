@@ -36,3 +36,18 @@
     /*
     */
 </script>
+<script type="text/javascript">
+    (function worker() {
+        $.ajax({
+        url: 'http://127.0.0.1:8001/indeces-data/',
+        success: function(response) {
+       //     console.log(response);
+            $('#indeces').html(response);
+        }
+    });		
+    // Polling the API page every second
+    setTimeout(worker, 5000);
+    })();
+/*
+*/
+  </script>

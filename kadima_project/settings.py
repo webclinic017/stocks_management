@@ -31,6 +31,13 @@ ALLOWED_HOSTS = [
     '*'
 ]
 
+CORS_ORIGIN_ALLOW_ALL = False
+
+CORS_ORIGIN_WHITELIST = [
+    'http://127.0.0.1:8001',
+    'https://9e61681e.ngrok.io',
+    'http://9e61681e.ngrok.io'
+]
 
 # Application definition
 
@@ -38,6 +45,7 @@ INSTALLED_APPS = [
     'kadima',
     'rest_framework',
     'background_task',
+    'corsheaders',
     'ib_api.apps.IbApiConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -48,6 +56,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -130,3 +139,5 @@ USE_TZ = True
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 STATIC_ROOT = STATIC_URL
+
+INDEX_FILE_PATH = os.path.join(BASE_DIR, 'ib_api')

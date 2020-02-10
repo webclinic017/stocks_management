@@ -23,12 +23,14 @@ from rest_framework import routers
 urlpatterns = [
     
     path('', views_kadima.home, name='home'),
-    path('table-2/', views_kadima.table_2, name='table-2'),
+    path('table_index=<table_idx>/', views_kadima.home, name='table-2'),
     path('history/', views_kadima.history, name='history'),
 
-    path('stock-data/', views_ib_api.streaming_stock_data, name='streaming-stock-data'), 
+    # IB API URLS
+    # path('stock-data/', views_ib_api.streaming_stock_data, name='streaming-stock-data'), 
     path('indeces-data/', views_ib_api.indeces_data, name='indeces-data'), 
-    path('stock-data-api/', views_ib_api.stock_data_api, name='stock-data-api'),
+    path('history-data/', views_ib_api.history_data, name='history-data'), 
+    path('stock-data-api/<int:table_index>', views_ib_api.stock_data_api, name='stock-data-api'),
     
     # path('bg/', views_ib_api.background_view, name='bg'),
 

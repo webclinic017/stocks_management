@@ -1,8 +1,13 @@
-from django.shortcuts import render, HttpResponse
+import datetime
+from datetime import timedelta
+from pandas_datareader import data as fin_data
 
 import threading
 import json
 from time import sleep
+
+from django.shortcuts import render, HttpResponse
+from django.conf import settings
 
 from ibapi.client import EClient
 from ibapi.wrapper import EWrapper
@@ -13,11 +18,16 @@ from ibapi.utils import iswrapper #just for decorator
 from threading import Timer
 
 from kadima.models import StockData
+from kadima.k_utils import week_color, change_check
+
 # Create and configure logger
 import logging
 LOG_FORMAT = '%(levelname)s %(asctime)s - %(message)s'
 logging.basicConfig(filename='./log.log',level=logging.INFO,format=LOG_FORMAT, filemode='w')
 logger = logging.getLogger()
+
+TODAY = datetime.datetime.today()
+
 
 stock_dick = dict()
 connection_status = False
@@ -25,24 +35,22 @@ connection_status = False
 def api_connection_status():
     return connection_status
 
-def indeces_data(request):
-    context = {
-        'dow_value': stock_dick[77777], 
-        'snp_value': stock_dick[88888],
-        # 'nsq_value': stock_dick[55555],
-        'connection_stattus': connection_status
-    }
-    return render(request, 'ib_api/indeces.html', context)
-
-
-def stock_data_api(request):
-
-    stocks_db = StockData.objects.filter(table_index=0)
-
-    stocks_db_dict = {}
+def history_data(request):
+    context = {}
+    saved_stocks = StockData.objects.filter(saved_to_history=True)
+    
+    stocks_db_history_dict = {}
     # for i in range(len(stocks_db)):
-    for stock in stocks_db:
-        stocks_db_dict[stock.id] = {
+    for stock in saved_stocks:
+
+        week1, w1_color = week_check(stock.week_1_min, stock.week_1_max, stock_dick[stock.id])
+        week2, w2_color = week_check(stock.week_2_min, stock.week_2_max, stock_dick[stock.id])
+        week3, w3_color = week_check(stock.week_3_min, stock.week_3_max, stock_dick[stock.id])
+        week5, w5_color = week_check(stock.week_5_min, stock.week_5_max, stock_dick[stock.id])
+
+
+        
+        stocks_db_history_dict[stock.id] = {
             'ticker': stock.ticker,
             'stock_price': stock_dick[stock.id],
             'table_index': stock.table_index,
@@ -51,14 +59,14 @@ def stock_data_api(request):
             'stock_trend':   stock.stock_trend, 
             'macd_trend':  stock.macd_trend, 
             'money_flow_trend':  stock.money_flow_trend,
-            'week_1': stock.week_1,
-            'week_2': stock.week_2,
-            'week_3': stock.week_3,
-            'week_5': stock.week_5,
-            'week_1_color': stock.week_1_color,
-            'week_2_color': stock.week_2_color,
-            'week_3_color': stock.week_3_color,
-            'week_5_color': stock.week_5_color,
+            'week_1': week1,
+            'week_2': week2,
+            'week_3': week3,
+            'week_5': week5,
+            'week_1_color': w1_color,
+            'week_2_color': w2_color,
+            'week_3_color': w3_color,
+            'week_5_color': w5_color,
             'gap_1': stock.gap_1,
             'gap_2': stock.gap_2,
             'gap_3': stock.gap_3,
@@ -76,10 +84,102 @@ def stock_data_api(request):
 
     context = {
         # 'stocks_streaming': stock_dick.items(), 
+        'ib_api_connected': connection_status,
+        'stocks_processed': stocks_db_history_dict.items()
+    }
+
+    print(f'CONNECTION STATUS: {connection_status}')
+    # with open('ib_api/stocks_data.json', 'w+') as fd:
+    #     json.dump(stock_dick, fd)
+
+
+    return render(request, 'ib_api/history_streaming.html', context)
+
+def indeces_data(request):
+
+    with open(f'{settings.INDEX_FILE_PATH}/indexes_data.json') as idx_file:
+        idx_data = json.load(idx_file)
+
+    nas_close = idx_data['^IXIC']
+    dow_close = idx_data['^DJI']
+    snp_close = idx_data['^GSPC']
+
+    dow_change = 100 * (dow_close - stock_dick[77777]) / dow_close
+    snp_change = 100 * (snp_close - stock_dick[88888]) / snp_close
+    # nas_change = 100 * (nas_close - stock_dick[55555]) / nas_close
+
+
+    context = {
         'dow_value': stock_dick[77777], 
         'snp_value': stock_dick[88888],
         # 'nsq_value': stock_dick[55555],
-        'connection_stattus': connection_status,
+        'dow_change': dow_change,
+        'snp_change': snp_change,
+        # 'nas_change': nas_change,
+        'snp_color': change_check(snp_change),
+        'dow_color': change_check(dow_change),
+        # 'nas_color': change_check(nasdaq_change),
+
+        'ib_api_connected': connection_status
+    }
+    return render(request, 'ib_api/indeces.html', context)
+
+def week_check(history_min, history_max ,realtime_price):
+
+    relative_value = ((realtime_price - history_min) / (history_max - history_min)) * 100
+
+    relative_value = float("%0.2f"%relative_value)
+
+    w_color = week_color(relative_value)
+
+    return relative_value, w_color
+
+def stock_data_api(request, table_index=1):
+    stocks_db = StockData.objects.filter(table_index=table_index)
+    stocks_db_dict = {}
+    # for i in range(len(stocks_db)):
+    for stock in stocks_db:
+
+        week1, w1_color = week_check(stock.week_1_min, stock.week_1_max, stock_dick[stock.id])
+        week2, w2_color = week_check(stock.week_2_min, stock.week_2_max, stock_dick[stock.id])
+        week3, w3_color = week_check(stock.week_3_min, stock.week_3_max, stock_dick[stock.id])
+        week5, w5_color = week_check(stock.week_5_min, stock.week_5_max, stock_dick[stock.id])
+        
+        stocks_db_dict[stock.id] = {
+            'ticker': stock.ticker,
+            'stock_price': stock_dick[stock.id],
+            'table_index': stock.table_index,
+            'stock_date': stock.stock_date,
+            'stock_displayed_date': stock.stock_displayed_date,
+            'stock_trend':   stock.stock_trend, 
+            'macd_trend':  stock.macd_trend, 
+            'money_flow_trend':  stock.money_flow_trend,
+            'week_1': week1,
+            'week_2': week2,
+            'week_3': week3,
+            'week_5': week5,
+            'week_1_color': w1_color,
+            'week_2_color': w2_color,
+            'week_3_color': w3_color,
+            'week_5_color': w5_color,
+            'gap_1': stock.gap_1,
+            'gap_2': stock.gap_2,
+            'gap_3': stock.gap_3,
+            'gap_1_color': stock.gap_1_color,
+            'gap_2_color': stock.gap_2_color,
+            'gap_3_color': stock.gap_3_color,
+            'earnings_call': stock.earnings_call,
+            'earnings_call_displayed': stock.earnings_call_displayed,
+            'earnings_warning': stock.earnings_warning,
+            'macd_clash': stock.macd_clash,
+            'mfi_clash': stock.mfi_clash,
+            'macd_color': stock.macd_color,
+            'mfi_color': stock.mfi_color
+        }
+
+    context = {
+        # 'stocks_streaming': stock_dick.items(), 
+        'ib_api_connected': connection_status,
         'stocks_processed': stocks_db_dict.items()
     }
 
@@ -95,27 +195,27 @@ STOP_API = 'stop'
 UPADATE_STOCKS = 'update'
 RUN_API = 'run'
 
-def streaming_stock_data(request, stocks_list=['AAPL']):
-    context = {}
-    add_stock = []
-    if request.method == 'POST':
+# def streaming_stock_data(request, stocks_list=['AAPL']):
+#     context = {}
+#     add_stock = []
+#     if request.method == 'POST':
 
-        if 'start_api' in request.POST:
-            action = RUN_API
-        else:
-            action = UPADATE_STOCKS
-            # stocks_arr = request.POST.get("stock_ticker").split(',')
-            # for s in stocks_arr:
-            #     add_stock.append(s.strip())
-            add_stock.append(request.POST.get("stock_ticker"))
+#         if 'start_api' in request.POST:
+#             action = RUN_API
+#         else:
+#             action = UPADATE_STOCKS
+#             # stocks_arr = request.POST.get("stock_ticker").split(',')
+#             # for s in stocks_arr:
+#             #     add_stock.append(s.strip())
+#             add_stock.append(request.POST.get("stock_ticker"))
 
          
-        ib_api_wrapper(
-            request=request, 
-            stock_list=stocks_list, 
-            action=action)
+#         ib_api_wrapper(
+#             request=request, 
+#             stock_list=stocks_list, 
+#             action=action)
     
-    return render(request, 'ib_api/stock_data.html')
+#     return render(request, 'ib_api/stock_data.html')
 
 
 class myThread (threading.Thread):
@@ -205,6 +305,7 @@ def ib_stock_api(old_stocks_list, stocks, action):
         contract.secType = "IND"
         contract.currency = "USD"
         contract.exchange = "NASDAQ"
+        app.reqMarketDataType(4)
         app.reqMktData(55555, contract, "", False, False, [])
 
         contract.symbol = "SPX"
@@ -233,6 +334,7 @@ def ib_stock_api(old_stocks_list, stocks, action):
 
 
             app.reqStatus[rStatus] = 'Sent'
+            app.reqMarketDataType(4)
             app.reqMktData(stock_id, contract, "", False, False, [])
 
 

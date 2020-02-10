@@ -1,1 +1,5 @@
 ngrok
+kadima/__pycache__
+ib_api/__pycache__
+cors.py
+kadima/migrations/*
