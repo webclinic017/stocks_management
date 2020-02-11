@@ -407,15 +407,17 @@ def home(request, table_idx=1):
 
 def week_values(stock_df, week_index):
 
-    last_max = stock_df['Close'][-week_index:].values.max()
-    last_min = stock_df['Close'][-week_index:].values.min()
+    last_max = stock_df['High'][-week_index:].values.max()
+    last_min = stock_df['Low'][-week_index:].values.min()
     current_price = stock_df['Close'].values[-1]
 
-    relative_value = ((current_price - last_min) / (last_max - last_min)) * 100
+    relative_value = (100  / ( last_max - last_min)) * (current_price - last_min)
 
     last_max = float("%0.2f"%last_max)
     last_min = float("%0.2f"%last_min)
-    relative_value = float("%0.2f"%relative_value)
+    
+    relative_value_tmp = float("%0.2f"%relative_value)
+    relative_value = 100 if relative_value_tmp > 100 else relative_value_tmp
 
     return relative_value, last_min, last_max
 

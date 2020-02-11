@@ -12,10 +12,8 @@
             {% endif %}
           </form>
         </div>
-        {% if ib_api_connected %}
-          <div class="row sticky-top" id="indeces" style="background-color: #1e1d2e;">
-          </div>
-        {% else %}
+        <!--  <div class="row sticky-top" id="indeces" style="background-color: #1e1d2e;">
+            </div> -->
           <div class="row sticky-top" id="indeces_delayed" style="background-color: #1e1d2e;">
               <div class="col-lg-4 ">
                 <div class="card card-chart " style="background-color:{{ dow_color }};">
@@ -60,7 +58,6 @@
                 </div>
               </div>
             </div>
-        {% endif %}
 
         <div class="row">
             <div class="col-md-5 pr-md-1">
@@ -262,6 +259,7 @@
             */
         </script>
 
+<!--         
         <script type="text/javascript">
           (function worker() {
               $.ajax({
@@ -276,7 +274,7 @@
           })();
       /*
       */
-        </script>
+        </script> -->
     {% else %}
     <script>
       console.log('POPO');

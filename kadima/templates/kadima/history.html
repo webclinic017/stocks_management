@@ -55,11 +55,9 @@
             </div>
         
             <div class="card-body">
-            {% if ib_api_connected %}
-            <div class="table-responsive" id="stocks_history">
+            <!-- <div class="table-responsive" id="stocks_history"> -->
             <!-- STREAMING DATA -->
-            </div>
-            {% else %}
+            <!-- </div> -->
                 <div class="table-responsive" id="stocks_history">
                     <table class="table tablesorter " id="stocks_history">
                         <thead class=" text-primary">
@@ -191,7 +189,6 @@
                         </tbody>
                     </table>
                 </div>
-            {% endif %}
             </div>
         </div>
         </form>
@@ -200,9 +197,8 @@
 </div>
 
 <!-- Source : https://bytutorial.com/blogs/css3/how-to-create-blinking-background-color-and-text-using-css3-animation -->
-{% if ib_api_connected %}
 
-    <script type="text/javascript">
+    <!-- <script type="text/javascript">
         (function worker() {
             $.ajax({
             url: 'http://127.0.0.1:8001/history-data/',
@@ -216,8 +212,7 @@
         })();
     /*
     */
-    </script>
-{% endif %}
+    </script> -->
 
 <style>
     .border-3 {

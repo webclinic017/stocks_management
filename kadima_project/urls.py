@@ -27,7 +27,6 @@ urlpatterns = [
     path('history/', views_kadima.history, name='history'),
 
     # IB API URLS
-    # path('stock-data/', views_ib_api.streaming_stock_data, name='streaming-stock-data'), 
     path('indeces-data/', views_ib_api.indeces_data, name='indeces-data'), 
     path('history-data/', views_ib_api.history_data, name='history-data'), 
     path('stock-data-api/<int:table_index>', views_ib_api.stock_data_api, name='stock-data-api'),

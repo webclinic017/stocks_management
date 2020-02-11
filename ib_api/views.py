@@ -126,20 +126,21 @@ def indeces_data(request):
 
 def week_check(history_min, history_max ,realtime_price):
 
-    relative_value = ((realtime_price - history_min) / (history_max - history_min)) * 100
+    relative_value_tmp = (100  / ( history_max - history_min)) * (realtime_price - history_min)
 
-    relative_value = float("%0.2f"%relative_value)
+    relative_value_tmp = float("%0.2f"%relative_value_tmp)
+
+    relative_value = 100 if relative_value_tmp > 100 else relative_value_tmp
 
     w_color = week_color(relative_value)
 
-    return relative_value, w_color
+    return relative_value, w_color 
 
-def stock_data_api(request, table_index=1):
+def stock_data_api(request, table_index=1, sort=None):
     stocks_db = StockData.objects.filter(table_index=table_index)
     stocks_db_dict = {}
     # for i in range(len(stocks_db)):
     for stock in stocks_db:
-
         week1, w1_color = week_check(stock.week_1_min, stock.week_1_max, stock_dick[stock.id])
         week2, w2_color = week_check(stock.week_2_min, stock.week_2_max, stock_dick[stock.id])
         week3, w3_color = week_check(stock.week_3_min, stock.week_3_max, stock_dick[stock.id])
@@ -184,9 +185,6 @@ def stock_data_api(request, table_index=1):
     }
 
     print(f'CONNECTION STATUS: {connection_status}')
-    # with open('ib_api/stocks_data.json', 'w+') as fd:
-    #     json.dump(stock_dick, fd)
-
 
     return render(request, 'ib_api/stock_data_api.html', context)
 
@@ -194,29 +192,6 @@ def stock_data_api(request, table_index=1):
 STOP_API = 'stop'
 UPADATE_STOCKS = 'update'
 RUN_API = 'run'
-
-# def streaming_stock_data(request, stocks_list=['AAPL']):
-#     context = {}
-#     add_stock = []
-#     if request.method == 'POST':
-
-#         if 'start_api' in request.POST:
-#             action = RUN_API
-#         else:
-#             action = UPADATE_STOCKS
-#             # stocks_arr = request.POST.get("stock_ticker").split(',')
-#             # for s in stocks_arr:
-#             #     add_stock.append(s.strip())
-#             add_stock.append(request.POST.get("stock_ticker"))
-
-         
-#         ib_api_wrapper(
-#             request=request, 
-#             stock_list=stocks_list, 
-#             action=action)
-    
-#     return render(request, 'ib_api/stock_data.html')
-
 
 class myThread (threading.Thread):
    def __init__(self, app, threadID, name):
