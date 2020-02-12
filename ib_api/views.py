@@ -9,7 +9,7 @@ from time import sleep
 from django.shortcuts import render, HttpResponse
 from django.conf import settings
 
-import ibapi
+# import ibapi
 
 from ibapi.client import EClient
 from ibapi.wrapper import EWrapper
