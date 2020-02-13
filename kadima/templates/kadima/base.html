@@ -51,7 +51,7 @@
     -->
       <div class="sidebar-wrapper text-primary" style="background-color: #dabdbd;">
         <div class="logo">
-          <a href="javascript:void(0)" class="simple-text logo-normal" style="color: black;">
+          <a href="{% url 'home' %}" class="simple-text logo-normal" style="color: black;">
             Kadima Portfolio Advisor
           </a>
         </div>
@@ -64,16 +64,24 @@
           </li>
 
           <li>
-            <a href="{% url 'table-2' table_idx=2 %}">
+            <a href="{% url 'history' table_index=1 %}">
+              <i class="tim-icons icon-bullet-list-67" style="color: black;"></i>
+              <p style="color: black;">History 1</p>
+            </a>
+          </li>
+
+
+          <li class="border-top">
+            <a href="{% url 'table-2' table_index=2 %}">
               <i class="tim-icons icon-coins" style="color: black;"></i>
               <p style="color: black;">Table 2</p>
             </a>
           </li>
 
           <li>
-            <a href="{% url 'history' %}">
+            <a href="{% url 'history' table_index=2 %}">
               <i class="tim-icons icon-bullet-list-67" style="color: black;"></i>
-              <p style="color: black;">History</p>
+              <p style="color: black;">History 2</p>
             </a>
           </li>
 

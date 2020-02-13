@@ -46,10 +46,11 @@ UPADATE_STOCKS = 'update'
 STOP_API = 'stop'
 
 
-def history(request):
+def history(request, table_index=1):
     context = {}
-    saved_stocks = StockData.objects.filter(saved_to_history=True)
+    saved_stocks = StockData.objects.filter(saved_to_history=True, table_index=table_index)
     context['stocks'] = saved_stocks
+    context['table_index'] = table_index
 
     ib_api_connected = api_connection_status()
     context['ib_api_connected'] = ib_api_connected
@@ -123,8 +124,7 @@ def history(request):
     
     return render(request, 'kadima/history.html', context)
 
-def home(request, table_idx=1):
-    table_index = table_idx
+def home(request, table_index=1):
     context = {}
     context['table_index'] = table_index
     ib_api_connected = api_connection_status()
@@ -359,7 +359,7 @@ def home(request, table_idx=1):
 
             ## Adding the stock saving to DB
             stock_data.save()
-            new_stocks = StockData.objects.filter(table_index=table_index)
+            new_stocks = StockData.objects.filter(table_index=table_index).order_by('week_3')
             
             context['stocks'] = new_stocks
 
@@ -384,7 +384,7 @@ def home(request, table_idx=1):
 
             # Deleting a stock from DB
             StockData.objects.filter(id=request.POST['delete_stock']).delete()
-            new_stocks = StockData.objects.filter(table_index=table_index)
+            new_stocks = StockData.objects.filter(table_index=table_index).order_by('week_3')
             context['stocks'] = new_stocks
 
             ## Updating the streaming IB API data with deleted stock
@@ -407,44 +407,44 @@ def home(request, table_idx=1):
             stock_data.save()
             messages.warning(request, f"Stock was saved. You can review it's data in the history page.")
 
-            stocks = StockData.objects.filter(table_index=table_index)
+            stocks = StockData.objects.filter(table_index=table_index).order_by('week_3')
             context['stocks'] = stocks
             return render(request, 'kadima/home.html', context)
 
-        elif 'sort_by_date' in request.POST:
-            saved_stocks = StockData.objects.filter(table_index=table_index).order_by('stock_date')
-            context['stocks'] = saved_stocks
-            return render(request, 'kadima/home.html', context)
+        # elif 'sort_by_date' in request.POST:
+        #     saved_stocks = StockData.objects.filter(table_index=table_index).order_by('stock_date')
+        #     context['stocks'] = saved_stocks
+        #     return render(request, 'kadima/home.html', context)
 
-        elif 'sort_by_stock' in request.POST:
-            saved_stocks = StockData.objects.filter(table_index=table_index).order_by('ticker')
-            context['stocks'] = saved_stocks
-            return render(request, 'kadima/home.html', context)
+        # elif 'sort_by_stock' in request.POST:
+        #     saved_stocks = StockData.objects.filter(table_index=table_index).order_by('ticker')
+        #     context['stocks'] = saved_stocks
+        #     return render(request, 'kadima/home.html', context)
 
-        elif 'sort_by_price' in request.POST:
-            saved_stocks = StockData.objects.filter(table_index=table_index).order_by('stock_price')
-            context['stocks'] = saved_stocks
-            return render(request, 'kadima/home.html', context)
+        # elif 'sort_by_price' in request.POST:
+        #     saved_stocks = StockData.objects.filter(table_index=table_index).order_by('stock_price')
+        #     context['stocks'] = saved_stocks
+        #     return render(request, 'kadima/home.html', context)
 
-        elif 'sort_by_week3' in request.POST:
-            saved_stocks = StockData.objects.filter(table_index=table_index).order_by('-week_3')
-            context['stocks'] = saved_stocks
-            return render(request, 'kadima/home.html', context)
+        # elif 'sort_by_week3' in request.POST:
+        #     saved_stocks = StockData.objects.filter(table_index=table_index).order_by('week_3')
+        #     context['stocks'] = saved_stocks
+        #     return render(request, 'kadima/home.html', context)
 
-        elif 'sort_by_gap1' in request.POST:
-            saved_stocks = StockData.objects.filter(table_index=table_index).order_by('-gap_1')
-            context['stocks'] = saved_stocks
-            return render(request, 'kadima/home.html', context)
+        # elif 'sort_by_gap1' in request.POST:
+        #     saved_stocks = StockData.objects.filter(table_index=table_index).order_by('-gap_1')
+        #     context['stocks'] = saved_stocks
+        #     return render(request, 'kadima/home.html', context)
 
         else:
-            stocks = StockData.objects.filter(table_index=table_index)
+            stocks = StockData.objects.filter(table_index=table_index).order_by('week_3')
             context['stocks'] = stocks
 
             return render(request, 'kadima/home.html', context)
 
 
     else:
-        stocks = StockData.objects.filter(table_index=table_index)
+        stocks = StockData.objects.filter(table_index=table_index).order_by('week_3')
         context['stocks'] = stocks
 
     return render(request, 'kadima/home.html', context)

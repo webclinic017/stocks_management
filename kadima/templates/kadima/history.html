@@ -7,11 +7,7 @@
             {% csrf_token %}
         <div class="card  card-plain">
             <div class="card-header">
-                {% if ib_api_connected %}
-                    <h2 class="card-title">Stock History Table - Streaming</h2>
-                {% else %}
-                    <h2 class="card-title">Stock History Table - Delayed</h2>
-                {% endif %}
+                <h2 class="card-title">Stock History Table - {{ table_index }}</h2>
             </div>
             <div class="row">
                 <div class="col-md-5 pr-md-1">

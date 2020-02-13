@@ -126,7 +126,7 @@ def indeces_data(request):
     }
     return render(request, 'ib_api/indeces.html', context)
 
-def week_check(history_min, history_max ,realtime_price):
+def week_check(history_min, history_max ,realtime_price, week3=False):
 
     relative_value_tmp = (100  / ( history_max - history_min)) * (realtime_price - history_min)
 
@@ -134,21 +134,24 @@ def week_check(history_min, history_max ,realtime_price):
 
     relative_value = 100 if relative_value_tmp > 100 else relative_value_tmp
 
-    w_color = week_color(relative_value)
+    w_color = week_color(relative_value, week3)
 
     return relative_value, w_color 
 
 def stock_data_api(request, table_index=1, sort=None):
     stocks_db = StockData.objects.filter(table_index=table_index)
     stocks_db_dict = {}
+    stocks_db_dict_list = []
     # for i in range(len(stocks_db)):
     for stock in stocks_db:
+        
         week1, w1_color = week_check(stock.week_1_min, stock.week_1_max, stock_dick[stock.id])
         week2, w2_color = week_check(stock.week_2_min, stock.week_2_max, stock_dick[stock.id])
-        week3, w3_color = week_check(stock.week_3_min, stock.week_3_max, stock_dick[stock.id])
+        week3, w3_color = week_check(stock.week_3_min, stock.week_3_max, stock_dick[stock.id], week3=True)
         week5, w5_color = week_check(stock.week_5_min, stock.week_5_max, stock_dick[stock.id])
         
         stocks_db_dict[stock.id] = {
+            'stock_id': stock.id,
             'ticker': stock.ticker,
             'stock_price': stock_dick[stock.id],
             'table_index': stock.table_index,
@@ -180,10 +183,15 @@ def stock_data_api(request, table_index=1, sort=None):
             'mfi_color': stock.mfi_color
         }
 
+        stocks_db_dict_list.append(stocks_db_dict[stock.id])
+
+    sorted_list = sorted(stocks_db_dict_list, key=lambda k: k['week_3'])
+    
     context = {
         # 'stocks_streaming': stock_dick.items(), 
         'ib_api_connected': connection_status,
-        'stocks_processed': stocks_db_dict.items()
+        # 'stocks_processed': stocks_db_dict.items()
+        'stocks_processed': sorted_list
     }
 
     print(f'CONNECTION STATUS: {connection_status}')

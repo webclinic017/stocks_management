@@ -23,8 +23,8 @@ from rest_framework import routers
 urlpatterns = [
     
     path('', views_kadima.home, name='home'),
-    path('table_index=<table_idx>/', views_kadima.home, name='table-2'),
-    path('history/', views_kadima.history, name='history'),
+    path('table_index=<table_index>/', views_kadima.home, name='table-2'),
+    path('history/<int:table_index>', views_kadima.history, name='history'),
 
     # IB API URLS
     path('indeces-data/', views_ib_api.indeces_data, name='indeces-data'), 

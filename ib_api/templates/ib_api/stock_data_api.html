@@ -2,13 +2,16 @@
     <thead class=" text-primary">
       <tr>
         <th>
-          <button type="submit" name="sort_by_date" class="tim-icons icon-minimal-down text-primary"></button>  Date
+          <!-- <button type="submit" name="sort_by_date" class="tim-icons icon-minimal-down text-primary"></button>   -->
+          Date
         </th>
         <th>
-          <button type="submit" name="sort_by_stock" class="tim-icons icon-minimal-down text-primary"></button>  Stock Symbol
+          <!-- <button type="submit" name="sort_by_stock" class="tim-icons icon-minimal-down text-primary"></button>   -->
+           Symbol
         </th>
         <th class="text-center">
-          <button type="submit" name="sort_by_price" class="tim-icons icon-minimal-down text-primary"></button>  Stock Price
+          <!-- <button type="submit" name="sort_by_price" class="tim-icons icon-minimal-down text-primary"></button>   -->
+           Price
         </th>
         <th class="text-center">
             Week 1
@@ -17,13 +20,15 @@
             Week 2
         </th>
         <th class="text-center">
-          <button type="submit" name="sort_by_week3" class="tim-icons icon-minimal-down text-primary"></button>  Week 3
+          <!-- <button type="submit" name="sort_by_week3" class="tim-icons icon-minimal-down text-primary"></button>   -->
+          Week 3
         </th>
         <th class="text-center">
             Week 5
         </th>
         <th class="text-center">
-          <button type="submit" name="sort_by_gap1" class="tim-icons icon-minimal-down text-primary"></button>  Gap 1
+          <!-- <button type="submit" name="sort_by_gap1" class="tim-icons icon-minimal-down text-primary"></button>   -->
+          Gap 1
         </th>
         <th class="text-center">
             Gap 2
@@ -41,19 +46,21 @@
             MFI Clash
          </th>
          <th>
-            Log to History
+            Save
          </th>   
-      </tr>
+         <th>
+            Delete
+         </th>   
+        </tr>
     </thead>
     <tbody>
-        {% for stock_id, stock in stocks_processed %}
-
+        {% for stock in stocks_processed %}
             <tr class="border-top border-1">
                 <td  class="border-top border-1">
                     {{ stock.stock_displayed_date }}
                 </td>
                 <td  class="border-top border-1">
-                    {{ stock.ticker }}
+                    {{ stock.ticker }} 
                 </td>
                 <td  class="border-top border-1">
                     {{ stock.stock_price }}
@@ -95,12 +102,12 @@
                   {% else %}
                     <span>=</span>
                   {% endif %}
-            </td>
-                <td  class="border-top border-1">
-                    <button type="submit" value="{{ stock_id }}" name="save_stock" class="btn btn-fill btn-secondary">Save</button>
                 </td>
                 <td  class="border-top border-1">
-                    <button type="submit" value="{{ stock_id }}" name="delete_stock" class="tim-icons icon-trash-simple"></button>
+                    <button type="submit" value="{{ stock.stock_id }}" name="save_stock" class="tim-icons icon-bullet-list-67"></button>
+                </td>
+                <td  class="border-top border-1">
+                    <button type="submit" value="{{ stock.stock_id }}" name="delete_stock" class="tim-icons icon-trash-simple"></button>
                 </td>
 
             </tr>
