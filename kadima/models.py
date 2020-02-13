@@ -45,13 +45,16 @@ class StockData(models.Model):
     gap_3_color = models.CharField(max_length=100)
 
     earnings_call = models.DateTimeField(null=True)
-    earnings_call_displayed = models.CharField(max_length=100)
-    earnings_warning = models.CharField(max_length=100)
+    earnings_call_displayed = models.CharField(max_length=100, null=True)
+    earnings_warning = models.CharField(max_length=100, null=True)
 
     macd_clash = models.BooleanField(null=True, default=False)
     mfi_clash = models.BooleanField(null=True, default=False)
     macd_color = models.CharField(max_length=100)
     mfi_color = models.CharField(max_length=100)
+
+    dividend_date = models.CharField(max_length=100,null=True)
+    dividend = models.FloatField(null=True)
 
     # History Page Section
     saved_to_history = models.BooleanField(default=False)

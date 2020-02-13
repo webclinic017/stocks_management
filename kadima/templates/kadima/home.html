@@ -2,20 +2,20 @@
 {% block content %}
 
       <div class="content">
-        <div class="col-lg-4 ">
-            <form method="POST" action="" enctype="multipart/form-data">{% csrf_token %}
-            {% if ib_api_connected %}
-              <button type="submit" name="connect_ib_api" class="btn btn-success" disabled> IB API Connected </button>
-              <button type="submit" name="disconnect_ib_api" class="btn btn-danger"> Disconnect </button>
-              {% else %}
-              <button type="submit" name="connect_ib_api" class="btn btn-default" > Connect API </button>
-            {% endif %}
-          </form>
-        </div>
         <!--  <div class="row sticky-top" id="indeces" style="background-color: #1e1d2e;">
             </div> -->
           <div class="row sticky-top" id="indeces_delayed" style="background-color: #1e1d2e;">
-              <div class="col-lg-4 ">
+              <div class="col-lg-2 ">
+                  <form method="POST" action="" enctype="multipart/form-data">{% csrf_token %}
+                  {% if ib_api_connected %}
+                    <button type="submit" name="connect_ib_api" class="btn btn-success" disabled> IB API Connected </button>
+                    <button type="submit" name="disconnect_ib_api" class="btn btn-danger"> Disconnect </button>
+                    {% else %}
+                    <button type="submit" name="connect_ib_api" class="btn btn-default" > Connect API </button>
+                  {% endif %}
+                </form>
+              </div>
+              <div class="col-lg-2 ">
                 <div class="card card-chart " style="background-color:{{ dow_color }};">
                   <div class="card-header">
                     <h1 class="card-title" style="color: aliceblue;">DOW</h1>
@@ -29,7 +29,7 @@
                   </div> -->
                 </div>
               </div>
-              <div class="col-lg-4">
+              <div class="col-lg-2">
                 <div class="card card-chart" style="background-color:{{ snp_color }};">
                   <div class="card-header">
                     <h1 class="card-title" style="color: aliceblue;">S&P</h1>
@@ -43,7 +43,7 @@
                   </div> -->
                 </div>
               </div>
-              <div class="col-lg-4">
+              <div class="col-lg-2">
                 <div class="card card-chart" style="background-color:{{ nas_color }};">
                   <div class="card-header">
                     <h1 class="card-title" style="color: aliceblue;">NASDAQ</h1>
@@ -143,64 +143,84 @@
                               MFI Clash
                           </th>
                           <th>
+                              Dividend Date
+                          </th>
+                          <th>
+                              Dividend
+                          </th>
+
+                          <th>
                               Log to History
                           </th>   
                         </tr>
                       </thead>
                       <tbody>
                         {% for stock in stocks %}
-                            <tr class="border-top border-1">
-                                <td  class="border-top border-1">
+                          {% if stock.week_3_color == 'green' and stock.gap_1_color == 'red' %}
+                            <tr class="blink-row">
+                          {% else %}
+                            <tr>
+                          {% endif %}
+                              <td  class="">
                                     {{ stock.stock_displayed_date }}
                                 </td>
-                                <td  class="border-top border-1">
+                                <td  class="">
                                     {{ stock.ticker }}
                                 </td>
-                                <td  class="border-top border-1">
+                                <td  class="">
                                     {{ stock.stock_price }}
                                 </td>
-                                <td  class="border-top border-1" style="background-color: {{ stock.week_1_color }}; ">
+                                <td  class="" style="background-color: {{ stock.week_1_color }}; ">
                                     {{ stock.week_1 }}%
                                 </td>
-                                <td  class="border-top border-1 border-right border-3" style="background-color: {{ stock.week_2_color }}; ">
+                                <td  class=" border-right border-3" style="background-color: {{ stock.week_2_color }}; ">
                                     {{ stock.week_2 }}%
                                 </td >
-                                <td  class="border-top border-right border-3" style="background-color: {{ stock.week_3_color }}; ">
+                                <td  class=" border-right border-3" style="background-color: {{ stock.week_3_color }}; ">
                                     {{ stock.week_3 }}%
                                 </td>
-                                <td  class="border-top border-1" style="background-color: {{ stock.week_5_color }}; ">
+                                <td  class="border-right border-3" style="background-color: {{ stock.week_5_color }}; ">
                                     {{ stock.week_5 }}%
                                 </td>
-                                <td  class="border-top border-1" style="background-color: {{ stock.gap_1_color }}; ">
+                                <td  class="border-right border-3" style="background-color: {{ stock.gap_1_color }}; ">
+                                <!-- <td  class="bg-success-light"> -->
                                     {{ stock.gap_1 }}%
                                 </td>
-                                <td  class="border-top border-1" style="background-color: {{ stock.gap_2_color }}; ">
+                                <td  class="" style="background-color: {{ stock.gap_2_color }}; ">
                                     {{ stock.gap_2 }}%
                                 </td>
-                                <td  class="border-top border-1" style="background-color: {{ stock.gap_3_color }}; ">
+                                <td  class="" style="background-color: {{ stock.gap_3_color }}; ">
                                     {{ stock.gap_3 }}%
                                 </td>
-                                <td class="{{ stock.earnings_warning }} border-top border-1" style="height: 100%;">
+                                <td class="{{ stock.earnings_warning }} " style="height: 100%;">
                                     {{ stock.earnings_call_displayed }}
                                 </td>
-                                <td  class="border-top border-1 border-right border-3" style="background-color: {{ stock.macd_color }}; text-align: center;">
+                                <td  class=" border-right border-3" style="background-color: {{ stock.macd_color }}; text-align: center;">
                                     {% if stock.macd_clash %}
                                       <span>><</span>
                                     {% else %}
                                       <span>=</span>
                                     {% endif %}
                                 </td>
-                                <td  class="border-top border-1" style="background-color: {{ stock.mfi_color }}; text-align: center;">
+                                <td  class="" style="background-color: {{ stock.mfi_color }}; text-align: center;">
                                   {% if stock.mfi_clash %}
                                     <span>><</span>
                                   {% else %}
                                     <span>=</span>
                                   {% endif %}
-                            </td>
-                                <td  class="border-top border-1">
+                                </td>
+                                <td class="{{ stock.earnings_warning }} " style="height: 100%;">
+                                    {{ stock.dividend_date }}
+                                </td>
+                                <td class="{{ stock.earnings_warning }} " style="height: 100%;">
+                                    ${{ stock.dividend }}
+                                </td>
+
+    
+                                <td  class="">
                                     <button type="submit" value="{{ stock.id }}" name="save_stock" class="btn btn-fill btn-secondary">Save</button>
                                 </td>
-                                <td  class="border-top border-1">
+                                <td  class="">
                                     <button type="submit" value="{{ stock.id }}" name="delete_stock" class="tim-icons icon-trash-simple"></button>
                                 </td>
 
@@ -222,21 +242,32 @@
       <style>
         .blink-bg{
             color: #fff;
-            padding: 0px;
-            display: inline-block;
-            border-radius: 0px;
-            animation: blinkingBackground 4s infinite;
+            animation: blinkingBackground 2s infinite;
         }
         @keyframes blinkingBackground{
             100%	{ background-color: #04a1d5;}
         }
 
-        .border-3 {
-            border-width:1px !important;
-            border-color: black;
+        .blink-row{
+          color: #fff;
+          animation: blinkingRow 4s infinite;
+        }
+        @keyframes blinkingRow{
+            100%	{ background-color: #bb20a1;}
         }
 
+        /*
+        .blink_me {
+          animation: blinker 1s linear infinite;
+        }
+        
+        @keyframes blinker {  
+          50% { opacity: 0; }
+        }
+        */
+
       </style>
+      
       <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 
       {% if ib_api_connected %}

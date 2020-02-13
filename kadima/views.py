@@ -21,8 +21,10 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from django.urls import reverse_lazy, reverse
 from django.contrib import messages
+from django.utils import timezone
 
 from yahoo_earnings_calendar import YahooEarningsCalendar
+import yfinance as yf
 
 from ib_api.views import *
 from kadima.k_utils import *
@@ -172,6 +174,36 @@ def home(request, table_idx=1):
     stocks = StockData.objects.filter(table_index=table_index)
     context['stocks'] = stocks
 
+    # Update earnings dates
+    current_stocks = StockData.objects.all()
+    yec = YahooEarningsCalendar()
+
+    for stock in current_stocks:
+        if stock.earnings_call:
+            if stock.earnings_call < timezone.now()-timedelta(1):
+                try:
+                    timestmp = yec.get_next_earnings_date(stock)
+                    earnings_date_obj = datetime.datetime.fromtimestamp(timestmp)
+                    if stock.earnings_call > timezone.now():
+                        stock.earnings_call = earnings_date_obj
+                        stock.earnings_call_displayed = date_obj_to_date(earnings_date_obj, date_format='slash')
+                    else:
+                        stock.earnings_call = None
+                        stock.earnings_call_displayed = None
+                        stock.earnings_warning = None
+
+                except Exception as e:
+                    stock.earnings_call = None
+                    stock.earnings_call_displayed = None
+                    stock.earnings_warning = None
+        else:
+            stock.earnings_call = None
+            stock.earnings_call_displayed = None
+            stock.earnings_warning = None
+
+        stock.save()
+
+
     if request.method == 'POST':
 
         if 'connect_ib_api' in request.POST:
@@ -235,11 +267,11 @@ def home(request, table_idx=1):
 
             stock_data.week_1_color = week_color(stock_data.week_1)
             stock_data.week_2_color = week_color(stock_data.week_2)
-            stock_data.week_3_color = week_color(stock_data.week_3)
+            stock_data.week_3_color = week_color(stock_data.week_3, week3=True)
             stock_data.week_5_color = week_color(stock_data.week_5)
 
             gaps, gaps_colors = gap_check(stock_df)
-
+            
             if len(gaps) == 3:
                 stock_data.gap_1 = gaps[0]
                 stock_data.gap_2 = gaps[1]
@@ -262,7 +294,6 @@ def home(request, table_idx=1):
             else:
                 pass
 
-
             # Earning dates
             yec = YahooEarningsCalendar()
             try:
@@ -271,7 +302,8 @@ def home(request, table_idx=1):
                 stock_data.earnings_call = earnings_date_obj
             except Exception as e:
                 messages.error(request, 'Stock does not have an earnings call date defined.')
-                earnings_date_obj = today                
+                earnings_date_obj = today    
+
 
             stock_data.earnings_call_displayed = date_obj_to_date(earnings_date_obj, date_format='slash')
             
@@ -308,6 +340,18 @@ def home(request, table_idx=1):
                 stock_data.mfi_color = 'green'
 
 
+            # Getting the dividend
+            st = yf.Ticker(stock).dividends.tail(1)
+            stock_data.dividend = float(st.values)
+            date_arr = str(st.index[0]).split(' ')[0].split('-')
+            year = date_arr[0]
+            month = date_arr[1]
+            day = date_arr[2]
+            stock_data.dividend_date = day + '/' + month + '/' + year
+           
+
+            # Updating the stocks in the live stream
+            ##########################
             old_stocks = StockData.objects.all()
             old_stocks_list = []
             for stock in old_stocks:
@@ -404,55 +448,5 @@ def home(request, table_idx=1):
         context['stocks'] = stocks
 
     return render(request, 'kadima/home.html', context)
-
-def week_values(stock_df, week_index):
-
-    last_max = stock_df['High'][-week_index:].values.max()
-    last_min = stock_df['Low'][-week_index:].values.min()
-    current_price = stock_df['Close'].values[-1]
-
-    relative_value = (100  / ( last_max - last_min)) * (current_price - last_min)
-
-    last_max = float("%0.2f"%last_max)
-    last_min = float("%0.2f"%last_min)
-    
-    relative_value_tmp = float("%0.2f"%relative_value)
-    relative_value = 100 if relative_value_tmp > 100 else relative_value_tmp
-
-    return relative_value, last_min, last_max
-
-
-def gap_check(stock_df):
-    days_back = 1
-    gap_count = 0
-    gaps = []
-    gaps_colors = []
-    
-    while gap_count < 4 and days_back < len(stock_df)/2:
-        open_value = stock_df.loc[stock_df.index[-days_back]]['Open']
-        close_value = stock_df.loc[stock_df.index[-days_back-1]]['Close']
-        delta_price = open_value - close_value
-        delta_rate = (delta_price / close_value) * 100
-        if delta_rate > 1.26:
-            gap_count +=1
-            gaps.append(float("%0.2f"%delta_rate))
-            gaps_colors.append('green')
-            days_back += 1
-        elif delta_rate >= 1:
-            gap_count +=1
-            gaps.append(float("%0.2f"%delta_rate))
-            gaps_colors.append('orange')
-            days_back += 1
-        elif delta_rate > 0.75:
-            gap_count +=1
-            gaps.append(float("%0.2f"%delta_rate))
-            gaps_colors.append('red')
-            days_back += 1        
-        else:
-            days_back += 1        
-
-    print(f'gaps: {gaps} \n gaps_colors: {gaps_colors}')
-
-    return gaps, gaps_colors
 
 
