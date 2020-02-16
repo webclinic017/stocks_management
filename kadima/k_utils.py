@@ -26,6 +26,7 @@ def change_check(index_change):
     else:
         return 'red'
 
+RED_OVER_93 = '#FF1000'
 
 def week_color(week_value, week3=False):
     if week_value <= 33:
@@ -38,9 +39,14 @@ def week_color(week_value, week3=False):
             return 'orange'
         else:
             return '#f1b55f'
-    else:
+    elif week_value > 65 and week_value <= 93:
         if week3:
             return 'red'
+        else:
+            return '#dc6460'
+    else:
+        if week3:
+            return RED_OVER_93
         else:
             return '#dc6460'
 

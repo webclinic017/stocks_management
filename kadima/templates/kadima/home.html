@@ -123,14 +123,14 @@
                           </th>
                           <th class="text-center">
                             <!-- <button type="submit" name="sort_by_week3" class=" text-primary"></button>   -->
-                            Week 3
+                              Week 3
                           </th>
                           <th class="text-center">
                               Week 5
                           </th>
                           <th class="text-center">
                             <!-- <button type="submit" name="sort_by_gap1" class=" text-primary"></button>   -->
-                            Gap 1
+                              Gap 1
                           </th>
                           <th class="text-center">
                               Gap 2
@@ -142,10 +142,10 @@
                             Earning Call 
                           </th>
                           <th>
-                              MACD Clash 
+                              MACD
                           </th>
                           <th>
-                              MFI Clash
+                              MFI &nbsp;&nbsp;
                           </th>
                           <th>
                               Dividend Date
@@ -166,7 +166,9 @@
                       <tbody>
                         {% for stock in stocks %}
                           {% if stock.week_3_color == 'green' and stock.gap_1_color == 'red' %}
-                            <tr class="blink-row">
+                            <tr class="blink-row-buy">
+                          {% elif stock.week_3_color == '#FF1000' and stock.gap_1_color == 'green' %}
+                              <tr class="blink-row-sell">
                           {% else %}
                             <tr>
                           {% endif %}
@@ -218,10 +220,10 @@
                                     <span>=</span>
                                   {% endif %}
                                 </td>
-                                <td class="{{ stock.earnings_warning }} " style="height: 100%;">
+                                <td class="" style="height: 100%;">
                                     {{ stock.dividend_date }}
                                 </td>
-                                <td class="{{ stock.earnings_warning }} " style="height: 100%;">
+                                <td class="" style="height: 100%;">
                                     ${{ stock.dividend }}
                                 </td>
 
@@ -257,11 +259,18 @@
             100%	{ background-color: #04a1d5;}
         }
 
-        .blink-row{
+        .blink-row-buy{
           color: #fff;
-          animation: blinkingRow 4s infinite;
+          animation: blinkingRowBuy 4s infinite;
         }
-        @keyframes blinkingRow{
+        @keyframes blinkingRowBuy{
+            100%	{ background-color: #068d2e;}
+        }
+        .blink-row-sell{
+          color: #fff;
+          animation: blinkingRowSell 4s infinite;
+        }
+        @keyframes blinkingRowSell{
             100%	{ background-color: #bb20a1;}
         }
 
