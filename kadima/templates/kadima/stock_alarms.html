@@ -1,0 +1,222 @@
+{% extends 'kadima/base.html' %}
+{% block content %}
+<div class="content">
+    <div class="row">
+        <div class="col-md-12">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="card  card-plain">
+                    <div class="card-header">
+                        <h1 class="card-title">Stocks Alarms</h1>
+                    </div>
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+          
+                        <h3 class="card-title">Set Alarm Trigger</h3>
+                        <div class="row">
+                        <div class="col-md-3 pr-md-1">
+                            <form method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-md-4 pr-md-1">
+                                        <label style="color: aliceblue;">Select Stock</label>
+                                        <select name="stock_alarm_select" id="stock_alarm_select">
+                                                <option value="">--</option>
+                                                {% for stock in stocks %}
+                                                <option value="{{ stock.id }}">{{ stock.ticker }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4 pr-md-1">
+                                        <div class="form-group">
+                                        <label style="color: aliceblue;">Select Delta</label>
+                                        <select name="delta_select" id="delta_select">
+                                            <option value="0.05">0.05</option>
+                                            <option value="0.10">0.10</option>
+                                            <option value="0.15">0.15</option>
+                                            <option value="0.20">0.20</option>
+                                            <option value="0.25">0.25</option>
+                                            <option value="0.30">0.30</option>
+                                            <option value="0.35">0.35</option>
+                                            <option value="0.40">0.40</option>
+                                            <option value="0.45">0.45</option>
+                                            <option value="0.50">0.50</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                  <div class="" >
+                                    <button type="submit" name="stock_alarm_set" class="btn btn-fill btn-sm">Set</button>
+                                  </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        {% if ib_api_connected %}
+                        <div class="table-responsive" id="stocks_alarms">
+                        <!-- STREAMING DATA -->
+                        </div>
+                        {% else %}
+                        <div class="table-responsive" id="stocks_alarms" >
+                            <table class="table tablesorter " id="stocks_alarms" style="table-layout: fixed; text-align: center;">
+                                <thead class=" text-primary">
+                                <tr>
+                                <th>
+                                    Date
+                                </th>
+                                <th>
+                                    Stock Symbol
+                                </th>
+                                <th class="text-center">
+                                    Init Price
+                                </th>
+                                <th class="text-center">
+                                    Current Price
+                                </th>
+
+                                <th class="text-center">
+                                    Week 3
+                                </th>
+                                <th class="text-center">
+                                    Gap 1
+                                </th>
+                                <th>
+                                    Delta
+                                </th>
+                                <th>
+                                    Price Up
+                                </th>
+                                <th>
+                                    Price Down
+                                </th>
+                                <th>
+                                    Alarm Set
+                                </th>   
+                                <th>
+                                    Delete
+                                </th>   
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for stock in stocks %}
+                                    <tr class="">
+                                        <td class="">
+                                            {{ stock.stock_date }}
+                                        </td>                            
+                                        <td class="">
+                                            {{ stock.ticker }}
+                                        </td>
+                                        <td>
+                                            <input type="hidden" class="" name="stock_initial_price_{{ stock.id }}" value="{{ stock.stock_initial_price }}">
+                                            {{ stock.stock_initial_price }}
+                                        </td>
+                                        <td>
+                                            <input type="hidden" class="" name="stock_price_{{ stock.id }}" value="{{ stock.stock_price }}">
+                                            {{ stock.stock_price }}
+                                        </td>
+                                        <td class="border-right" style="background-color: {{ stock.week_3_color }}; ">
+                                            {{ stock.week_3 }}%
+                                        </td>
+                                        <td class="" style="background-color: {{ stock.gap_1_color }}; ">
+                                            {{ stock.gap_1 }}%
+                                        </td>
+                                        <td >
+                                            ${{ stock.stock_alarm_delta }}
+                                        </td>
+                                        
+                                        <!-- Stock Up -->
+                                        <td  {% if stock.price_up %} class="blink-buy" {% endif %} style="border: 2px solid white;">
+                                        </td>
+
+                                        <!-- Stock Down -->
+                                        <td  {% if stock.price_down %} class="blink-sell" {% endif %} style="border: 2px solid white;">
+                                        </td>
+
+                                        <td  class="">
+                                            {% if stock.stock_alarm_trigger_set %}
+                                                <button type="submit" value="{{ stock.id }}" name="stock_alarm_cancel" class="tim-icons icon-alert-circle-exc"></button>
+                                            {% else %}
+                                                <!-- <button type="submit" value="{{ stock.id }}" name="stock_alarm_set" class="tim-icons icon-bell-55"></button> -->
+                                            {% endif %}
+                                        </td>  
+        
+                                        <td class="">
+                                            <button type="submit" value="{{ stock.id }}" name="delete_stock" class="tim-icons icon-trash-simple"></button>
+                                        </td>
+                                        
+                                    </tr>
+
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Source : https://bytutorial.com/blogs/css3/how-to-create-blinking-background-color-and-text-using-css3-animation -->
+
+{% if ib_api_connected %}
+
+    <script type="text/javascript">
+        (function worker() {
+            $.ajax({
+            url: 'http://127.0.0.1:8001/stocks-alarms-data/',
+            success: function(response) {
+                //console.log($('#price_up').html(response));
+                //console.log($('#price_down').html(response));
+                $('#stocks_alarms').html(response);
+            }
+        });		
+        // Polling the API page every second
+        setTimeout(worker, 2000);
+        })();
+    /*
+    */
+    
+    </script>
+
+{% endif %}
+
+<script type="text/javascript">
+    //Sounds: http://soundbible.com/tags-alert.html
+    function triggerMonitor() {
+        alert("I am an alert box!");
+      }
+</script>
+
+<style>
+
+    .blink-sell{
+        color: #fff;
+        animation: blinkingSell 2s infinite;
+      }
+      @keyframes blinkingSell{
+          100%	{ background-color: #9b2b3a;}
+      }
+
+    .blink-buy{
+        color: #fff;
+        animation: blinkingBuy 2s infinite;
+      }
+      @keyframes blinkingBuy{
+          100%	{ background-color: #17a83b;}
+      }
+
+
+    .tab_cell {
+        text-align: center;
+    }
+</style>
+
+{% endblock content %}

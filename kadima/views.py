@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np 
 import datetime
 import re
+from threading import Thread
 
 from math import *
 from numpy import round
@@ -44,6 +45,75 @@ TODAY = datetime.datetime.today()
 MAX_PAST = TODAY - timedelta(30)
 UPADATE_STOCKS = 'update'
 STOP_API = 'stop'
+
+def stock_alarms(request):
+    context = {}
+    alarmed_stocks = StockData.objects.filter(stock_alarm=True)
+    context['stocks'] = alarmed_stocks
+
+    ib_api_connected = api_connection_status()
+    context['ib_api_connected'] = ib_api_connected
+
+    if request.method  == 'POST':
+
+        if 'stock_alarm_set' in request.POST:
+            stock_id = request.POST.get('stock_alarm_select')
+            
+            try:
+                stock_data = StockData.objects.get(id=stock_id)
+            except Exception as e:
+                messages.warning(request, 'Please select a stock ticker.')
+                print('No Ticker selected.')
+                return render(request, 'kadima/stock_alarms.html', context)
+
+            stock_trigger_status = stock_data.stock_alarm_trigger_set
+
+            if ib_api_connected: # Do the same but display the real time if connected 
+                stock_data.stock_initial_price = float(request.POST.get(f'stock_price_{stock_id}'))
+                stock_data.stock_alarm_delta = float(request.POST.get(f'delta_select'))
+                stock_data.stock_alarm_trigger_set = True # Turn on trigger alarm
+            else:
+                stock_data.stock_initial_price = float(request.POST.get(f'stock_price_{stock_id}'))
+                stock_data.stock_alarm_delta = float(request.POST.get(f'delta_select'))
+                stock_data.stock_alarm_trigger_set = True # Turn on trigger alarm
+        
+            stock_data.save()
+
+        elif 'stock_alarm_cancel' in request.POST:
+            
+            stock_id = request.POST.get('stock_alarm_cancel')
+            stock_data = StockData.objects.get(id=stock_id)
+            stock_data.stock_alarm_trigger_set = False # Turn off the trigger alarm
+            stock_data.stock_alarm_delta = 0.0
+            stock_data.stock_initial_price = None
+
+            stock_trigger_status = stock_data.stock_alarm_trigger_set
+            
+            stock_data.save()
+
+            context['trigger_set'] = stock_trigger_status
+
+        elif 'delete_stock' in request.POST:
+            stock_id = request.POST['delete_stock']
+            stock_data = StockData.objects.get(id=stock_id)
+            stock_data.stock_alarm = False 
+            stock_data.stock_alarm_trigger_set = False # Turn off the trigger alarm
+            stock_data.stock_alarm_delta = 0.0
+            stock_data.stock_initial_price = None
+            stock_data.save()
+
+            alarmed_stocks = StockData.objects.filter(stock_alarm=True)
+            context['stocks'] = alarmed_stocks
+        
+        else:
+            alarmed_stocks = StockData.objects.filter(stock_alarm=True)
+            context['stocks'] = alarmed_stocks
+
+
+            # return HttpResponseRedirect(request.path_info)
+
+
+    return render(request, 'kadima/stock_alarms.html', context)
 
 
 def history(request, table_index=1):
@@ -110,7 +180,7 @@ def history(request, table_index=1):
 
             print(f"START: ***************{start}****************")
 
-            filtered_stocks = StockData.objects.filter(saved_to_history=True, stock_date__range=[start, end])
+            filtered_stocks = StockData.objects.filter(saved_to_history=True, stock_date_range=[start, end])
             context['stocks'] = filtered_stocks
 
             # return HttpResponseRedirect(request.path_info)
@@ -130,6 +200,19 @@ def home(request, table_index=1):
     ib_api_connected = api_connection_status()
 
     context['ib_api_connected'] = ib_api_connected
+
+    stock_ref = StockData.objects.all().first()
+    last_update = stock_ref.stock_date
+
+    # if last_update.day < TODAY.day:
+    #     process =  Thread(target=update_gaps)
+    #     print(f"*************** UPDATING GAPS ****************")
+    #     process.start()
+    # else:
+    #     pass
+
+    current_running_threads = threading.active_count() 
+    print(f"ACTIVE THREADS: ***************{current_running_threads}****************")
 
     indeces = ['^IXIC', '^GSPC', '^DJI']
     today = datetime.datetime.today()
@@ -245,7 +328,7 @@ def home(request, table_index=1):
             print(f'Stock: {stock}')
             context['stock'] = stock
             try:
-                stock_df = fin_data.get_data_yahoo(stock, start=MAX_PAST, end=today)
+                stock_df = fin_data.get_data_yahoo(stock, start=MAX_PAST, end=TODAY)
             except Exception as e:
                 messages.info(request, 'Stock does not exists')
                 return render(request, 'kadima/home.html', context)
@@ -270,29 +353,40 @@ def home(request, table_index=1):
             stock_data.week_3_color = week_color(stock_data.week_3, week3=True)
             stock_data.week_5_color = week_color(stock_data.week_5)
 
-            gaps, gaps_colors = gap_check(stock_df)
+
+            prev_close = round(stock_df.loc[stock_df.index[-2]]['Close'],2)
+            todays_open = round(stock_df.loc[stock_df.index[-1]]['Open'],2)
+            stock_data.prev_close = prev_close
+            stock_data.todays_open = todays_open
+
+            gap_1, gap_1_color = gap_1_check(prev_close, todays_open)
+            stock_data.gap_1 = gap_1
+            stock_data.gap_1_color = gap_1_color
+
+
+            # gaps, gaps_colors = gap_check(stock_df)
             
-            if len(gaps) == 3:
-                stock_data.gap_1 = gaps[0]
-                stock_data.gap_2 = gaps[1]
-                stock_data.gap_3 = gaps[2]
+            # if len(gaps) == 3:
+            #     stock_data.gap_1 = gaps[0]
+            #     stock_data.gap_2 = gaps[1]
+            #     stock_data.gap_3 = gaps[2]
 
-                stock_data.gap_1_color = gaps_colors[0]
-                stock_data.gap_2_color = gaps_colors[1]
-                stock_data.gap_3_color = gaps_colors[2]
-            elif len(gaps) == 2:
-                stock_data.gap_1 = gaps[0]
-                stock_data.gap_2 = gaps[1]
+            #     stock_data.gap_1_color = gaps_colors[0]
+            #     stock_data.gap_2_color = gaps_colors[1]
+            #     stock_data.gap_3_color = gaps_colors[2]
+            # elif len(gaps) == 2:
+            #     stock_data.gap_1 = gaps[0]
+            #     stock_data.gap_2 = gaps[1]
 
-                stock_data.gap_1_color = gaps_colors[0]
-                stock_data.gap_2_color = gaps_colors[1]
+            #     stock_data.gap_1_color = gaps_colors[0]
+            #     stock_data.gap_2_color = gaps_colors[1]
 
-            elif len(gaps) == 1:
-                stock_data.gap_1 = gaps[0]
+            # elif len(gaps) == 1:
+            #     stock_data.gap_1 = gaps[0]
 
-                stock_data.gap_1_color = gaps_colors[0]
-            else:
-                pass
+            #     stock_data.gap_1_color = gaps_colors[0]
+            # else:
+            #     pass
 
             # Earning dates
             yec = YahooEarningsCalendar()
@@ -341,14 +435,17 @@ def home(request, table_index=1):
 
 
             # Getting the dividend
-            st = yf.Ticker(stock).dividends.tail(1)
-            stock_data.dividend = float(st.values)
-            date_arr = str(st.index[0]).split(' ')[0].split('-')
-            year = date_arr[0]
-            month = date_arr[1]
-            day = date_arr[2]
-            stock_data.dividend_date = day + '/' + month + '/' + year
-           
+            try:
+                st = yf.Ticker(stock).dividends.tail(1)
+                stock_data.dividend = float(st.values)
+                date_arr = str(st.index[0]).split(' ')[0].split('-')
+                year = date_arr[0]
+                month = date_arr[1]
+                day = date_arr[2]
+                stock_data.dividend_date = day + '/' + month + '/' + year
+            except:
+               stock_data.dividend = None
+               stock_data.dividend_date = None
 
             # Updating the stocks in the live stream
             ##########################
@@ -405,36 +502,22 @@ def home(request, table_index=1):
             stock_data = StockData.objects.get(id=stock_id)
             stock_data.saved_to_history = True  
             stock_data.save()
-            messages.warning(request, f"Stock was saved. You can review it's data in the history page.")
+            messages.warning(request, f"Stock was saved. You can review it's data on the History page.")
 
             stocks = StockData.objects.filter(table_index=table_index).order_by('week_3')
             context['stocks'] = stocks
             return render(request, 'kadima/home.html', context)
 
-        # elif 'sort_by_date' in request.POST:
-        #     saved_stocks = StockData.objects.filter(table_index=table_index).order_by('stock_date')
-        #     context['stocks'] = saved_stocks
-        #     return render(request, 'kadima/home.html', context)
+        elif 'alarm_stock' in request.POST:
+            stock_id = request.POST['alarm_stock']
+            stock_data = StockData.objects.get(id=stock_id)
+            stock_data.stock_alarm = True  
+            stock_data.save()
+            messages.info(request, f"Stock {stock_data.ticker} was added to alarm page. You can trigger value alarms on the Alarms page.")
 
-        # elif 'sort_by_stock' in request.POST:
-        #     saved_stocks = StockData.objects.filter(table_index=table_index).order_by('ticker')
-        #     context['stocks'] = saved_stocks
-        #     return render(request, 'kadima/home.html', context)
-
-        # elif 'sort_by_price' in request.POST:
-        #     saved_stocks = StockData.objects.filter(table_index=table_index).order_by('stock_price')
-        #     context['stocks'] = saved_stocks
-        #     return render(request, 'kadima/home.html', context)
-
-        # elif 'sort_by_week3' in request.POST:
-        #     saved_stocks = StockData.objects.filter(table_index=table_index).order_by('week_3')
-        #     context['stocks'] = saved_stocks
-        #     return render(request, 'kadima/home.html', context)
-
-        # elif 'sort_by_gap1' in request.POST:
-        #     saved_stocks = StockData.objects.filter(table_index=table_index).order_by('-gap_1')
-        #     context['stocks'] = saved_stocks
-        #     return render(request, 'kadima/home.html', context)
+            stocks = StockData.objects.filter(table_index=table_index).order_by('week_3')
+            context['stocks'] = stocks
+            return render(request, 'kadima/home.html', context)
 
         else:
             stocks = StockData.objects.filter(table_index=table_index).order_by('week_3')

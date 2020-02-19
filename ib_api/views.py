@@ -37,57 +37,58 @@ connection_status = False
 def api_connection_status():
     return connection_status
 
-def history_data(request):
+def stock_alarms_data(request):
     context = {}
-    saved_stocks = StockData.objects.filter(saved_to_history=True)
+    saved_alarms_stocks = StockData.objects.filter(stock_alarm=True)
     
-    stocks_db_history_dict = {}
-    # for i in range(len(stocks_db)):
-    for stock in saved_stocks:
+    stocks_db_alarms_dict = {}
+    stocks_db_dict_list = []
 
-        week1, w1_color = week_check(stock.week_1_min, stock.week_1_max, stock_dick[stock.id])
-        week2, w2_color = week_check(stock.week_2_min, stock.week_2_max, stock_dick[stock.id])
-        week3, w3_color = week_check(stock.week_3_min, stock.week_3_max, stock_dick[stock.id])
-        week5, w5_color = week_check(stock.week_5_min, stock.week_5_max, stock_dick[stock.id])
+    for stock in saved_alarms_stocks:
+
+        week3, w3_color = week_check(stock.week_3_min, stock.week_3_max, stock_dick[stock.id], week3=True)
+
+        # Checking alarm trigger
+        trigger_alarm_set = stock.stock_alarm_trigger_set
+        alarm_delta = stock.stock_alarm_delta
+        initial_stock_price = stock.stock_initial_price
+        current_stock_price = stock_dick[stock.id]
+
+        if trigger_alarm_set:
+            if current_stock_price > (initial_stock_price + alarm_delta):
+                price_up = True
+                price_down = False
+            elif current_stock_price < (initial_stock_price - alarm_delta):
+                price_up = False
+                price_down = True
+        else:
+            price_up = False
+            price_down = False
 
 
-        
-        stocks_db_history_dict[stock.id] = {
+        stocks_db_alarms_dict[stock.id] = {
+            'stock_id': stock.id,
             'ticker': stock.ticker,
+            'stock_initial_price' : stock.stock_initial_price,
             'stock_price': stock_dick[stock.id],
-            'table_index': stock.table_index,
             'stock_date': stock.stock_date,
             'stock_displayed_date': stock.stock_displayed_date,
-            'stock_trend':   stock.stock_trend, 
-            'macd_trend':  stock.macd_trend, 
-            'money_flow_trend':  stock.money_flow_trend,
-            'week_1': week1,
-            'week_2': week2,
             'week_3': week3,
-            'week_5': week5,
-            'week_1_color': w1_color,
-            'week_2_color': w2_color,
             'week_3_color': w3_color,
-            'week_5_color': w5_color,
             'gap_1': stock.gap_1,
-            'gap_2': stock.gap_2,
-            'gap_3': stock.gap_3,
             'gap_1_color': stock.gap_1_color,
-            'gap_2_color': stock.gap_2_color,
-            'gap_3_color': stock.gap_3_color,
-            'earnings_call': stock.earnings_call,
-            'earnings_call_displayed': stock.earnings_call_displayed,
-            'earnings_warning': stock.earnings_warning,
-            'macd_clash': stock.macd_clash,
-            'mfi_clash': stock.mfi_clash,
-            'macd_color': stock.macd_color,
-            'mfi_color': stock.mfi_color
+            'stock_alarm_trigger_set': trigger_alarm_set,
+            'stock_alarm_delta': alarm_delta,
+            'price_up': price_up,
+            'price_down': price_down
         }
+
+        stocks_db_dict_list.append(stocks_db_alarms_dict[stock.id])
 
     context = {
         # 'stocks_streaming': stock_dick.items(), 
         'ib_api_connected': connection_status,
-        'stocks_processed': stocks_db_history_dict.items()
+        'stocks_processed': stocks_db_dict_list
     }
 
     print(f'CONNECTION STATUS: {connection_status}')
@@ -95,7 +96,7 @@ def history_data(request):
     #     json.dump(stock_dick, fd)
 
 
-    return render(request, 'ib_api/history_streaming.html', context)
+    return render(request, 'ib_api/stock_alarms_streaming.html', context)
 
 def indeces_data(request):
 
@@ -180,7 +181,9 @@ def stock_data_api(request, table_index=1, sort=None):
             'macd_clash': stock.macd_clash,
             'mfi_clash': stock.mfi_clash,
             'macd_color': stock.macd_color,
-            'mfi_color': stock.mfi_color
+            'mfi_color': stock.mfi_color,
+            'dividend_date':stock.dividend_date,
+            'dividend': stock.dividend
         }
 
         stocks_db_dict_list.append(stocks_db_dict[stock.id])
@@ -268,8 +271,8 @@ def ib_stock_api(old_stocks_list, stocks, action):
         global app
         app = TestApp()
         
-        app.connect("127.0.0.1", 4004, clientId=0)
-        # app.connect("127.0.0.1", 7497, clientId=17)
+        # app.connect("127.0.0.1", 4004, clientId=0)
+        app.connect("127.0.0.1", 7497, clientId=17)
 
 
         thread1App = myThread(app, 1, "T1") # define thread for running app

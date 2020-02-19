@@ -37,14 +37,23 @@
             Gap 3
         </th>
         <th>
-           Earning Call 
+           Earning  
         </th>
         <th>
-            MACD Clash 
+            MACD  
          </th>
          <th>
-            MFI Clash
+            MFI &nbsp;&nbsp;
          </th>
+         <th>
+            Dividend Date
+        </th>
+        <th>
+            Dividend
+        </th>
+        <th>
+            Alarm
+        </th>   
          <th>
             Save
          </th>   
@@ -103,6 +112,15 @@
                     <span>=</span>
                   {% endif %}
                 </td>
+                <td class="" style="height: 100%;">
+                    {{ stock.dividend_date }}
+                </td>
+                <td class="" style="height: 100%;">
+                    ${{ stock.dividend }}
+                </td>
+                <td  class="">
+                    <button type="submit" value="{{ stock.stock_id }}" name="alarm_stock" class="tim-icons icon-bell-55"></button>
+                </td>     
                 <td  class="border-top border-1">
                     <button type="submit" value="{{ stock.stock_id }}" name="save_stock" class="tim-icons icon-bullet-list-67"></button>
                 </td>

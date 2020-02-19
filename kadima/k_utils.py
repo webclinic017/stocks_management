@@ -1,3 +1,12 @@
+from .models import StockData
+from pandas_datareader import data as fin_data
+import datetime
+from datetime import timedelta
+from time import sleep
+
+TODAY = datetime.datetime.today()
+MAX_PAST = TODAY - timedelta(30)
+
 
 def date_obj_to_date(date_obj, date_format):
     if date_format == 'slash':
@@ -51,14 +60,34 @@ def week_color(week_value, week3=False):
             return '#dc6460'
 
 
-def gap_check(stock_df):
+def update_gaps():
+    current_stocks = StockData.objects.all()
+
+    for stock in current_stocks:
+        stock_df = fin_data.get_data_yahoo(str(stock), start=MAX_PAST, end=TODAY)
+        stock.prev_close = round(stock_df.loc[stock_df.index[-2]]['Close'],2)
+        stock.todays_open = round(stock_df.loc[stock_df.index[-1]]['Open'],2)
+        stock.stock_date = stock_df.index[-1]
+        stock.save()
+        sleep(2)
+
+    
+    print(f"*************** FINISHED UPDATING GAPS ****************")
+    return
+
+
+def gap_check(stock_df, api_connected=False, realtime_price=None):
     days_back = 1
     gap_count = 0
     gaps = []
     gaps_colors = []
     
     while gap_count < 4 and days_back < len(stock_df)/2:
-        open_value = stock_df.loc[stock_df.index[-days_back]]['Open']
+        if api_connected:
+            open_value = realtime_price
+        else:
+            open_value = stock_df.loc[stock_df.index[-days_back]]['Open']
+        
         close_value = stock_df.loc[stock_df.index[-days_back-1]]['Close']
         delta_price = open_value - close_value
         delta_rate = (delta_price / close_value) * 100
@@ -102,6 +131,23 @@ def gap_check(stock_df):
 
     return gaps, gaps_colors
 
+def gap_1_check (prev_close, todays_open):
+
+    delta_price = todays_open - prev_close
+    gap_1 = (delta_price / prev_close) * 100
+    
+    if gap_1 > 1.26:
+        gap_1_color = 'green'
+            
+    elif gap_1 >= 1:
+        gap_1_color = 'orange'
+        
+    elif gap_1 > 0.75:
+        gap_1_color = 'red'
+    else:
+        gap_1_color = ''
+        
+    return round(gap_1,2), gap_1_color
 
 def week_values(stock_df, week_index):
 

@@ -11,6 +11,10 @@ class StockData(models.Model):
     stock_displayed_date = models.CharField(max_length=100)
     ticker = models.CharField(max_length=100)
     stock_price = models.FloatField()
+
+    prev_close = models.FloatField(null=True)
+    todays_open = models.FloatField(null=True)
+
     stock_trend = models.FloatField(null=True)
     macd_trend = models.FloatField(null=True)
     money_flow_trend = models.FloatField(null=True)
@@ -55,6 +59,15 @@ class StockData(models.Model):
 
     dividend_date = models.CharField(max_length=100,null=True)
     dividend = models.FloatField(null=True)
+    
+    # Trigger alarm page
+    stock_alarm = models.BooleanField(default=False) # Flag whether the stock is in the stock_alarm page
+    stock_alarm_delta = models.FloatField(null=True) # delta amount to add to the current price 
+    stock_initial_price = models.FloatField(null=True) # stock price at trigger set
+    stock_price_up_alarm = models.BooleanField(default=False) # True when the current price exceeds the initial price + delta
+    stock_price_down_alarm = models.BooleanField(default=False) # True when the current price goes lower the initial price + delta
+    stock_alarm_trigger_set = models.BooleanField(default=False) # True when the alarm is set/trigger armed
+
 
     # History Page Section
     saved_to_history = models.BooleanField(default=False)

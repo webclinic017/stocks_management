@@ -139,7 +139,7 @@
                               Gap 3
                           </th>
                           <th>
-                            Earning Call 
+                            Earning  
                           </th>
                           <th>
                               MACD
@@ -153,12 +153,14 @@
                           <th>
                               Dividend
                           </th>
-
+                          <th>
+                              Alarm
+                          </th>   
                           <th>
                               Save
                           </th>   
                           <th>
-                            Delete
+                              Del
                          </th>   
                 
                         </tr>
@@ -184,16 +186,16 @@
                                 <td  class="" style="background-color: {{ stock.week_1_color }}; ">
                                     {{ stock.week_1 }}%
                                 </td>
-                                <td  class=" border-right border-3" style="background-color: {{ stock.week_2_color }}; ">
+                                <td  class="" style="border-right: 5px solid white; background-color: {{ stock.week_2_color }};">
                                     {{ stock.week_2 }}%
                                 </td >
-                                <td  class=" border-right border-3" style="background-color: {{ stock.week_3_color }}; ">
+                                <td  class="" style="border-right: 5px solid white; background-color: {{ stock.week_3_color }}; ">
                                     {{ stock.week_3 }}%
                                 </td>
-                                <td  class="border-right border-3" style="background-color: {{ stock.week_5_color }}; ">
+                                <td  class="" style="border-right: 5px solid white; background-color: {{ stock.week_5_color }}; ">
                                     {{ stock.week_5 }}%
                                 </td>
-                                <td  class="border-right border-3" style="background-color: {{ stock.gap_1_color }}; ">
+                                <td  class="" style="border-right: 5px solid white; background-color: {{ stock.gap_1_color }}; ">
                                 <!-- <td  class="bg-success-light"> -->
                                     {{ stock.gap_1 }}%
                                 </td>
@@ -226,8 +228,9 @@
                                 <td class="" style="height: 100%;">
                                     ${{ stock.dividend }}
                                 </td>
-
-    
+                                <td  class="">
+                                  <button type="submit" value="{{ stock.id }}" name="alarm_stock" class="tim-icons icon-bell-55"></button>
+                                </td>  
                                 <td  class="">
                                     <button type="submit" value="{{ stock.id }}" name="save_stock" class="tim-icons icon-bullet-list-67"></button>
                                 </td>
@@ -251,6 +254,13 @@
 
       <!-- Source : https://bytutorial.com/blogs/css3/how-to-create-blinking-background-color-and-text-using-css3-animation -->
       <style>
+
+        .kaka{
+          border-style:solid;
+           border-width: 5px;
+          }
+
+
         .blink-bg{
             color: #fff;
             animation: blinkingBackground 2s infinite;

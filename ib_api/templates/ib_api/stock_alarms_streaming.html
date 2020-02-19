@@ -1,0 +1,90 @@
+<table class="table tablesorter " id="stocks_alarms" style="table-layout: fixed; text-align: center;">
+    <thead class=" text-primary">
+    <tr>
+    <th>
+        Date
+    </th>
+    <th>
+        Stock Symbol
+    </th>
+    <th class="text-center">
+        Init Price
+    </th>
+    <th class="text-center">
+        Current Price
+    </th>
+    <th class="text-center">
+        Week 3
+    </th>
+    <th class="text-center">
+        Gap 1
+    </th>
+    <th>
+        Delta
+    </th>
+    <th>
+        Price Up
+    </th>
+    <th>
+        Price Down
+    </th>
+    <th>
+        Alarm Set
+    </th>   
+    <th>
+        Delete
+    </th>   
+    </tr>
+</thead>
+<tbody>
+    {% for stock in stocks_processed %}
+        <tr class="">
+            <td class="">
+                {{ stock.stock_date }}
+            </td>                            
+            <td class="">
+                {{ stock.ticker }}
+            </td>
+            <td>
+                <input type="hidden" class="" name="stock_initial_price_{{ stock.stock_id }}" value="{{ stock.stock_initial_price }}">
+                {{ stock.stock_initial_price }}
+            </td>
+            <td>
+                <input type="hidden" class="" name="stock_price_{{ stock.stock_id }}" value="{{ stock.stock_price }}">
+                {{ stock.stock_price }}
+            </td>
+            <td class="border-right" style="border-right: 5px solid white; background-color: {{ stock.week_3_color }}; " >
+                {{ stock.week_3 }}%
+            </td>
+            <td class="" style="background-color: {{ stock.gap_1_color }}; ">
+                {{ stock.gap_1 }}%
+            </td>
+            <td >
+                {{ stock.stock_alarm_delta }}
+            </td>
+            
+            <!-- Stock Up -->
+            <td  {% if stock.price_up %} class="blink-buy" id="price_up"  {% endif %} style="border: 2px solid white;">
+            </td>
+
+            <!-- Stock Down -->
+            <td  {% if stock.price_down %} class="blink-sell"  id="price_down" {% endif %} style="border: 2px solid white;">
+            </td>
+
+            <td  class="">
+                {% if stock.stock_alarm_trigger_set %}
+                    <button type="submit" value="{{ stock.stock_id }}" name="stock_alarm_cancel" class="tim-icons icon-alert-circle-exc"></button>
+                {% else %}
+                    <!-- <button type="submit" value="{{ stock.stock_id }}" name="stock_alarm_set" class="tim-icons icon-bell-55"></button> -->
+                {% endif %}
+            </td>  
+
+            <td class="">
+                <button type="submit" value="{{ stock.stock_id }}" name="delete_stock" class="tim-icons icon-trash-simple"></button>
+            </td>
+            
+        </tr>
+
+    {% endfor %}
+    </tbody>
+</table>
