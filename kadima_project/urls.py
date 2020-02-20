@@ -32,8 +32,8 @@ urlpatterns = [
     path('stock-data-api/<int:table_index>', views_ib_api.stock_data_api, name='stock-data-api'),
     
     path('stock-alarms/', views_kadima.stock_alarms, name='stock-alarms'),
-
-    # path('bg/', views_ib_api.background_view, name='bg'),
+    path('alarm-trigger/', views_kadima.alarm_trigger, name='alarm-trigger'),
+    
 
     path('admin/', admin.site.urls),
 

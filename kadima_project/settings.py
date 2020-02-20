@@ -140,7 +140,4 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 STATIC_ROOT = STATIC_URL
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'media')
-STATIC_URL = '/media/'
-
 INDEX_FILE_PATH = os.path.join(BASE_DIR, 'ib_api')

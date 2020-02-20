@@ -67,6 +67,7 @@ class StockData(models.Model):
     stock_price_up_alarm = models.BooleanField(default=False) # True when the current price exceeds the initial price + delta
     stock_price_down_alarm = models.BooleanField(default=False) # True when the current price goes lower the initial price + delta
     stock_alarm_trigger_set = models.BooleanField(default=False) # True when the alarm is set/trigger armed
+    stock_alarm_sound_on_off = models.BooleanField(default=False) # Flag to control the sound (play only once)
 
 
     # History Page Section

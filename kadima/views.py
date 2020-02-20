@@ -72,10 +72,21 @@ def stock_alarms(request):
                 stock_data.stock_initial_price = float(request.POST.get(f'stock_price_{stock_id}'))
                 stock_data.stock_alarm_delta = float(request.POST.get(f'delta_select'))
                 stock_data.stock_alarm_trigger_set = True # Turn on trigger alarm
+
+                # Reset alarm values
+                stock_data.stock_price_down_alarm = False # reseting the up/down alerts
+                stock_data.stock_price_up_alarm = False
+                stock_data.stock_alarm_sound_on_off = False # Resetting the alarm sound
+
             else:
                 stock_data.stock_initial_price = float(request.POST.get(f'stock_price_{stock_id}'))
                 stock_data.stock_alarm_delta = float(request.POST.get(f'delta_select'))
                 stock_data.stock_alarm_trigger_set = True # Turn on trigger alarm
+
+                # Reset alarm values
+                stock_data.stock_price_down_alarm = False # reseting the up/down alerts
+                stock_data.stock_price_up_alarm = False
+                stock_data.stock_alarm_sound_on_off = False # Resetting the alarm sound
         
             stock_data.save()
 
@@ -84,6 +95,9 @@ def stock_alarms(request):
             stock_id = request.POST.get('stock_alarm_cancel')
             stock_data = StockData.objects.get(id=stock_id)
             stock_data.stock_alarm_trigger_set = False # Turn off the trigger alarm
+            stock_data.stock_price_down_alarm = False # reseting the up/down alerts
+            stock_data.stock_price_up_alarm = False
+            stock_data.stock_alarm_sound_on_off = False # Resetting the alarm sound
             stock_data.stock_alarm_delta = 0.0
             stock_data.stock_initial_price = None
 
@@ -97,6 +111,9 @@ def stock_alarms(request):
             stock_id = request.POST['delete_stock']
             stock_data = StockData.objects.get(id=stock_id)
             stock_data.stock_alarm = False 
+            stock_data.stock_price_down_alarm = False # reseting the up/down alerts
+            stock_data.stock_price_up_alarm = False
+            stock_data.stock_alarm_sound_on_off = False # Resetting the alarm sound
             stock_data.stock_alarm_trigger_set = False # Turn off the trigger alarm
             stock_data.stock_alarm_delta = 0.0
             stock_data.stock_initial_price = None
@@ -204,13 +221,6 @@ def home(request, table_index=1):
     stock_ref = StockData.objects.all().first()
     last_update = stock_ref.stock_date
 
-    # if last_update.day < TODAY.day:
-    #     process =  Thread(target=update_gaps)
-    #     print(f"*************** UPDATING GAPS ****************")
-    #     process.start()
-    # else:
-    #     pass
-
     current_running_threads = threading.active_count() 
     print(f"ACTIVE THREADS: ***************{current_running_threads}****************")
 
@@ -300,6 +310,14 @@ def home(request, table_index=1):
                 print('Sleeping...')
                 timer += 1 
 
+            # Updating the Open/Prev_Close values for all stocks
+            if last_update.day < TODAY.day:
+                process =  Thread(target=update_gaps)
+                print(f"*************** UPDATING GAPS ****************")
+                process.start()
+            else:
+                pass
+
             # current_stocks = StockData.objects.filter(table_index=table_index)
             current_stocks = StockData.objects.all()
             current_stocks_list = dict()
@@ -330,7 +348,7 @@ def home(request, table_index=1):
             try:
                 stock_df = fin_data.get_data_yahoo(stock, start=MAX_PAST, end=TODAY)
             except Exception as e:
-                messages.info(request, 'Stock does not exists')
+                messages.error(request, 'Stock does not exists')
                 return render(request, 'kadima/home.html', context)
 
             stock_data = StockData()
@@ -362,31 +380,6 @@ def home(request, table_index=1):
             gap_1, gap_1_color = gap_1_check(prev_close, todays_open)
             stock_data.gap_1 = gap_1
             stock_data.gap_1_color = gap_1_color
-
-
-            # gaps, gaps_colors = gap_check(stock_df)
-            
-            # if len(gaps) == 3:
-            #     stock_data.gap_1 = gaps[0]
-            #     stock_data.gap_2 = gaps[1]
-            #     stock_data.gap_3 = gaps[2]
-
-            #     stock_data.gap_1_color = gaps_colors[0]
-            #     stock_data.gap_2_color = gaps_colors[1]
-            #     stock_data.gap_3_color = gaps_colors[2]
-            # elif len(gaps) == 2:
-            #     stock_data.gap_1 = gaps[0]
-            #     stock_data.gap_2 = gaps[1]
-
-            #     stock_data.gap_1_color = gaps_colors[0]
-            #     stock_data.gap_2_color = gaps_colors[1]
-
-            # elif len(gaps) == 1:
-            #     stock_data.gap_1 = gaps[0]
-
-            #     stock_data.gap_1_color = gaps_colors[0]
-            # else:
-            #     pass
 
             # Earning dates
             yec = YahooEarningsCalendar()

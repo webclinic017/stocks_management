@@ -16,6 +16,7 @@ from ibapi.wrapper import EWrapper
 from ibapi.contract import Contract
 from ibapi.ticktype import TickTypeEnum
 from ibapi.utils import iswrapper #just for decorator
+from django.contrib import messages
 
 from threading import Timer
 
@@ -37,6 +38,38 @@ connection_status = False
 def api_connection_status():
     return connection_status
 
+def alarm_trigger(request):
+    context = {}
+    stocks_in_alarm = StockData.objects.filter(stock_alarm_trigger_set=True)
+    
+    for stock in stocks_in_alarm:
+
+        if stock.stock_price_up_alarm:
+            messages.success(request, f'UP TRIGGER: {stock.ticker}')
+
+            if stock.stock_alarm_sound_on_off:
+                pass
+            else:
+                context['play_sound'] = 'up'
+                stock.stock_alarm_sound_on_off = True
+                stock.save()
+        
+        elif stock.stock_price_down_alarm:
+            messages.warning(request, f'DOWN TRIGGER: {stock.ticker}')
+
+            if stock.stock_alarm_sound_on_off:
+                pass
+            else:
+                context['play_sound'] = 'down'
+                stock.stock_alarm_sound_on_off = True
+                stock.save()
+        
+        else:
+            pass
+    
+    return render(request,'kadima/alarm_trigger.html', context)
+
+
 def stock_alarms_data(request):
     context = {}
     saved_alarms_stocks = StockData.objects.filter(stock_alarm=True)
@@ -45,7 +78,9 @@ def stock_alarms_data(request):
     stocks_db_dict_list = []
 
     for stock in saved_alarms_stocks:
-
+        
+        stock_data = StockData.objects.get(id=stock.id)
+        
         week3, w3_color = week_check(stock.week_3_min, stock.week_3_max, stock_dick[stock.id], week3=True)
 
         # Checking alarm trigger
@@ -55,16 +90,27 @@ def stock_alarms_data(request):
         current_stock_price = stock_dick[stock.id]
 
         if trigger_alarm_set:
+
             if current_stock_price > (initial_stock_price + alarm_delta):
+                
                 price_up = True
+                stock.stock_price_up_alarm = True
+                stock.save()
+
                 price_down = False
+
             elif current_stock_price < (initial_stock_price - alarm_delta):
                 price_up = False
+
                 price_down = True
+                stock.stock_price_down_alarm = True
+                stock.save()
+
         else:
             price_up = False
             price_down = False
-
+        
+        
 
         stocks_db_alarms_dict[stock.id] = {
             'stock_id': stock.id,
