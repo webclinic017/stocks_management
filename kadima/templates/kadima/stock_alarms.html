@@ -19,42 +19,57 @@
           
                         <h3 class="card-title">Set Alarm Trigger</h3>
                         <div class="row">
-                        <div class="col-md-3 pr-md-1">
-                            <form method="POST" enctype="multipart/form-data">
-                                {% csrf_token %}
-                                <div class="row">
-                                    <div class="col-md-4 pr-md-1">
-                                        <label style="color: aliceblue;">Select Stock</label>
-                                        <select name="stock_alarm_select" id="stock_alarm_select">
-                                                <option value="">--</option>
-                                                {% for stock in stocks %}
-                                                <option value="{{ stock.id }}">{{ stock.ticker }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                    <div class="col-md-4 pr-md-1">
-                                        <div class="form-group">
-                                        <label style="color: aliceblue;">Select Delta</label>
-                                        <select name="delta_select" id="delta_select">
-                                            <option value="0.05">0.05</option>
-                                            <option value="0.10">0.10</option>
-                                            <option value="0.15">0.15</option>
-                                            <option value="0.20">0.20</option>
-                                            <option value="0.25">0.25</option>
-                                            <option value="0.30">0.30</option>
-                                            <option value="0.35">0.35</option>
-                                            <option value="0.40">0.40</option>
-                                            <option value="0.45">0.45</option>
-                                            <option value="0.50">0.50</option>
+                            <div class="col-md-3 pr-md-1">
+                                <form method="POST" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-md-4 pr-md-1">
+                                            <label style="color: aliceblue;">Select Stock</label>
+                                            <select name="stock_alarm_select" id="stock_alarm_select">
+                                                    <option value="">--</option>
+                                                    {% for stock in stocks %}
+                                                    <option value="{{ stock.id }}">{{ stock.ticker }}</option>
+                                                {% endfor %}
                                             </select>
                                         </div>
+                                        <div class="col-md-4 pr-md-1">
+                                            <div class="form-group">
+                                            <label style="color: aliceblue;">Select Delta</label>
+                                            <select name="delta_select" id="delta_select">
+                                                <option value="0.05">0.05</option>
+                                                <option value="0.10">0.10</option>
+                                                <option value="0.15">0.15</option>
+                                                <option value="0.20">0.20</option>
+                                                <option value="0.25">0.25</option>
+                                                <option value="0.30">0.30</option>
+                                                <option value="0.35">0.35</option>
+                                                <option value="0.40">0.40</option>
+                                                <option value="0.45">0.45</option>
+                                                <option value="0.50">0.50</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    <div class="" >
+                                        <button type="submit" name="stock_alarm_set" class="btn btn-fill btn-sm">Set</button>
                                     </div>
-                                  <div class="" >
-                                    <button type="submit" name="stock_alarm_set" class="btn btn-fill btn-sm">Set</button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-md-2">
+                                {% if ib_api_connected %}
+                                <div class="row">
+                                  <div class="col" style="border-color: green;;border-style: solid double; text-align:center; vertical-align: middle" >
+                                    <h4> IB API CONNECTED </h4>
                                   </div>
                                 </div>
-                            </form>
-                        </div>
+                                {% else %}
+                                <div class="row">
+                                    <div class="col" style="border-color: red;border-style: solid double; text-align:center; vertical-align: middle" >
+                                      <h4> IB API NOT CONNECTED </h4>
+                                    </div>
+                                  </div>  
+                                {% endif %}                          
+                            </div>
                     </div>
 
                     <div class="card-body">

@@ -220,6 +220,7 @@ def home(request, table_index=1):
 
     stock_ref = StockData.objects.all().first()
 
+    # Check if there are any stocks in the DB
     if stock_ref:
         last_update = stock_ref.stock_date
     else:

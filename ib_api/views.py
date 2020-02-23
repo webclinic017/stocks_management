@@ -324,8 +324,8 @@ def ib_stock_api(old_stocks_list, stocks, action):
         global app
         app = TestApp()
         
-        # app.connect("127.0.0.1", 4004, clientId=0)
-        app.connect("127.0.0.1", 7497, clientId=17)
+        app.connect("127.0.0.1", 4004, clientId=0)
+        # app.connect("127.0.0.1", 7497, clientId=17)
 
 
         thread1App = myThread(app, 1, "T1") # define thread for running app
