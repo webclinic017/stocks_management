@@ -64,48 +64,48 @@
     </thead>
     <tbody>
         {% for stock in stocks_processed %}
-            <tr class="border-top border-1">
-                <td  class="border-top border-1">
+            <tr class="">
+                <td  class="">
                     {{ stock.stock_displayed_date }}
                 </td>
-                <td  class="border-top border-1">
+                <td  class="">
                     {{ stock.ticker }} 
                 </td>
-                <td  class="border-top border-1">
+                <td  class="">
                     {{ stock.stock_price }}
                 </td>
-                <td  class="border-top border-1" style="background-color: {{ stock.week_1_color }}; ">
+                <td  class="" style="background-color: {{ stock.week_1_color }}; ">
                     {{ stock.week_1 }}%
                 </td>
-                <td  class="border-top border-1 border-right border-3" style="background-color: {{ stock.week_2_color }}; ">
+                <td  class="" style="border-right: 5px solid white; background-color: {{ stock.week_2_color }}; ">
                     {{ stock.week_2 }}%
                 </td >
-                <td  class="border-top border-right border-3" style="background-color: {{ stock.week_3_color }}; ">
+                <td  class="" style="border-right: 5px solid white; background-color: {{ stock.week_3_color }}; ">
                     {{ stock.week_3 }}%
                 </td>
-                <td  class="border-top border-1" style="background-color: {{ stock.week_5_color }}; ">
+                <td  class="" style="border-right: 5px solid white; background-color: {{ stock.week_5_color }}; ">
                     {{ stock.week_5 }}%
                 </td>
-                <td  class="border-top border-1" style="background-color: {{ stock.gap_1_color }}; ">
+                <td  class="" style="border-right: 5px solid white; background-color: {{ stock.gap_1_color }}; ">
                     {{ stock.gap_1 }}%
                 </td>
-                <td  class="border-top border-1" style="background-color: {{ stock.gap_2_color }}; ">
+                <td  class="" style="background-color: {{ stock.gap_2_color }}; ">
                     {{ stock.gap_2 }}%
                 </td>
-                <td  class="border-top border-1" style="background-color: {{ stock.gap_3_color }}; ">
+                <td  class="" style="background-color: {{ stock.gap_3_color }}; ">
                     {{ stock.gap_3 }}%
                 </td>
-                <td class="{{ stock.earnings_warning }} border-top border-1" style="height: 100%;">
+                <td class="{{ stock.earnings_warning }} " style="height: 100%;">
                     {{ stock.earnings_call_displayed }}
                 </td>
-                <td  class="border-top border-1 border-right border-3" style="background-color: {{ stock.macd_color }}; text-align: center;">
+                <td  class="" style="background-color: {{ stock.macd_color }}; text-align: center;">
                     {% if stock.macd_clash %}
                       <span>><</span>
                     {% else %}
                       <span>=</span>
                     {% endif %}
                 </td>
-                <td  class="border-top border-1" style="background-color: {{ stock.mfi_color }}; text-align: center;">
+                <td  class="" style="background-color: {{ stock.mfi_color }}; text-align: center;">
                   {% if stock.mfi_clash %}
                     <span>><</span>
                   {% else %}
@@ -121,10 +121,10 @@
                 <td  class="">
                     <button type="submit" value="{{ stock.stock_id }}" name="alarm_stock" class="tim-icons icon-bell-55"></button>
                 </td>     
-                <td  class="border-top border-1">
+                <td  class="">
                     <button type="submit" value="{{ stock.stock_id }}" name="save_stock" class="tim-icons icon-bullet-list-67"></button>
                 </td>
-                <td  class="border-top border-1">
+                <td  class="">
                     <button type="submit" value="{{ stock.stock_id }}" name="delete_stock" class="tim-icons icon-trash-simple"></button>
                 </td>
 

@@ -78,9 +78,9 @@
             </div>
         </div>
         {% if messages %}
-          {% for message in messages %}
-            <div class="alert alert-{{ message.tags }}">
-                {{ message }}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} display-message border " id="trigger_alerts">
+              {{ message }}
             </div>
           {% endfor %}
         {% endif %}

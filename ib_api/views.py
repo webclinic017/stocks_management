@@ -74,62 +74,66 @@ def stock_alarms_data(request):
     context = {}
     saved_alarms_stocks = StockData.objects.filter(stock_alarm=True)
     
+    price_up = False
+    price_down = False
+
     stocks_db_alarms_dict = {}
     stocks_db_dict_list = []
 
     for stock in saved_alarms_stocks:
         
-        stock_data = StockData.objects.get(id=stock.id)
-        
-        week3, w3_color = week_check(stock.week_3_min, stock.week_3_max, stock_dick[stock.id], week3=True)
+        try:
+            week3, w3_color = week_check(stock.week_3_min, stock.week_3_max, stock_dick[stock.id], week3=True)
 
-        # Checking alarm trigger
-        trigger_alarm_set = stock.stock_alarm_trigger_set
-        alarm_delta = stock.stock_alarm_delta
-        initial_stock_price = stock.stock_initial_price
-        current_stock_price = stock_dick[stock.id]
+            # Checking alarm trigger
+            trigger_alarm_set = stock.stock_alarm_trigger_set
+            alarm_delta = stock.stock_alarm_delta
+            initial_stock_price = stock.stock_initial_price
+            current_stock_price = stock_dick[stock.id]
 
-        if trigger_alarm_set:
+            if trigger_alarm_set:
 
-            if current_stock_price > (initial_stock_price + alarm_delta):
-                
-                price_up = True
-                stock.stock_price_up_alarm = True
-                stock.save()
+                if current_stock_price > (initial_stock_price + alarm_delta):
+                    
+                    price_up = True
+                    stock.stock_price_up_alarm = True
+                    stock.save()
 
-                price_down = False
+                    price_down = False
 
-            elif current_stock_price < (initial_stock_price - alarm_delta):
+                elif current_stock_price < (initial_stock_price - alarm_delta):
+                    price_up = False
+
+                    price_down = True
+                    stock.stock_price_down_alarm = True
+                    stock.save()
+
+            else:
                 price_up = False
+                price_down = False
+            
+            
 
-                price_down = True
-                stock.stock_price_down_alarm = True
-                stock.save()
+            stocks_db_alarms_dict[stock.id] = {
+                'stock_id': stock.id,
+                'ticker': stock.ticker,
+                'stock_initial_price' : stock.stock_initial_price,
+                'stock_price': stock_dick[stock.id],
+                'stock_date': stock.stock_date,
+                'stock_displayed_date': stock.stock_displayed_date,
+                'week_3': week3,
+                'week_3_color': w3_color,
+                'gap_1': stock.gap_1,
+                'gap_1_color': stock.gap_1_color,
+                'stock_alarm_trigger_set': trigger_alarm_set,
+                'stock_alarm_delta': alarm_delta,
+                'price_up': price_up,
+                'price_down': price_down
+            }
 
-        else:
-            price_up = False
-            price_down = False
-        
-        
-
-        stocks_db_alarms_dict[stock.id] = {
-            'stock_id': stock.id,
-            'ticker': stock.ticker,
-            'stock_initial_price' : stock.stock_initial_price,
-            'stock_price': stock_dick[stock.id],
-            'stock_date': stock.stock_date,
-            'stock_displayed_date': stock.stock_displayed_date,
-            'week_3': week3,
-            'week_3_color': w3_color,
-            'gap_1': stock.gap_1,
-            'gap_1_color': stock.gap_1_color,
-            'stock_alarm_trigger_set': trigger_alarm_set,
-            'stock_alarm_delta': alarm_delta,
-            'price_up': price_up,
-            'price_down': price_down
-        }
-
-        stocks_db_dict_list.append(stocks_db_alarms_dict[stock.id])
+            stocks_db_dict_list.append(stocks_db_alarms_dict[stock.id])
+        except Exception as e:
+            print(f'ERROR: Failed loading stock: {stock} to alarm list. Reason: {e}')
 
     context = {
         # 'stocks_streaming': stock_dick.items(), 
@@ -192,47 +196,50 @@ def stock_data_api(request, table_index=1, sort=None):
     # for i in range(len(stocks_db)):
     for stock in stocks_db:
         
-        week1, w1_color = week_check(stock.week_1_min, stock.week_1_max, stock_dick[stock.id])
-        week2, w2_color = week_check(stock.week_2_min, stock.week_2_max, stock_dick[stock.id])
-        week3, w3_color = week_check(stock.week_3_min, stock.week_3_max, stock_dick[stock.id], week3=True)
-        week5, w5_color = week_check(stock.week_5_min, stock.week_5_max, stock_dick[stock.id])
-        
-        stocks_db_dict[stock.id] = {
-            'stock_id': stock.id,
-            'ticker': stock.ticker,
-            'stock_price': stock_dick[stock.id],
-            'table_index': stock.table_index,
-            'stock_date': stock.stock_date,
-            'stock_displayed_date': stock.stock_displayed_date,
-            'stock_trend':   stock.stock_trend, 
-            'macd_trend':  stock.macd_trend, 
-            'money_flow_trend':  stock.money_flow_trend,
-            'week_1': week1,
-            'week_2': week2,
-            'week_3': week3,
-            'week_5': week5,
-            'week_1_color': w1_color,
-            'week_2_color': w2_color,
-            'week_3_color': w3_color,
-            'week_5_color': w5_color,
-            'gap_1': stock.gap_1,
-            'gap_2': stock.gap_2,
-            'gap_3': stock.gap_3,
-            'gap_1_color': stock.gap_1_color,
-            'gap_2_color': stock.gap_2_color,
-            'gap_3_color': stock.gap_3_color,
-            'earnings_call': stock.earnings_call,
-            'earnings_call_displayed': stock.earnings_call_displayed,
-            'earnings_warning': stock.earnings_warning,
-            'macd_clash': stock.macd_clash,
-            'mfi_clash': stock.mfi_clash,
-            'macd_color': stock.macd_color,
-            'mfi_color': stock.mfi_color,
-            'dividend_date':stock.dividend_date,
-            'dividend': stock.dividend
-        }
+        try:
+            week1, w1_color = week_check(stock.week_1_min, stock.week_1_max, stock_dick[stock.id])
+            week2, w2_color = week_check(stock.week_2_min, stock.week_2_max, stock_dick[stock.id])
+            week3, w3_color = week_check(stock.week_3_min, stock.week_3_max, stock_dick[stock.id], week3=True)
+            week5, w5_color = week_check(stock.week_5_min, stock.week_5_max, stock_dick[stock.id])
+            
+            stocks_db_dict[stock.id] = {
+                'stock_id': stock.id,
+                'ticker': stock.ticker,
+                'stock_price': stock_dick[stock.id],
+                'table_index': stock.table_index,
+                'stock_date': stock.stock_date,
+                'stock_displayed_date': stock.stock_displayed_date,
+                'stock_trend':   stock.stock_trend, 
+                'macd_trend':  stock.macd_trend, 
+                'money_flow_trend':  stock.money_flow_trend,
+                'week_1': week1,
+                'week_2': week2,
+                'week_3': week3,
+                'week_5': week5,
+                'week_1_color': w1_color,
+                'week_2_color': w2_color,
+                'week_3_color': w3_color,
+                'week_5_color': w5_color,
+                'gap_1': stock.gap_1,
+                'gap_2': stock.gap_2,
+                'gap_3': stock.gap_3,
+                'gap_1_color': stock.gap_1_color,
+                'gap_2_color': stock.gap_2_color,
+                'gap_3_color': stock.gap_3_color,
+                'earnings_call': stock.earnings_call,
+                'earnings_call_displayed': stock.earnings_call_displayed,
+                'earnings_warning': stock.earnings_warning,
+                'macd_clash': stock.macd_clash,
+                'mfi_clash': stock.mfi_clash,
+                'macd_color': stock.macd_color,
+                'mfi_color': stock.mfi_color,
+                'dividend_date':stock.dividend_date,
+                'dividend': stock.dividend
+            }
 
-        stocks_db_dict_list.append(stocks_db_dict[stock.id])
+            stocks_db_dict_list.append(stocks_db_dict[stock.id])
+        except Exception as e:
+            print(f'(ERROR: Failed loading stock {stock}  to API.')
 
     sorted_list = sorted(stocks_db_dict_list, key=lambda k: k['week_3'])
     

@@ -219,7 +219,11 @@ def home(request, table_index=1):
     context['ib_api_connected'] = ib_api_connected
 
     stock_ref = StockData.objects.all().first()
-    last_update = stock_ref.stock_date
+
+    if stock_ref:
+        last_update = stock_ref.stock_date
+    else:
+        last_update = False
 
     current_running_threads = threading.active_count() 
     print(f"ACTIVE THREADS: ***************{current_running_threads}****************")
@@ -311,12 +315,13 @@ def home(request, table_index=1):
                 timer += 1 
 
             # Updating the Open/Prev_Close values for all stocks
-            if last_update.day < TODAY.day:
-                process =  Thread(target=update_gaps)
-                print(f"*************** UPDATING GAPS ****************")
-                process.start()
-            else:
-                pass
+            if last_update:
+                if last_update.day < TODAY.day:
+                    process =  Thread(target=update_gaps)
+                    print(f"*************** UPDATING GAPS ****************")
+                    process.start()
+                else:
+                    pass
 
             # current_stocks = StockData.objects.filter(table_index=table_index)
             current_stocks = StockData.objects.all()
@@ -448,7 +453,12 @@ def home(request, table_index=1):
                 old_stocks_list.append(stock.id)
 
             ## Adding the stock saving to DB
-            stock_data.save()
+            try:
+                stock_data.save()
+            except Exception as e:
+                messages.error(request, f'Stock {stock} was not added. Already in the list.')
+                return render(request, 'kadima/home.html', context)
+            
             new_stocks = StockData.objects.filter(table_index=table_index).order_by('week_3')
             
             context['stocks'] = new_stocks

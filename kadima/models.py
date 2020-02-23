@@ -98,3 +98,6 @@ class StockData(models.Model):
         self.gap_3.delete()
         self.earnings_call.delete()
         super().delete(*args, **kwargs)
+
+    class Meta:
+        unique_together = (("ticker", "table_index"),)
