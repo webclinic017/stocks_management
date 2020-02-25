@@ -195,7 +195,7 @@ def stock_data_api(request, table_index=1, sort=None):
     stocks_db_dict_list = []
     # for i in range(len(stocks_db)):
     for stock in stocks_db:
-        
+
         try:
             week1, w1_color = week_check(stock.week_1_min, stock.week_1_max, stock_dick[stock.id])
             week2, w2_color = week_check(stock.week_2_min, stock.week_2_max, stock_dick[stock.id])
@@ -234,7 +234,8 @@ def stock_data_api(request, table_index=1, sort=None):
                 'macd_color': stock.macd_color,
                 'mfi_color': stock.mfi_color,
                 'dividend_date':stock.dividend_date,
-                'dividend': stock.dividend
+                'dividend': stock.dividend,
+                'updading_gap_1_flag': stock.updading_gap_1_flag
             }
 
             stocks_db_dict_list.append(stocks_db_dict[stock.id])
@@ -324,8 +325,8 @@ def ib_stock_api(old_stocks_list, stocks, action):
         global app
         app = TestApp()
         
-        app.connect("127.0.0.1", 4004, clientId=0)
-        # app.connect("127.0.0.1", 7497, clientId=17)
+        # app.connect("127.0.0.1", 4004, clientId=0)
+        app.connect("127.0.0.1", 7497, clientId=17)
 
 
         thread1App = myThread(app, 1, "T1") # define thread for running app

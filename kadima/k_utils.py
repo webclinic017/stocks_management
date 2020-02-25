@@ -68,12 +68,19 @@ def update_gaps():
         stock.prev_close = round(stock_df.loc[stock_df.index[-2]]['Close'],2)
         stock.todays_open = round(stock_df.loc[stock_df.index[-1]]['Open'],2)
         stock.stock_date = stock_df.index[-1]
+
+        gap_1, gap_1_color = gap_1_check(stock.prev_close, stock.todays_open)
+        stock.gap_1 = gap_1
+        stock.gap_1_color = gap_1_color
+
+        # Canceling the flag for updating the gaps
+        stock.updading_gap_1_flag = False
+        
         stock.save()
         sleep(2)
-
     
     print(f"*************** FINISHED UPDATING GAPS ****************")
-    return
+    return 
 
 
 def gap_check(stock_df, api_connected=False, realtime_price=None):

@@ -44,6 +44,8 @@ class StockData(models.Model):
     gap_2 = models.FloatField(null=True)
     gap_3 = models.FloatField(null=True)
 
+    updading_gap_1_flag = models.BooleanField(default=False, null=True)
+
     gap_1_color = models.CharField(max_length=100)
     gap_2_color = models.CharField(max_length=100)
     gap_3_color = models.CharField(max_length=100)

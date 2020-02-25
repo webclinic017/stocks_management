@@ -218,7 +218,7 @@ def home(request, table_index=1):
 
     context['ib_api_connected'] = ib_api_connected
 
-    stock_ref = StockData.objects.all().first()
+    stock_ref = StockData.objects.all().last()
 
     # Check if there are any stocks in the DB
     if stock_ref:
@@ -316,13 +316,18 @@ def home(request, table_index=1):
                 timer += 1 
 
             # Updating the Open/Prev_Close values for all stocks
-            if last_update:
-                if last_update.day < TODAY.day:
-                    process =  Thread(target=update_gaps)
-                    print(f"*************** UPDATING GAPS ****************")
-                    process.start()
-                else:
-                    pass
+            # if last_update:
+            #     if last_update.day < TODAY.day:
+            if stock_ref:
+                process =  Thread(target=update_gaps)
+                print(f"*************** UPDATING GAPS ****************")
+                # Setting the flag for updating the gaps data
+                stock_ref.updading_gap_1_flag = True
+                stock_ref.save()
+
+                process.start()
+            else:
+                pass
 
             # current_stocks = StockData.objects.filter(table_index=table_index)
             current_stocks = StockData.objects.all()
