@@ -64,7 +64,13 @@
     </thead>
     <tbody>
         {% for stock in stocks_processed %}
-            <tr class="">
+            {% if stock.week_3_color == 'green' and stock.gap_1_color == 'red' %}
+                <tr class="blink-row-buy">
+            {% elif stock.week_3_color == '#FF1000' and stock.gap_1_color == 'green' %}
+                <tr class="blink-row-sell">
+            {% else %}
+                <tr>
+            {% endif %}
                 <td  class="">
                     {{ stock.stock_displayed_date }}
                 </td>
@@ -133,3 +139,4 @@
         {% endfor %}
       </tbody>
   </table>
+  

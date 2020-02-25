@@ -136,13 +136,13 @@ def gap_1_check (prev_close, todays_open):
     delta_price = todays_open - prev_close
     gap_1 = (delta_price / prev_close) * 100
     
-    if gap_1 > 1.26:
+    if gap_1 > 1.25:
         gap_1_color = 'green'
             
-    elif gap_1 >= 1:
+    elif (gap_1 <=1.25 and gap_1 >= 0.75) or (gap_1 <= -0.75 and gap_1 >= -1.25):
         gap_1_color = 'orange'
         
-    elif gap_1 > 0.75:
+    elif gap_1 < -1.25:
         gap_1_color = 'red'
     else:
         gap_1_color = ''
