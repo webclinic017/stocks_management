@@ -35,6 +35,13 @@ TODAY = datetime.datetime.today()
 stock_dick = dict()
 connection_status = False
 
+
+def trading_status():
+    if -1.0 in stock_dick.values():
+        return False
+    else:
+        return True
+
 def api_connection_status():
     return connection_status
 
@@ -179,9 +186,10 @@ def indeces_data(request):
 
 def week_check(history_min, history_max ,realtime_price, week3=False):
 
-    relative_value_tmp = (100  / ( history_max - history_min)) * (realtime_price - history_min)
-
-    relative_value_tmp = float("%0.2f"%relative_value_tmp)
+    if realtime_price > history_min:
+        relative_value_tmp = round(float((100  / ( history_max - history_min)) * (realtime_price - history_min)),2)
+    else:
+        relative_value_tmp = 0
 
     relative_value = 100 if relative_value_tmp > 100 else relative_value_tmp
 
@@ -190,6 +198,7 @@ def week_check(history_min, history_max ,realtime_price, week3=False):
     return relative_value, w_color 
 
 def stock_data_api(request, table_index=1, sort=None):
+
     stocks_db = StockData.objects.filter(table_index=table_index)
     stocks_db_dict = {}
     stocks_db_dict_list = []
@@ -201,6 +210,23 @@ def stock_data_api(request, table_index=1, sort=None):
             week2, w2_color = week_check(stock.week_2_min, stock.week_2_max, stock_dick[stock.id])
             week3, w3_color = week_check(stock.week_3_min, stock.week_3_max, stock_dick[stock.id], week3=True)
             week5, w5_color = week_check(stock.week_5_min, stock.week_5_max, stock_dick[stock.id])
+
+            if trading_status():
+                # Updating new minimum prices to the DB
+                if week1 == 0:
+                    stock.week_1_min = stock_dick[stock.id]
+                if week2 == 0:
+                    stock.week_2_min = stock_dick[stock.id]
+                if week3 == 0:
+                    stock.week_3_min = stock_dick[stock.id]
+                if week5 == 0:
+                    stock.week_5_min = stock_dick[stock.id]
+
+                stock.save()
+
+            else:
+                # No Trading 
+                pass
             
             stocks_db_dict[stock.id] = {
                 'stock_id': stock.id,
@@ -240,7 +266,7 @@ def stock_data_api(request, table_index=1, sort=None):
 
             stocks_db_dict_list.append(stocks_db_dict[stock.id])
         except Exception as e:
-            print(f'(ERROR: Failed loading stock {stock}  to API.')
+            print(f'(ERROR: Failed loading stock {stock}  to API. Reason: {e}')
 
     sorted_list = sorted(stocks_db_dict_list, key=lambda k: k['week_3'])
     
@@ -325,8 +351,8 @@ def ib_stock_api(old_stocks_list, stocks, action):
         global app
         app = TestApp()
         
-        # app.connect("127.0.0.1", 4004, clientId=0)
-        app.connect("127.0.0.1", 7497, clientId=17)
+        app.connect("127.0.0.1", 4004, clientId=0)
+        # app.connect("127.0.0.1", 7497, clientId=17)
 
 
         thread1App = myThread(app, 1, "T1") # define thread for running app

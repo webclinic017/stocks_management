@@ -316,8 +316,6 @@ def home(request, table_index=1):
                 timer += 1 
 
             # Updating the Open/Prev_Close values for all stocks
-            # if last_update:
-            #     if last_update.day < TODAY.day:
             if stock_ref:
                 process =  Thread(target=update_gaps)
                 print(f"*************** UPDATING GAPS ****************")
@@ -353,123 +351,131 @@ def home(request, table_index=1):
             return render(request, 'kadima/home.html', context)
             
         elif 'add_stock' in request.POST:
-            stock  = request.POST.get('stock')
-            print(f'Stock: {stock}')
-            context['stock'] = stock
-            try:
-                stock_df = fin_data.get_data_yahoo(stock, start=MAX_PAST, end=TODAY)
-            except Exception as e:
-                messages.error(request, 'Stock does not exists')
-                return render(request, 'kadima/home.html', context)
-
-            stock_data = StockData()
             
-            stock_data.table_index = table_index
+            stocks_to_add  = request.POST.get('stock').split(',')
 
-            stock_data.stock_date = stock_df.index[-1]
-            stock_data.stock_displayed_date = date_obj_to_date(pd.Timestamp("today"), date_format='slash')
-
-            stock_data.ticker = stock.upper()
-            stock_data.stock_price = float("%0.2f"%stock_df['Close'].iloc[-1])
-
-            stock_data.week_1, stock_data.week_1_min, stock_data.week_1_max = week_values(stock_df, 5)
-            stock_data.week_2, stock_data.week_2_min, stock_data.week_2_max = week_values(stock_df, 10)
-            stock_data.week_3, stock_data.week_3_min, stock_data.week_3_max = week_values(stock_df, 15)
-            stock_data.week_5, stock_data.week_5_min, stock_data.week_5_max = week_values(stock_df, 25)
-
-            stock_data.week_1_color = week_color(stock_data.week_1)
-            stock_data.week_2_color = week_color(stock_data.week_2)
-            stock_data.week_3_color = week_color(stock_data.week_3, week3=True)
-            stock_data.week_5_color = week_color(stock_data.week_5)
-
-
-            prev_close = round(stock_df.loc[stock_df.index[-2]]['Close'],2)
-            todays_open = round(stock_df.loc[stock_df.index[-1]]['Open'],2)
-            stock_data.prev_close = prev_close
-            stock_data.todays_open = todays_open
-
-            gap_1, gap_1_color = gap_1_check(prev_close, todays_open)
-            stock_data.gap_1 = gap_1
-            stock_data.gap_1_color = gap_1_color
-
-            # Earning dates
-            yec = YahooEarningsCalendar()
-            try:
-                timestmp = yec.get_next_earnings_date(stock)
-                earnings_date_obj = datetime.datetime.fromtimestamp(timestmp)
-                stock_data.earnings_call = earnings_date_obj
-            except Exception as e:
-                messages.error(request, 'Stock does not have an earnings call date defined.')
-                earnings_date_obj = today    
-
-
-            stock_data.earnings_call_displayed = date_obj_to_date(earnings_date_obj, date_format='slash')
-            
-            if (earnings_date_obj - today).days <= 7:
-                stock_data.earnings_warning = 'blink-bg'
-            else:
-                pass
-
-
-            # Stock Trend 
-            a_stock = stock_regression(stock)
-            stock_data.stock_trend = round(a_stock,2)
-
-            # MACD trend
-            a_macd = trend_calculator(stock, 'MACD')
-            stock_data.macd_trend = round(a_macd,2)
-
-            if (a_stock > 0 and a_macd < 0) or (a_stock < 0 and a_macd > 0):
-                stock_data.macd_clash = True
-                stock_data.macd_color = 'red'
-            else:
-                stock_data.macd_clash = False
-                stock_data.macd_color = 'green'
-
-            # MFI trend
-            a_mfi = trend_calculator(stock, 'MFI')
-            stock_data.money_flow_trend = round(a_mfi,2)
-
-            if (a_stock > 0 and a_mfi < 0) or (a_stock < 0 and a_mfi > 0):
-                stock_data.mfi_clash = True
-                stock_data.mfi_color = 'red'
-            else:
-                stock_data.mfi_clash = False
-                stock_data.mfi_color = 'green'
-
-
-            # Getting the dividend
-            try:
-                st = yf.Ticker(stock).dividends.tail(1)
-                stock_data.dividend = float(st.values)
-                date_arr = str(st.index[0]).split(' ')[0].split('-')
-                year = date_arr[0]
-                month = date_arr[1]
-                day = date_arr[2]
-                stock_data.dividend_date = day + '/' + month + '/' + year
-            except:
-               stock_data.dividend = None
-               stock_data.dividend_date = None
-
-            # Updating the stocks in the live stream
-            ##########################
+            # Checking list of current stocks in the DB
             old_stocks = StockData.objects.all()
             old_stocks_list = []
             for stock in old_stocks:
                 old_stocks_list.append(stock.id)
 
-            ## Adding the stock saving to DB
-            try:
-                stock_data.save()
-            except Exception as e:
-                messages.error(request, f'Stock {stock} was not added. Already in the list.')
-                return render(request, 'kadima/home.html', context)
-            
-            new_stocks = StockData.objects.filter(table_index=table_index).order_by('week_3')
-            
-            context['stocks'] = new_stocks
+            for stock in stocks_to_add:
+                
+                stock = stock.strip()            
+                
+                print(f'Adding stock: {stock}')
+                context['stock'] = stock
+                try:
+                    stock_df = fin_data.get_data_yahoo(stock, start=MAX_PAST, end=TODAY)
+                except Exception as e:
+                    messages.error(request, 'Stock does not exists')
+                    # return render(request, 'kadima/home.html', context)
+                    continue
+                
+                stock_data = StockData()
+                
+                stock_data.table_index = table_index
 
-            
+                stock_data.stock_date = stock_df.index[-1]
+                stock_data.stock_displayed_date = date_obj_to_date(pd.Timestamp("today"), date_format='slash')
+
+                stock_data.ticker = stock.upper()
+                stock_data.stock_price = float("%0.2f"%stock_df['Close'].iloc[-1])
+
+                stock_data.week_1, stock_data.week_1_min, stock_data.week_1_max = week_values(stock_df, 5)
+                stock_data.week_2, stock_data.week_2_min, stock_data.week_2_max = week_values(stock_df, 10)
+                stock_data.week_3, stock_data.week_3_min, stock_data.week_3_max = week_values(stock_df, 15)
+                stock_data.week_5, stock_data.week_5_min, stock_data.week_5_max = week_values(stock_df, 25)
+
+                stock_data.week_1_color = week_color(stock_data.week_1)
+                stock_data.week_2_color = week_color(stock_data.week_2)
+                stock_data.week_3_color = week_color(stock_data.week_3, week3=True)
+                stock_data.week_5_color = week_color(stock_data.week_5)
+
+
+                prev_close = round(stock_df.loc[stock_df.index[-2]]['Close'],2)
+                todays_open = round(stock_df.loc[stock_df.index[-1]]['Open'],2)
+                stock_data.prev_close = prev_close
+                stock_data.todays_open = todays_open
+
+                gap_1, gap_1_color = gap_1_check(prev_close, todays_open)
+                stock_data.gap_1 = gap_1
+                stock_data.gap_1_color = gap_1_color
+
+                # Earning dates
+                yec = YahooEarningsCalendar()
+                try:
+                    timestmp = yec.get_next_earnings_date(stock)
+                    earnings_date_obj = datetime.datetime.fromtimestamp(timestmp)
+                    stock_data.earnings_call = earnings_date_obj
+                except Exception as e:
+                    messages.error(request, 'Stock does not have an earnings call date defined.')
+                    earnings_date_obj = None    
+
+                if earnings_date_obj:
+                    stock_data.earnings_call_displayed = date_obj_to_date(earnings_date_obj, date_format='slash')
+                
+                    if (earnings_date_obj - today).days <= 7:
+                        stock_data.earnings_warning = 'blink-bg'
+                    else:
+                        pass
+                else:
+                    pass
+
+
+                # Stock Trend 
+                a_stock = stock_regression(stock)
+                stock_data.stock_trend = round(a_stock,2)
+
+                # MACD trend
+                a_macd = trend_calculator(stock, 'MACD')
+                stock_data.macd_trend = round(a_macd,2)
+
+                if (a_stock > 0 and a_macd < 0) or (a_stock < 0 and a_macd > 0):
+                    stock_data.macd_clash = True
+                    stock_data.macd_color = 'red'
+                else:
+                    stock_data.macd_clash = False
+                    stock_data.macd_color = 'green'
+
+                # MFI trend
+                a_mfi = trend_calculator(stock, 'MFI')
+                stock_data.money_flow_trend = round(a_mfi,2)
+
+                if (a_stock > 0 and a_mfi < 0) or (a_stock < 0 and a_mfi > 0):
+                    stock_data.mfi_clash = True
+                    stock_data.mfi_color = 'red'
+                else:
+                    stock_data.mfi_clash = False
+                    stock_data.mfi_color = 'green'
+
+
+                # Getting the dividend
+                try:
+                    st = yf.Ticker(stock).dividends.tail(1)
+                    stock_data.dividend = float(st.values)
+                    date_arr = str(st.index[0]).split(' ')[0].split('-')
+                    year = date_arr[0]
+                    month = date_arr[1]
+                    day = date_arr[2]
+                    stock_data.dividend_date = day + '/' + month + '/' + year
+                except:
+                    stock_data.dividend = None
+                    stock_data.dividend_date = None
+
+                ## Adding the stock saving to DB
+                try:
+                    stock_data.save()
+                except Exception as e:
+                    messages.error(request, f'Stock {stock} was not added. Already in the list.')
+                    return render(request, 'kadima/home.html', context)
+                
+
+
+            new_stocks = StockData.objects.filter(table_index=table_index).order_by('week_3')
+            context['stocks'] = new_stocks
+                
             ## Updating the streaming IB API data with added stock
             new_stocks_api = StockData.objects.all()
             new_stocks_list = dict()

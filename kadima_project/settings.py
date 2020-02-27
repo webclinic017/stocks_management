@@ -83,6 +83,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'kadima.context_processors.apiConnectionStatus',
                 'kadima.context_processors.updaingGaps',
+                'kadima.context_processors.isTrading',
             ],
         },
     },

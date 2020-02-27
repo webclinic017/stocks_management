@@ -1,4 +1,4 @@
-from ib_api.views import api_connection_status
+from ib_api.views import api_connection_status, trading_status
 from kadima.k_utils import update_gaps
 from .models import StockData
 
@@ -19,3 +19,9 @@ def updaingGaps(request):
     context['updating_gaps'] = False
     
     return context
+
+def isTrading(request):
+    context = {}
+    context['is_trading'] = trading_status()
+    return context
+    
