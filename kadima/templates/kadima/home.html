@@ -2,8 +2,10 @@
 {% block content %}
 
       <div class="content">
-        <!--  <div class="row sticky-top" id="indeces" style="background-color: #1e1d2e;">
-            </div> -->
+        {% if ib_api_connected %}
+            <div class="row sticky-top" id="indeces" style="background-color: #1e1d2e;" indeces_url="{% url 'indeces-data' %}">
+            </div>
+        {% else %}
           <div class="row sticky-top" id="indeces_delayed" style="background-color: #1e1d2e;">
               <div class="col-lg-2 ">
                   <form method="POST" action="" enctype="multipart/form-data">{% csrf_token %}
@@ -58,7 +60,8 @@
                 </div>
               </div>
             </div>
-
+        {% endif %}
+        
         <div class="row">
             <div class="col-md-5 pr-md-1">
                 <form method="POST" enctype="multipart/form-data">
@@ -331,22 +334,25 @@
             */
         </script>
 
-<!--         
+
         <script type="text/javascript">
           (function worker() {
+              let indeces_element = document.getElementById('indeces')
+              let indeces_url = indeces_element.getAttribute('indeces_url')
               $.ajax({
-              url: 'http://127.0.0.1:8001/indeces-data/',
+              url: indeces_url,
               success: function(response) {
              //     console.log(response);
                   $('#indeces').html(response);
               }
           });		
           // Polling the API page every second
-          setTimeout(worker, 2000);
+          setTimeout(worker, 5000);
           })();
       /*
       */
-        </script> -->
+        </script> 
+
     {% else %}
     <script>
       console.log('NOT CONNECTED TO API');

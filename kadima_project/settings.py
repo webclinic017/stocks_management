@@ -34,7 +34,10 @@ ALLOWED_HOSTS = [
 CORS_ORIGIN_ALLOW_ALL = False
 
 CORS_ORIGIN_WHITELIST = [
+    'http://127.0.0.1:8003',
+    'http://127.0.0.1:8002',
     'http://127.0.0.1:8001',
+    'http://127.0.0.1:8000',
     'https://9e61681e.ngrok.io',
     'http://9e61681e.ngrok.io'
 ]

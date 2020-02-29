@@ -103,3 +103,13 @@ class StockData(models.Model):
 
     class Meta:
         unique_together = (("ticker", "table_index"),)
+
+class IndicesData(models.Model):
+    index_symbol = models.CharField(max_length=10, primary_key=True)
+    index_prev_close = models.FloatField(null=True)
+    index_current_value = models.FloatField(null=True)
+    index_api_id = models.IntegerField(null=True)
+
+
+    def __str__(self):
+            return self.index_symbol

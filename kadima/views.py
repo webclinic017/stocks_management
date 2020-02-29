@@ -30,7 +30,7 @@ import yfinance as yf
 from ib_api.views import *
 from kadima.k_utils import *
 
-from .models import StockData
+from .models import StockData, IndicesData
 from .forms import DateForm
 from .ml_models import *
 
@@ -238,6 +238,26 @@ def home(request, table_index=1):
     nasdaq_df = fin_data.get_data_yahoo(indeces[0], start=start_date, end=end_date)
     snp_df = fin_data.get_data_yahoo(indeces[1], start=start_date, end=end_date)
     dow_df = fin_data.get_data_yahoo(indeces[2], start=start_date, end=end_date)
+
+    # Setting the previsous day close value for the indices.
+    nasdaq_data = IndicesData()
+    nasdaq_data.index_symbol = 'Nasdaq'
+    nasdaq_data.index_prev_close = round(float(nasdaq_df['Close'].iloc[-2]),2)
+    nasdaq_data.index_api_id = 55555
+    nasdaq_data.save()
+
+    snp_data = IndicesData()
+    snp_data.index_symbol = 'S&P'
+    snp_data.index_prev_close = round(float(snp_df['Close'].iloc[-2]),2)
+    snp_data.index_api_id = 88888
+    snp_data.save()
+
+    dow_data = IndicesData()
+    dow_data.index_symbol = 'Dow-Jones'
+    dow_data.index_prev_close = round(float(dow_df['Close'].iloc[-2]),2)
+    dow_data.index_api_id = 77777
+    dow_data.save()
+
 
     indexes = {
         '^IXIC': nasdaq_df.tail(1)['Close'].values[0],

@@ -186,7 +186,7 @@
     <script type="text/javascript">
         (function worker() {
             $.ajax({
-            url: 'http://127.0.0.1:8001/stocks-alarms-data/',
+            url: {% url 'stocks-alarms-data' %},
             success: function(response) {
                 //console.log($('#price_up').html(response));
                 //console.log($('#price_down').html(response));

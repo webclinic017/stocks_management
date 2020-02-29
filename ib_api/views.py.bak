@@ -20,7 +20,7 @@ from django.contrib import messages
 
 from threading import Timer
 
-from kadima.models import StockData, IndicesData
+from kadima.models import StockData
 from kadima.k_utils import week_color, change_check
 
 # Create and configure logger
@@ -157,43 +157,28 @@ def stock_alarms_data(request):
 
 def indeces_data(request):
 
-    snp = IndicesData.objects.get(index_api_id=88888)
+    with open(f'{settings.INDEX_FILE_PATH}/indexes_data.json') as idx_file:
+        idx_data = json.load(idx_file)
 
-    if stock_dick[88888] > 0:
-        snp.index_current_value = stock_dick[88888]
-        snp.save()
-        snp_current_value = stock_dick[88888]
-    elif snp.index_current_value:
-        snp_current_value = snp.index_current_value
-    else:
-        snp.index_current_value = snp.index_prev_close
-        snp_current_value = snp.index_prev_close
-        snp.save()
+    nas_close = idx_data['^IXIC']
+    dow_close = idx_data['^DJI']
+    snp_close = idx_data['^GSPC']
 
-    dow_close = IndicesData.objects.get(index_api_id=77777).index_prev_close
-    # dow_current_value = IndicesData.objects.get(index_api_id=77777).index_current_value
-
-    snp_close = IndicesData.objects.get(index_api_id=88888).index_prev_close
-
-    nas_close = IndicesData.objects.get(index_api_id=55555).index_prev_close
-    # nas_current_value = IndicesData.objects.get(index_api_id=55555).index_current_value
-
-
-    dow_change = round(100 * (stock_dick[77777] - dow_close) / dow_close,2)
-    snp_change = round(100 * (snp_current_value - snp_close) / snp_close,2)
-    nas_change = round(100 * (stock_dick[55555] - nas_close) / nas_close,2)
+    dow_change = 100 * (dow_close - stock_dick[77777]) / dow_close
+    snp_change = 100 * (snp_close - stock_dick[88888]) / snp_close
+    # nas_change = 100 * (nas_close - stock_dick[55555]) / nas_close
 
 
     context = {
-        'dow_value': round(stock_dick[77777],2), 
-        'snp_value': round(snp_current_value,2),
-        'nas_value': round(stock_dick[55555],2),
+        'dow_value': stock_dick[77777], 
+        'snp_value': stock_dick[88888],
+        # 'nsq_value': stock_dick[55555],
         'dow_change': dow_change,
         'snp_change': snp_change,
-        'nas_change': nas_change,
+        # 'nas_change': nas_change,
         'snp_color': change_check(snp_change),
         'dow_color': change_check(dow_change),
-        'nas_color': change_check(nas_change),
+        # 'nas_color': change_check(nasdaq_change),
 
         'ib_api_connected': connection_status
     }
@@ -384,29 +369,23 @@ def ib_stock_api(old_stocks_list, stocks, action):
 
         print(f"*************** Loading Indeces... ****************")
 
-        contract.symbol = "NQ"
+        contract.symbol = "NDX"
         contract.secType = "IND"
         contract.currency = "USD"
-        contract.exchange = "GLOBEX"
-        # app.reqMarketDataType(3)
-        
-        # RTVolume - contains the last trade price, last trade size, last trade time, total volume, VWAP, and single trade flag. - Gives 0
-        # app.reqMktData(55555, contract, 233, False, False, []) 
-        
-        # Mark Price (used in TWS P&L computations) - no change
-        app.reqMktData(55555, contract, 221, False, False, []) 
+        contract.exchange = "NASDAQ"
+        app.reqMktData(55555, contract, "", False, False, []) 
 
         contract.symbol = "SPX"
         contract.secType = "IND"
         contract.currency = "USD"
         contract.exchange = "CBOE"
-        app.reqMktData(88888, contract, 221, False, False, [])
+        app.reqMktData(88888, contract, "", False, False, [])
 
-        contract.symbol = "INDU"
+        contract.symbol = "DJX"
         contract.secType = "IND"
         contract.currency = "USD"
-        contract.exchange = "CME"
-        app.reqMktData(77777, contract, 221, False, False, [])
+        contract.exchange = "CBOE"
+        app.reqMktData(77777, contract, "", False, False, [])
 
         sleep(2)
 
