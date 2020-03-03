@@ -26,7 +26,7 @@ from kadima.k_utils import week_color, change_check
 # Create and configure logger
 import logging
 LOG_FORMAT = '%(levelname)s %(asctime)s - %(message)s'
-logging.basicConfig(filename='./log.log',level=logging.INFO,format=LOG_FORMAT, filemode='w')
+logging.basicConfig(filename='./views_ib_api.log',level=logging.INFO,format=LOG_FORMAT, filemode='w')
 logger = logging.getLogger()
 
 TODAY = datetime.datetime.today()
@@ -159,16 +159,20 @@ def indeces_data(request):
 
     snp = IndicesData.objects.get(index_api_id=88888)
 
-    if stock_dick[88888] > 0:
-        snp.index_current_value = stock_dick[88888]
-        snp.save()
-        snp_current_value = stock_dick[88888]
-    elif snp.index_current_value:
-        snp_current_value = snp.index_current_value
-    else:
-        snp.index_current_value = snp.index_prev_close
-        snp_current_value = snp.index_prev_close
-        snp.save()
+    try:
+        if stock_dick[88888] > 0:
+            snp.index_current_value = stock_dick[88888]
+            snp.save()
+            snp_current_value = stock_dick[88888]
+        elif snp.index_current_value:
+            snp_current_value = snp.index_current_value
+        else:
+            snp.index_current_value = snp.index_prev_close
+            snp_current_value = snp.index_prev_close
+            snp.save()
+    except Exception as e:
+        snp_current_value = -1.0
+        pass
 
     dow_close = IndicesData.objects.get(index_api_id=77777).index_prev_close
     # dow_current_value = IndicesData.objects.get(index_api_id=77777).index_current_value
@@ -178,16 +182,35 @@ def indeces_data(request):
     nas_close = IndicesData.objects.get(index_api_id=55555).index_prev_close
     # nas_current_value = IndicesData.objects.get(index_api_id=55555).index_current_value
 
+    try:
+        dow_value = stock_dick[77777]
+        dow_change = round(100 * (stock_dick[77777] - dow_close) / dow_close,2)
+    except Exception as e:
+        # logger.error(f'Failed calculating dow_change. Reason: {e}')
+        print(f'Failed calculating dow_change. Reason: {e}')
+        dow_value = -1.0
+        dow_change = -1.0
 
-    dow_change = round(100 * (stock_dick[77777] - dow_close) / dow_close,2)
-    snp_change = round(100 * (snp_current_value - snp_close) / snp_close,2)
-    nas_change = round(100 * (stock_dick[55555] - nas_close) / nas_close,2)
+    try:
+        snp_change = round(100 * (snp_current_value - snp_close) / snp_close,2)
+    except Exception as e:
+        # logger.error(f'Failed calculating snp_change. Reason: {e}')
+        print(f'Failed calculating snp_change. Value: {snp_current_value}  snp_close: {snp_close}. Reason: {e}')
+        snp_change = -1.0
+
+    try:
+        nas_value = stock_dick[55555]
+        nas_change = round(100 * (stock_dick[55555] - nas_close) / nas_close,2)
+    except Exception as e:
+        print(f'Failed calculating nas_change. Reason: {e}')
+        nas_value = -1.0
+        nas_change = -1.0
 
 
     context = {
-        'dow_value': round(stock_dick[77777],2), 
+        'dow_value': round(dow_value,2), 
         'snp_value': round(snp_current_value,2),
-        'nas_value': round(stock_dick[55555],2),
+        'nas_value': round(nas_value,2),
         'dow_change': dow_change,
         'snp_change': snp_change,
         'nas_change': nas_change,

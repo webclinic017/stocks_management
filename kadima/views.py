@@ -55,6 +55,19 @@ def stock_alarms(request):
     context['ib_api_connected'] = ib_api_connected
 
     if request.method  == 'POST':
+        if 'connect_ib_api' in request.POST:
+            api_connect(request)
+            context = {}
+            ib_api_connected = api_connection_status()
+            context['ib_api_connected'] = ib_api_connected
+            return render(request, 'kadima/stock_alarms.html', context)
+
+        elif 'disconnect_ib_api' in request.POST:
+            api_disconnect(request)
+            context = {}
+            ib_api_connected = api_connection_status()
+            context['ib_api_connected'] = ib_api_connected
+            return render(request, 'kadima/stock_alarms.html', context)
 
         if 'stock_alarm_set' in request.POST:
             stock_id = request.POST.get('stock_alarm_select')
@@ -146,7 +159,21 @@ def history(request, table_index=1):
     date_picker = DateForm()
 
     if request.method == 'POST':
-        if 'update_stock' in str(request.POST):
+        if 'connect_ib_api' in request.POST:
+            api_connect(request)
+            context = {}
+            ib_api_connected = api_connection_status()
+            context['ib_api_connected'] = ib_api_connected
+            return render(request, 'kadima/history.html', context)
+ 
+        elif 'disconnect_ib_api' in request.POST:
+            api_disconnect(request)
+            context = {}
+            ib_api_connected = api_connection_status()
+            context['ib_api_connected'] = ib_api_connected
+            return render(request, 'kadima/history.html', context)
+    
+        elif 'update_stock' in str(request.POST):
 
             for k in request.POST.keys():
                 if 'update_stock' in k:
@@ -325,29 +352,32 @@ def home(request, table_index=1):
     if request.method == 'POST':
 
         if 'connect_ib_api' in request.POST:
-            print('Connecting API...')
+        #     print('Connecting API...')
             
-            ib_api_wrapper(request)
+        #     ib_api_wrapper(request)
             
-            timer = 1
-            while timer < 3:
-                sleep(1)
-                print('Sleeping...')
-                timer += 1 
+        #     timer = 1
+        #     while timer < 3:
+        #         sleep(1)
+        #         print('Sleeping...')
+        #         timer += 1 
 
-            # Updating the Open/Prev_Close values for all stocks
-            if stock_ref:
-                process =  Thread(target=update_gaps)
-                print(f"*************** UPDATING GAPS ****************")
-                # Setting the flag for updating the gaps data
-                stock_ref.updading_gap_1_flag = True
-                stock_ref.save()
+            # # Updating the Open/Prev_Close values for all stocks
+            # if stock_ref:
+            #     process =  Thread(target=update_gaps)
+            #     print(f"*************** UPDATING GAPS ****************")
+            #     # Setting the flag for updating the gaps data
+            #     stock_ref.updading_gap_1_flag = True
+            #     stock_ref.save()
 
-                process.start()
-            else:
-                pass
+            #     process.start()
+            # else:
+            #     pass
 
             # current_stocks = StockData.objects.filter(table_index=table_index)
+
+            api_connect(request)
+
             current_stocks = StockData.objects.all()
             current_stocks_list = dict()
             for stock in current_stocks:
@@ -364,9 +394,10 @@ def home(request, table_index=1):
             return render(request, 'kadima/home.html', context)
 
         elif 'disconnect_ib_api' in request.POST:
-            print('Stopping the IB API...')
-            ib_api_wrapper(request,action=STOP_API )
-            sleep(2)
+            # print('Stopping the IB API...')
+            # ib_api_wrapper(request,action=STOP_API )
+            # sleep(2)
+            api_disconnect(request)
             context['ib_api_connected'] = api_connection_status()
             return render(request, 'kadima/home.html', context)
             
@@ -564,7 +595,40 @@ def home(request, table_index=1):
     else:
         stocks = StockData.objects.filter(table_index=table_index).order_by('week_3')
         context['stocks'] = stocks
+        return render(request, 'kadima/home.html', context)
 
     return render(request, 'kadima/home.html', context)
 
 
+
+def api_connect(request):
+    print('Connecting API...')
+            
+    ib_api_wrapper(request)
+    
+    timer = 1
+    while timer < 3:
+        sleep(1)
+        print('Sleeping...')
+        timer += 1 
+
+    stock_ref = StockData.objects.all().last()
+    # Updating the Open/Prev_Close values for all stocks
+    if stock_ref:
+        process =  Thread(target=update_gaps)
+        print(f"*************** UPDATING GAPS ****************")
+        # Setting the flag for updating the gaps data
+        stock_ref.updading_gap_1_flag = True
+        stock_ref.save()
+
+        process.start()
+    else:
+        pass
+
+    return
+
+def api_disconnect(request):
+    print('Stopping the IB API...')
+    ib_api_wrapper(request,action=STOP_API )
+    sleep(2)
+    return

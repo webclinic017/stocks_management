@@ -3,6 +3,9 @@ from pandas_datareader import data as fin_data
 import datetime
 from datetime import timedelta
 from time import sleep
+from threading import Thread
+
+from ib_api.views import *
 
 TODAY = datetime.datetime.today()
 MAX_PAST = TODAY - timedelta(30)
