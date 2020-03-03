@@ -146,4 +146,5 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 STATIC_ROOT = STATIC_URL
 
+# This is the path to the index file
 INDEX_FILE_PATH = os.path.join(BASE_DIR, 'ib_api')
