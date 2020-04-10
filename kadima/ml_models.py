@@ -50,7 +50,7 @@ def macd_regression(stock):
     return macd_regressor
 
 def mfi_regression(stock):
-    df = data.get_data_yahoo(stock.upper(), start=START, end=END)
+    df = data.get_data_yahoo(stock.upper(), start=START-timedelta(14), end=END)
     df = df.copy().reset_index()
     dates = df.index.tolist()
     dates = np.reshape(dates, (len(dates),1))
@@ -58,7 +58,7 @@ def mfi_regression(stock):
     df_mfi = TA.MFI(df_ohlc,14)
     df_mfi.fillna(0, inplace=True)
 
-    mfi_regressor = LinearRegression().fit(dates,df_mfi.values)
+    mfi_regressor = LinearRegression().fit(dates[14:],df_mfi.values[14:])
     
     a = mfi_regressor.coef_
     b = mfi_regressor.intercept_

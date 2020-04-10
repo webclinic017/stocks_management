@@ -1,0 +1,309 @@
+import datetime
+import time
+import json
+from time import sleep
+from datetime import timedelta
+from concurrent.futures import ProcessPoolExecutor, as_completed, ThreadPoolExecutor
+
+
+from django.conf import settings
+from django.utils import timezone
+from django.contrib import messages
+
+from pandas_datareader import data as fin_data
+from yahoo_earnings_calendar import YahooEarningsCalendar
+
+
+from .models import IndicesData, StockData
+from .k_utils import change_check, gap_1_check, date_obj_to_date
+from .stock import Stock
+
+
+# Create and configure logger
+import logging
+LOG_FORMAT = '%(levelname)s %(asctime)s - %(message)s'
+logging.basicConfig(filename='./log.log',level=logging.INFO,format=LOG_FORMAT, filemode='w')
+logger = logging.getLogger()
+
+TODAY = datetime.datetime.today()
+MAX_PAST = TODAY - timedelta(30)
+WORKERS = 15
+
+def update_values(request):
+
+    context = {}
+    errors = {}
+
+    # Indexes update
+    indexes_update_done, indexes_info = indexes_updates()
+
+    if indexes_update_done:
+        context.update(indexes_info)
+    else:
+        errors['indexes'] = True
+
+
+    start_run = time.perf_counter()
+    # Stocks Update
+    # Get the list of current stocks list
+
+    current_stocks = StockData.objects.all()
+
+    # messages.info(request, 'Updading values...')
+
+    for stock in current_stocks:
+        stock_to_update = Stock(ticker=stock.ticker, table_index=stock.table_index)
+        
+        print(f'Updating Stock: {stock.ticker}')
+        stock_to_update.update_stock()
+        print(f'Finished updating Stock: {stock.ticker}')
+        
+        stock.stock_displayed_date = stock_to_update.displayed_date
+
+        stock.week_1 = stock_to_update.week_1
+        stock.week_1_min = stock_to_update.week_1_min
+        stock.week_1_max = stock_to_update.week_1_max
+        stock.week_1_color = stock_to_update.week_1_color
+
+        stock.week_2 = stock_to_update.week_2
+        stock.week_2_min = stock_to_update.week_2_min
+        stock.week_2_max = stock_to_update.week_2_max
+        stock.week_2_color = stock_to_update.week_2_color
+
+        stock.week_3 = stock_to_update.week_3
+        stock.week_3_min = stock_to_update.week_3_min
+        stock.week_3_max = stock_to_update.week_3_max
+        stock.week_3_color = stock_to_update.week_3_color
+
+        stock.week_5 = stock_to_update.week_5
+        stock.week_5_min = stock_to_update.week_5_min
+        stock.week_5_max = stock_to_update.week_5_max
+        stock.week_5_color = stock_to_update.week_5_color
+
+        stock.gap_1 = stock_to_update.gap_1
+        stock.gap_1_color = stock_to_update.gap_1_color
+
+        stock.macd_clash = stock_to_update.macd_clash
+        stock.macd_color = stock_to_update.macd_color
+
+        stock.mfi_clash = stock_to_update.mfi_clash
+        stock.mfi_color = stock_to_update.mfi_color
+
+        stock.save()
+
+
+
+    # gaps_updated, num_stocks = update_gaps_wrapper()
+
+    # if gaps_updated:
+    #     print('Finished updating gaps')
+    # else:
+    #     errors['gaps'] = True
+    
+    # print('Prices...')
+    # print('Weeks...')
+    # print('Gaps...')
+
+    # print('Earnings...')
+    # # Update earnings dates
+    # earnings_updated = earnings_update()
+    # if earnings_updated:
+    #     print('Finished updating stocks earnings.')
+    # else:
+    #     errors['earnings'] = True
+
+    # print('Skews...')
+    # print('Colors...')
+    # print('Finishing...')
+    # # Join threads
+
+    finish_run = time.perf_counter()
+    print(f'''
+    >>>>>>>>>>
+    Finished updating {len(current_stocks)} stocks gaps. Durations: {round(finish_run - start_run,2)} seconds.
+    >>>>>>>>>>
+    ''')
+    return True
+
+def indexes_updates():
+    indexes_context = {}
+    indeces = ['^IXIC', '^GSPC', '^DJI', '^RUT', '^VIX'] 
+    try:
+        index_df = fin_data.get_data_yahoo(indeces , start=TODAY - timedelta(1), end=TODAY)
+        # nasdaq_df = fin_data.get_data_yahoo(indeces[0], start=start_date, end=end_date)
+        # snp_df = fin_data.get_data_yahoo(indeces[1], start=start_date, end=end_date)
+        # dow_df = fin_data.get_data_yahoo(indeces[2], start=start_date, end=end_date)
+    except:
+        try:
+            index_df = fin_data.get_data_yahoo(indeces , start=TODAY - timedelta(2), end=TODAY)
+        except Exception as e:
+            logger.error(f'Failed getting data from Yahoo.')
+            print(f'Failed getting data from Yahoo. Reason: {e}')
+            return False, e
+
+    # Setting the previsous day close value for the indices.
+    try:
+        nasdaq_data = IndicesData()
+        nasdaq_data.index_symbol = 'Nasdaq'
+        # nasdaq_data.index_prev_close = round(float(nasdaq_df['Close'].iloc[-2]),2)
+        nasdaq_data.index_prev_close = round(index_df['Close']['^IXIC'][0],2)
+        nasdaq_data.index_api_id = 55555
+        nasdaq_data.save()
+
+        snp_data = IndicesData()
+        snp_data.index_symbol = 'S&P'
+        # snp_data.index_prev_close = round(float(snp_df['Close'].iloc[-2]),2)
+        snp_data.index_prev_close = round(index_df['Close']['^GSPC'][0],2)
+        snp_data.index_api_id = 88888
+        snp_data.save()
+
+        dow_data = IndicesData()
+        dow_data.index_symbol = 'Dow-Jones'
+        # dow_data.index_prev_close = round(float(dow_df['Close'].iloc[-2]),2)
+        dow_data.index_prev_close = round(index_df['Close']['^DJI'][0],2)
+        dow_data.index_api_id = 77777
+        dow_data.save()
+    
+    except Exception as e:
+        logger.error(f'Failed daving indexes data to DB.')
+        print(f'Failed daving indexes data to DB')
+        return False, e
+
+    indexes = {
+        '^IXIC': round(index_df['Close']['^IXIC'][1],2),
+        '^GSPC': round(index_df['Close']['^GSPC'][1],2),
+        '^DJI': round(index_df['Close']['^DJI'][1],2)
+        }
+
+    # # Writing yesterdays close value to json file for the API reading
+    # with open(f'{settings.INDEX_FILE_PATH}/indexes_data.json', 'w+') as fd:
+    #     json.dump(indexes, fd)
+
+    # nasdaq_df['change'] = nasdaq_df['Close'].pct_change()
+    # snp_df['change'] = snp_df['Close'].pct_change()
+    # dow_df['change'] = dow_df['Close'].pct_change()
+
+    # nasdaq_df['change'] = round(index_df['Close']['^IXIC'].pct_change()[1],2)
+    # snp_df['change'] = round(index_df['Close']['^GSPC'].pct_change()[1],2)
+    # dow_df['change'] = round(index_df['Close']['^DJI'].pct_change()[1],2)
+
+    # nasdaq_change = nasdaq_df['change'].iloc[-1]
+    # snp_change = snp_df['change'].iloc[-1]
+    # dow_change = dow_df['change'].iloc[-1]
+
+    nasdaq_change = round(index_df['Close']['^IXIC'].pct_change()[1],2)
+    snp_change = round(index_df['Close']['^GSPC'].pct_change()[1],2)
+    dow_change = round(index_df['Close']['^DJI'].pct_change()[1],2)
+
+    # indexes_context['nas_value'] = float("%0.2f"%nasdaq_df['Close'].iloc[-1])
+    # indexes_context['snp_value'] = float("%0.2f"%snp_df['Close'].iloc[-1])
+    # indexes_context['dow_value'] = float("%0.2f"%dow_df['Close'].iloc[-1])
+
+    indexes_context['nas_value'] = round(index_df['Close']['^IXIC'][1],2)
+    indexes_context['snp_value'] = round(index_df['Close']['^GSPC'][1],2)
+    indexes_context['dow_value'] = round(index_df['Close']['^DJI'][1],2)
+
+    indexes_context['nas_color'] = change_check(nasdaq_change)
+    indexes_context['snp_color'] = change_check(snp_change)
+    indexes_context['dow_color'] = change_check(dow_change)
+
+    indexes_context['nas_change'] = float("%0.2f"%(nasdaq_change * 100))
+    indexes_context['snp_change'] = float("%0.2f"%(snp_change * 100))
+    indexes_context['dow_change'] = float("%0.2f"%(dow_change * 100))
+
+    return True, indexes_context
+
+def update_stock(stock):
+    
+    stock = StockData.objects.get(ticker=stock)
+
+    if stock:
+        pass
+    else:
+        stock = StockData()
+    
+    stock_df = fin_data.get_data_yahoo(str(stock), start=MAX_PAST, end=TODAY)
+
+    stock.prev_close = round(stock_df.loc[stock_df.index[-2]]['Close'],2)
+    stock.todays_open = round(stock_df.loc[stock_df.index[-1]]['Open'],2)
+    stock.stock_date = stock_df.index[-1]
+
+    gap_1, gap_1_color = gap_1_check(stock.prev_close, stock.todays_open)
+    stock.gap_1 = gap_1
+    stock.gap_1_color = gap_1_color
+
+
+def update_gaps_wrapper():
+    current_stocks = StockData.objects.all()
+    stocks_tickers = []
+    for t in current_stocks:
+        stocks_tickers.append(t.ticker)
+
+    with ThreadPoolExecutor(max_workers=WORKERS) as executor:
+        futures = [executor.submit(update_stock_gaps, ticker) for ticker in stocks_tickers]
+        for future in as_completed(futures):
+            # print(f'{future.result()}')
+            pass
+    
+    return True,len(current_stocks)
+
+def update_stock_gaps(ticker):
+    stock = StockData.objects.get(ticker=ticker)
+    stock_df = fin_data.get_data_yahoo(str(stock), start=MAX_PAST, end=TODAY)
+    
+    stock.prev_close = round(stock_df.loc[stock_df.index[-2]]['Close'],2)
+    stock.todays_open = round(stock_df.loc[stock_df.index[-1]]['Open'],2)
+    stock.stock_date = stock_df.index[-1]
+
+    gap_1, gap_1_color = gap_1_check(stock.prev_close, stock.todays_open)
+    stock.gap_1 = gap_1
+    stock.gap_1_color = gap_1_color
+
+    # Canceling the flag for updating the gaps
+    stock.updading_gap_1_flag = False
+    
+    stock.save()
+    sleep(2)
+    
+    msg = f'>>> Updating {ticker}'
+
+    return msg
+    
+
+def earnings_update():
+    current_stocks = StockData.objects.all()
+    try:
+        yec = YahooEarningsCalendar()
+
+        for stock in current_stocks:
+            if stock.earnings_call:
+                if stock.earnings_call < timezone.now()-timedelta(1):
+                    try:
+                        timestmp = yec.get_next_earnings_date(stock)
+                        earnings_date_obj = datetime.datetime.fromtimestamp(timestmp)
+                        if stock.earnings_call > timezone.now():
+                            stock.earnings_call = earnings_date_obj
+                            stock.earnings_call_displayed = date_obj_to_date(earnings_date_obj, date_format='slash')
+                        else:
+                            stock.earnings_call = None
+                            stock.earnings_call_displayed = None
+                            stock.earnings_warning = None
+
+                    except Exception as e:
+                        stock.earnings_call = None
+                        stock.earnings_call_displayed = None
+                        stock.earnings_warning = None
+            else:
+                stock.earnings_call = None
+                stock.earnings_call_displayed = None
+                stock.earnings_warning = None
+
+            stock.save()
+
+        return True
+    
+    except Exception as e:
+        logger.error('Failed updating the earnings')
+        return False
+
+        

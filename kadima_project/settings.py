@@ -11,16 +11,19 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import json
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+with open('config.json') as config_file:
+    config = json.load(config_file)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'y^o_+8j2k#)v_r*04pyd04yoibat&s=#ircmn87eb7l3#34u&t'
+SECRET_KEY = config['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -148,3 +151,13 @@ STATIC_ROOT = STATIC_URL
 
 # This is the path to the index file
 INDEX_FILE_PATH = os.path.join(BASE_DIR, 'ib_api')
+
+# IB Port
+# Live
+IB_PORT = config['IB_PORT']
+IB_CLIENT_ID = config['IB_CLIENT_ID']
+
+# Demo:
+# IB_PORT = 7497
+# IB_CLIENT_ID = 17
+

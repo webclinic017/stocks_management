@@ -15,6 +15,8 @@ from numpy import round
 from datetime import timedelta
 from pandas_datareader import data as fin_data
 
+from concurrent.futures import ProcessPoolExecutor, as_completed, ThreadPoolExecutor
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponseNotFound, HttpResponseBadRequest, HttpResponse, HttpResponseRedirect, Http404
@@ -28,12 +30,12 @@ from yahoo_earnings_calendar import YahooEarningsCalendar
 import yfinance as yf
 
 from ib_api.views import *
-from kadima.k_utils import *
+from kadima.k_utils import week_values, gap_1_check,date_obj_to_date
 
 from .models import StockData, IndicesData
 from .forms import DateForm
 from .ml_models import *
-
+from .value_updates import indexes_updates, earnings_update, update_values
 # Create and configure logger
 import logging
 
@@ -253,128 +255,32 @@ def home(request, table_index=1):
     else:
         last_update = False
 
-    current_running_threads = threading.active_count() 
+    current_running_threads = threading.active_count()
     print(f"ACTIVE THREADS: ***************{current_running_threads}****************")
-
-    indeces = ['^IXIC', '^GSPC', '^DJI']
-    today = datetime.datetime.today()
-    start_date = TODAY - timedelta(5) 
-    end_date = TODAY
-
-
-    nasdaq_df = fin_data.get_data_yahoo(indeces[0], start=start_date, end=end_date)
-    snp_df = fin_data.get_data_yahoo(indeces[1], start=start_date, end=end_date)
-    dow_df = fin_data.get_data_yahoo(indeces[2], start=start_date, end=end_date)
-
-    # Setting the previsous day close value for the indices.
-    nasdaq_data = IndicesData()
-    nasdaq_data.index_symbol = 'Nasdaq'
-    nasdaq_data.index_prev_close = round(float(nasdaq_df['Close'].iloc[-2]),2)
-    nasdaq_data.index_api_id = 55555
-    nasdaq_data.save()
-
-    snp_data = IndicesData()
-    snp_data.index_symbol = 'S&P'
-    snp_data.index_prev_close = round(float(snp_df['Close'].iloc[-2]),2)
-    snp_data.index_api_id = 88888
-    snp_data.save()
-
-    dow_data = IndicesData()
-    dow_data.index_symbol = 'Dow-Jones'
-    dow_data.index_prev_close = round(float(dow_df['Close'].iloc[-2]),2)
-    dow_data.index_api_id = 77777
-    dow_data.save()
-
-
-    indexes = {
-        '^IXIC': nasdaq_df.tail(1)['Close'].values[0],
-        '^GSPC': snp_df.tail(1)['Close'].values[0],
-        '^DJI': dow_df.tail(1)['Close'].values[0]
-        }
-
-    # Writing yesterdays close value to json file for the API reading
-    with open(f'{settings.INDEX_FILE_PATH}/indexes_data.json', 'w+') as fd:
-        json.dump(indexes, fd)
-
-    nasdaq_df['change'] = nasdaq_df['Close'].pct_change()
-    snp_df['change'] = snp_df['Close'].pct_change()
-    dow_df['change'] = dow_df['Close'].pct_change()
-
-    nasdaq_change = nasdaq_df['change'].iloc[-1]
-    snp_change = snp_df['change'].iloc[-1]
-    dow_change = dow_df['change'].iloc[-1]
-
-    context['nas_value'] = float("%0.2f"%nasdaq_df['Close'].iloc[-1])
-    context['snp_value'] = float("%0.2f"%snp_df['Close'].iloc[-1])
-    context['dow_value'] = float("%0.2f"%dow_df['Close'].iloc[-1])
-
-    context['nas_color'] = change_check(nasdaq_change)
-    context['snp_color'] = change_check(snp_change)
-    context['dow_color'] = change_check(dow_change)
-
-    context['nas_change'] = float("%0.2f"%(nasdaq_change * 100))
-    context['snp_change'] = float("%0.2f"%(snp_change * 100))
-    context['dow_change'] = float("%0.2f"%(dow_change * 100))
-
+    
     stocks = StockData.objects.filter(table_index=table_index)
     context['stocks'] = stocks
 
-    # Update earnings dates
-    current_stocks = StockData.objects.all()
-    yec = YahooEarningsCalendar()
+    # VALUES UPDATES
+    #########################
+    
+    # Updating indexes data every time homepage rendered
+    indexes_update_done, indexes_info = indexes_updates()
 
-    for stock in current_stocks:
-        if stock.earnings_call:
-            if stock.earnings_call < timezone.now()-timedelta(1):
-                try:
-                    timestmp = yec.get_next_earnings_date(stock)
-                    earnings_date_obj = datetime.datetime.fromtimestamp(timestmp)
-                    if stock.earnings_call > timezone.now():
-                        stock.earnings_call = earnings_date_obj
-                        stock.earnings_call_displayed = date_obj_to_date(earnings_date_obj, date_format='slash')
-                    else:
-                        stock.earnings_call = None
-                        stock.earnings_call_displayed = None
-                        stock.earnings_warning = None
+    if indexes_update_done:
+        print('Finished updating indexes')
+        context.update(indexes_info)
+    else:
+        messages.error(request, 'Failed updating indexes.')
+        logger.error('Failed updating indexes.')
+        print('Failed updating indexes.')
 
-                except Exception as e:
-                    stock.earnings_call = None
-                    stock.earnings_call_displayed = None
-                    stock.earnings_warning = None
-        else:
-            stock.earnings_call = None
-            stock.earnings_call_displayed = None
-            stock.earnings_warning = None
 
-        stock.save()
-
+    # Stock data will be updated at API connect
 
     if request.method == 'POST':
 
         if 'connect_ib_api' in request.POST:
-        #     print('Connecting API...')
-            
-        #     ib_api_wrapper(request)
-            
-        #     timer = 1
-        #     while timer < 3:
-        #         sleep(1)
-        #         print('Sleeping...')
-        #         timer += 1 
-
-            # # Updating the Open/Prev_Close values for all stocks
-            # if stock_ref:
-            #     process =  Thread(target=update_gaps)
-            #     print(f"*************** UPDATING GAPS ****************")
-            #     # Setting the flag for updating the gaps data
-            #     stock_ref.updading_gap_1_flag = True
-            #     stock_ref.save()
-
-            #     process.start()
-            # else:
-            #     pass
-
-            # current_stocks = StockData.objects.filter(table_index=table_index)
 
             api_connect(request)
 
@@ -392,6 +298,9 @@ def home(request, table_index=1):
             context['ib_api_connected'] = ib_api_connected
             
             return render(request, 'kadima/home.html', context)
+
+        elif 'update_now' in request.POST:
+            update_values(request)
 
         elif 'disconnect_ib_api' in request.POST:
             # print('Stopping the IB API...')
@@ -612,22 +521,38 @@ def api_connect(request):
         print('Sleeping...')
         timer += 1 
 
-    stock_ref = StockData.objects.all().last()
-    # Updating the Open/Prev_Close values for all stocks
-    if stock_ref:
-        process =  Thread(target=update_gaps)
-        print(f"*************** UPDATING GAPS ****************")
-        # Setting the flag for updating the gaps data
-        stock_ref.updading_gap_1_flag = True
-        stock_ref.save()
+    # Updating valuse
+    finish_updates = update_values(request)
 
-        process.start()
+    if finish_updates:
+        print('Finished updating values.')
+        messages.error(request, 'FINISHED updating values. ')
+        logger.info('Finished updating values.')
     else:
-        pass
+        print('Failed updating values.')
+        messages.error(request, 'Failed updating values. Contact support.')
+        logger.error('Failed updating values.')
+
+
+    # stock_ref = StockData.objects.all().last()
+    # # Updating the Open/Prev_Close values for all stocks
+    # if stock_ref:
+    #     process =  Thread(target=update_gaps_wrapper)
+    #     print(f"*************** UPDATING GAPS ****************")
+    #     # Setting the flag for updating the gaps data
+    #     stock_ref.updading_gap_1_flag = True
+    #     stock_ref.save()
+
+    #     process.start()
+    # else:
+    #     pass
 
     return
 
 def api_disconnect(request):
+    print('Updating values before disconnecting')
+    update_values(request)
+
     print('Stopping the IB API...')
     ib_api_wrapper(request,action=STOP_API )
     sleep(2)

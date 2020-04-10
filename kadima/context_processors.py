@@ -1,5 +1,5 @@
 from ib_api.views import api_connection_status, trading_status
-from kadima.k_utils import update_gaps
+from kadima.value_updates import update_gaps_wrapper
 from .models import StockData
 
 def apiConnectionStatus(request):

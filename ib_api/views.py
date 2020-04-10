@@ -389,7 +389,7 @@ def ib_stock_api(old_stocks_list, stocks, action):
         global app
         app = TestApp()
         
-        app.connect("127.0.0.1", 4004, clientId=0)
+        app.connect("127.0.0.1", settings.IB_PORT, clientId=settings.IB_CLIENT_ID)
         # app.connect("127.0.0.1", 7497, clientId=17)
 
 
@@ -475,4 +475,3 @@ def ib_api_wrapper(request, old_stocks_list=[], updated_stock_list=['AAPL'], act
     ib_stock_api(old_stocks_list, updated_stock_list, action)
 
     return render(request, 'ib_api/bg.html')
-

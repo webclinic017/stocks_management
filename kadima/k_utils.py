@@ -63,29 +63,6 @@ def week_color(week_value, week3=False):
             return '#dc6460'
 
 
-def update_gaps():
-    current_stocks = StockData.objects.all()
-
-    for stock in current_stocks:
-        stock_df = fin_data.get_data_yahoo(str(stock), start=MAX_PAST, end=TODAY)
-        stock.prev_close = round(stock_df.loc[stock_df.index[-2]]['Close'],2)
-        stock.todays_open = round(stock_df.loc[stock_df.index[-1]]['Open'],2)
-        stock.stock_date = stock_df.index[-1]
-
-        gap_1, gap_1_color = gap_1_check(stock.prev_close, stock.todays_open)
-        stock.gap_1 = gap_1
-        stock.gap_1_color = gap_1_color
-
-        # Canceling the flag for updating the gaps
-        stock.updading_gap_1_flag = False
-        
-        stock.save()
-        sleep(2)
-    
-    print(f"*************** FINISHED UPDATING GAPS ****************")
-    return 
-
-
 def gap_check(stock_df, api_connected=False, realtime_price=None):
     days_back = 1
     gap_count = 0
