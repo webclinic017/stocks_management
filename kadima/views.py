@@ -376,7 +376,7 @@ def home(request, table_index=1):
                 if earnings_date_obj:
                     stock_data.earnings_call_displayed = date_obj_to_date(earnings_date_obj, date_format='slash')
                 
-                    if (earnings_date_obj - today).days <= 7:
+                    if (earnings_date_obj - today).days <= 7 and (earnings_date_obj - today).days >= 0:
                         stock_data.earnings_warning = 'blink-bg'
                     else:
                         pass
@@ -532,20 +532,6 @@ def api_connect(request):
         print('Failed updating values.')
         messages.error(request, 'Failed updating values. Contact support.')
         logger.error('Failed updating values.')
-
-
-    # stock_ref = StockData.objects.all().last()
-    # # Updating the Open/Prev_Close values for all stocks
-    # if stock_ref:
-    #     process =  Thread(target=update_gaps_wrapper)
-    #     print(f"*************** UPDATING GAPS ****************")
-    #     # Setting the flag for updating the gaps data
-    #     stock_ref.updading_gap_1_flag = True
-    #     stock_ref.save()
-
-    #     process.start()
-    # else:
-    #     pass
 
     return
 

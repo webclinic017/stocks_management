@@ -106,6 +106,7 @@ class StockData(models.Model):
 
 class IndicesData(models.Model):
     index_symbol = models.CharField(max_length=10, primary_key=True)
+    sample_date = models.DateTimeField(auto_now=True)
     index_prev_close = models.FloatField(null=True)
     index_current_value = models.FloatField(null=True)
     index_api_id = models.IntegerField(null=True)

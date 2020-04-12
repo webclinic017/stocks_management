@@ -49,7 +49,7 @@ def update_values(request):
 
     current_stocks = StockData.objects.all()
 
-    # messages.info(request, 'Updading values...')
+    messages.info(request, 'Updading values...')
 
     for stock in current_stocks:
         stock_to_update = Stock(ticker=stock.ticker, table_index=stock.table_index)
@@ -59,6 +59,7 @@ def update_values(request):
         print(f'Finished updating Stock: {stock.ticker}')
         
         stock.stock_displayed_date = stock_to_update.displayed_date
+        stock.stock_price = stock_to_update.stock_price
 
         stock.week_1 = stock_to_update.week_1
         stock.week_1_min = stock_to_update.week_1_min
@@ -83,6 +84,11 @@ def update_values(request):
         stock.gap_1 = stock_to_update.gap_1
         stock.gap_1_color = stock_to_update.gap_1_color
 
+
+        stock.earnings_call = stock_to_update.earnings_call
+        stock.earnings_call_displayed = stock_to_update.earnings_call_displayed
+        stock.earnings_warning = stock_to_update.earnings_warning
+
         stock.macd_clash = stock_to_update.macd_clash
         stock.macd_color = stock_to_update.macd_color
 
@@ -90,32 +96,6 @@ def update_values(request):
         stock.mfi_color = stock_to_update.mfi_color
 
         stock.save()
-
-
-
-    # gaps_updated, num_stocks = update_gaps_wrapper()
-
-    # if gaps_updated:
-    #     print('Finished updating gaps')
-    # else:
-    #     errors['gaps'] = True
-    
-    # print('Prices...')
-    # print('Weeks...')
-    # print('Gaps...')
-
-    # print('Earnings...')
-    # # Update earnings dates
-    # earnings_updated = earnings_update()
-    # if earnings_updated:
-    #     print('Finished updating stocks earnings.')
-    # else:
-    #     errors['earnings'] = True
-
-    # print('Skews...')
-    # print('Colors...')
-    # print('Finishing...')
-    # # Join threads
 
     finish_run = time.perf_counter()
     print(f'''
@@ -130,12 +110,16 @@ def indexes_updates():
     indeces = ['^IXIC', '^GSPC', '^DJI', '^RUT', '^VIX'] 
     try:
         index_df = fin_data.get_data_yahoo(indeces , start=TODAY - timedelta(1), end=TODAY)
-        # nasdaq_df = fin_data.get_data_yahoo(indeces[0], start=start_date, end=end_date)
-        # snp_df = fin_data.get_data_yahoo(indeces[1], start=start_date, end=end_date)
-        # dow_df = fin_data.get_data_yahoo(indeces[2], start=start_date, end=end_date)
+        historical = False
+ 
     except:
         try:
-            index_df = fin_data.get_data_yahoo(indeces , start=TODAY - timedelta(2), end=TODAY)
+            historical = True
+            historical_index_data = []
+            indeces_history_data = IndicesData.objects.all()
+            for idx in indeces_history_data:
+                historical_index_data.append(idx.index_prev_close) 
+            
         except Exception as e:
             logger.error(f'Failed getting data from Yahoo.')
             print(f'Failed getting data from Yahoo. Reason: {e}')
@@ -165,43 +149,17 @@ def indexes_updates():
         dow_data.save()
     
     except Exception as e:
-        logger.error(f'Failed daving indexes data to DB.')
+        logger.error(f'Failed saving indexes data to DB.')
         print(f'Failed daving indexes data to DB')
-        return False, e
+        # return False, e
 
-    indexes = {
-        '^IXIC': round(index_df['Close']['^IXIC'][1],2),
-        '^GSPC': round(index_df['Close']['^GSPC'][1],2),
-        '^DJI': round(index_df['Close']['^DJI'][1],2)
-        }
+    nasdaq_change = 0 if historical else round(index_df['Close']['^IXIC'].pct_change()[1],2)
+    snp_change = 0 if historical else round(index_df['Close']['^GSPC'].pct_change()[1],2)
+    dow_change = 0 if historical else round(index_df['Close']['^DJI'].pct_change()[1],2)
 
-    # # Writing yesterdays close value to json file for the API reading
-    # with open(f'{settings.INDEX_FILE_PATH}/indexes_data.json', 'w+') as fd:
-    #     json.dump(indexes, fd)
-
-    # nasdaq_df['change'] = nasdaq_df['Close'].pct_change()
-    # snp_df['change'] = snp_df['Close'].pct_change()
-    # dow_df['change'] = dow_df['Close'].pct_change()
-
-    # nasdaq_df['change'] = round(index_df['Close']['^IXIC'].pct_change()[1],2)
-    # snp_df['change'] = round(index_df['Close']['^GSPC'].pct_change()[1],2)
-    # dow_df['change'] = round(index_df['Close']['^DJI'].pct_change()[1],2)
-
-    # nasdaq_change = nasdaq_df['change'].iloc[-1]
-    # snp_change = snp_df['change'].iloc[-1]
-    # dow_change = dow_df['change'].iloc[-1]
-
-    nasdaq_change = round(index_df['Close']['^IXIC'].pct_change()[1],2)
-    snp_change = round(index_df['Close']['^GSPC'].pct_change()[1],2)
-    dow_change = round(index_df['Close']['^DJI'].pct_change()[1],2)
-
-    # indexes_context['nas_value'] = float("%0.2f"%nasdaq_df['Close'].iloc[-1])
-    # indexes_context['snp_value'] = float("%0.2f"%snp_df['Close'].iloc[-1])
-    # indexes_context['dow_value'] = float("%0.2f"%dow_df['Close'].iloc[-1])
-
-    indexes_context['nas_value'] = round(index_df['Close']['^IXIC'][1],2)
-    indexes_context['snp_value'] = round(index_df['Close']['^GSPC'][1],2)
-    indexes_context['dow_value'] = round(index_df['Close']['^DJI'][1],2)
+    indexes_context['nas_value'] = historical_index_data[0] if historical else round(index_df['Close']['^IXIC'][1],2)
+    indexes_context['snp_value'] = historical_index_data[1] if historical else round(index_df['Close']['^GSPC'][1],2)
+    indexes_context['dow_value'] = historical_index_data[2] if historical else round(index_df['Close']['^DJI'][1],2)
 
     indexes_context['nas_color'] = change_check(nasdaq_change)
     indexes_context['snp_color'] = change_check(snp_change)
@@ -276,27 +234,24 @@ def earnings_update():
         yec = YahooEarningsCalendar()
 
         for stock in current_stocks:
-            if stock.earnings_call:
-                if stock.earnings_call < timezone.now()-timedelta(1):
-                    try:
-                        timestmp = yec.get_next_earnings_date(stock)
-                        earnings_date_obj = datetime.datetime.fromtimestamp(timestmp)
-                        if stock.earnings_call > timezone.now():
-                            stock.earnings_call = earnings_date_obj
-                            stock.earnings_call_displayed = date_obj_to_date(earnings_date_obj, date_format='slash')
-                        else:
-                            stock.earnings_call = None
-                            stock.earnings_call_displayed = None
-                            stock.earnings_warning = None
+ 
+            try:
+                timestmp = yec.get_next_earnings_date(stock)
+                earnings_date_obj = datetime.datetime.fromtimestamp(timestmp)
+                stock.earnings_call = earnings_date_obj
+            except Exception as e:
+                earnings_date_obj = None    
 
-                    except Exception as e:
-                        stock.earnings_call = None
-                        stock.earnings_call_displayed = None
-                        stock.earnings_warning = None
+            if earnings_date_obj:
+                stock.earnings_call_displayed = date_obj_to_date(earnings_date_obj, date_format='slash')
+            
+                if (earnings_date_obj - TODAY).days <= 7 and (earnings_date_obj - TODAY).days >= 0:
+                    print(f"***************{(earnings_date_obj - TODAY).days}****************")
+                    stock.earnings_warning = 'blink-bg'
+                else:
+                    pass
             else:
-                stock.earnings_call = None
-                stock.earnings_call_displayed = None
-                stock.earnings_warning = None
+                pass
 
             stock.save()
 

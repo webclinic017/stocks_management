@@ -12,6 +12,7 @@ from sklearn.linear_model import LinearRegression
 from django.conf import settings
 from django.utils import timezone
 
+# 3rd Party APIs
 from yahoo_earnings_calendar import YahooEarningsCalendar
 import yfinance as yf
 from finta import TA
@@ -78,6 +79,7 @@ class Stock():
     
         self.stock_df = fin_data.get_data_yahoo(str(self.ticker), start=self.today - timedelta(44), end=self.today)
 
+        self.stock_price = round(self.stock_df.loc[self.stock_df.index[-1]]['Close'],2)
         self.prev_close = round(self.stock_df.loc[self.stock_df.index[-2]]['Close'],2)
         self.todays_open = round(self.stock_df.loc[self.stock_df.index[-1]]['Open'],2)
         self.date = self.stock_df.index[-1]
@@ -115,7 +117,7 @@ class Stock():
             self.mfi_clash = False
             self.mfi_color = 'green'
         
-        # self.get_earnings()
+        self.earnings_call, self.earnings_call_displayed, self.earnings_warning = self.get_earnings()
 
     def stock_regression(self):
         
@@ -160,34 +162,39 @@ class Stock():
         mfi_b = mfi_regressor.intercept_
         return mfi_a
 
-def get_earnings(self):
-    yec = YahooEarningsCalendar()
-    try:
-        timestmp = yec.get_next_earnings_date(self.ticker)
-        earnings_date_obj = datetime.datetime.fromtimestamp(timestmp)
-        stock_data.earnings_call = earnings_date_obj
-    except Exception as e:
-        earnings_date_obj = None    
+    def get_earnings(self):
+        yec = YahooEarningsCalendar()
+        try:
+            timestmp = yec.get_next_earnings_date(self.ticker)
+            earnings_date_obj = datetime.datetime.fromtimestamp(timestmp)
+            earnings_call = earnings_date_obj
+        except Exception as e:
+            earnings_date_obj = None    
 
-    if earnings_date_obj:
-        self.earnings_call_displayed = date_obj_to_date(earnings_date_obj, date_format='slash')
-    
-        if (earnings_date_obj - self.today).days <= 7:
-            self.earnings_warning = 'blink-bg'
+        if earnings_date_obj:
+            earnings_call_displayed = date_obj_to_date(earnings_date_obj, date_format='slash')
+        
+            if (earnings_date_obj - self.today).days <= 7 and (earnings_date_obj - self.today).days >= 0:
+                earnings_warning = 'blink-bg'
+            else:
+                earnings_warning = ''
         else:
-            pass
-    else:
-        pass
+            earnings_call_displayed = None
+            earnings_call = None
+            earnings_warning = ''
 
-def get_dividened(self):
-    try:
-        st = yf.Ticker(self.ticker).dividends.tail(1)
-        stock_data.dividend = float(st.values)
-        date_arr = str(st.index[0]).split(' ')[0].split('-')
-        year = date_arr[0]
-        month = date_arr[1]
-        day = date_arr[2]
-        self.dividend_date = day + '/' + month + '/' + year
-    except:
-        stock_data.dividend = None
-        stock_data.dividend_date = None
+        
+        return earnings_call, earnings_call_displayed, earnings_warning
+
+    def get_dividened(self):
+        try:
+            st = yf.Ticker(self.ticker).dividends.tail(1)
+            stock_data.dividend = float(st.values)
+            date_arr = str(st.index[0]).split(' ')[0].split('-')
+            year = date_arr[0]
+            month = date_arr[1]
+            day = date_arr[2]
+            self.dividend_date = day + '/' + month + '/' + year
+        except:
+            stock_data.dividend = None
+            stock_data.dividend_date = None
