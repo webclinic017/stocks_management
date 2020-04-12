@@ -23,7 +23,7 @@ from .k_utils import change_check, gap_1_check, date_obj_to_date, week_values, w
 
 class Stock():
 
-    def __init__(self, ticker, table_index):
+    def __init__(self, ticker, table_index, ):
         self.today = datetime.datetime.today()
         self.ticker = ticker
         self.table_index = 1
@@ -117,7 +117,8 @@ class Stock():
             self.mfi_clash = False
             self.mfi_color = 'green'
         
-        self.earnings_call, self.earnings_call_displayed, self.earnings_warning = self.get_earnings()
+        # TODO: Upddae earnings dates with task, not during runs
+        # self.earnings_call, self.earnings_call_displayed, self.earnings_warning = self.get_earnings()
 
     def stock_regression(self):
         
@@ -164,6 +165,7 @@ class Stock():
 
     def get_earnings(self):
         yec = YahooEarningsCalendar()
+
         try:
             timestmp = yec.get_next_earnings_date(self.ticker)
             earnings_date_obj = datetime.datetime.fromtimestamp(timestmp)
