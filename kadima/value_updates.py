@@ -109,7 +109,7 @@ def indexes_updates():
     indexes_context = {}
     indeces = ['^IXIC', '^GSPC', '^DJI', '^RUT', '^VIX'] 
     try:
-        index_df = fin_data.get_data_yahoo(indeces , start=TODAY - timedelta(1), end=TODAY)
+        index_df = fin_data.get_data_yahoo(indeces , start=TODAY - timedelta(5), end=TODAY)
         historical = False
  
     except:
@@ -130,21 +130,21 @@ def indexes_updates():
         nasdaq_data = IndicesData()
         nasdaq_data.index_symbol = 'Nasdaq'
         # nasdaq_data.index_prev_close = round(float(nasdaq_df['Close'].iloc[-2]),2)
-        nasdaq_data.index_prev_close = round(index_df['Close']['^IXIC'][0],2)
+        nasdaq_data.index_prev_close = round(index_df['Close']['^IXIC'][-1],2)
         nasdaq_data.index_api_id = 55555
         nasdaq_data.save()
 
         snp_data = IndicesData()
         snp_data.index_symbol = 'S&P'
         # snp_data.index_prev_close = round(float(snp_df['Close'].iloc[-2]),2)
-        snp_data.index_prev_close = round(index_df['Close']['^GSPC'][0],2)
+        snp_data.index_prev_close = round(index_df['Close']['^GSPC'][-1],2)
         snp_data.index_api_id = 88888
         snp_data.save()
 
         dow_data = IndicesData()
         dow_data.index_symbol = 'Dow-Jones'
         # dow_data.index_prev_close = round(float(dow_df['Close'].iloc[-2]),2)
-        dow_data.index_prev_close = round(index_df['Close']['^DJI'][0],2)
+        dow_data.index_prev_close = round(index_df['Close']['^DJI'][-1],2)
         dow_data.index_api_id = 77777
         dow_data.save()
     
