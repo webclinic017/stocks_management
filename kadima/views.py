@@ -395,9 +395,12 @@ def home(request, table_index=1):
                 if (a_stock > 0 and a_macd < 0) or (a_stock < 0 and a_macd > 0):
                     stock_data.macd_clash = True
                     stock_data.macd_color = 'red'
-                else:
+                elif (a_stock < 0 and a_macd < 0) or (a_stock > 0 and a_macd > 0):
                     stock_data.macd_clash = False
                     stock_data.macd_color = 'green'
+                else:
+                    stock_data.macd_clash = None
+                    stock_data.macd_color = ''
 
                 # MFI trend
                 a_mfi = trend_calculator(stock, 'MFI')
@@ -406,10 +409,12 @@ def home(request, table_index=1):
                 if (a_stock > 0 and a_mfi < 0) or (a_stock < 0 and a_mfi > 0):
                     stock_data.mfi_clash = True
                     stock_data.mfi_color = 'red'
-                else:
+                elif (a_stock < 0 and a_mfi < 0) or (a_stock > 0 and a_mfi > 0):
                     stock_data.mfi_clash = False
                     stock_data.mfi_color = 'green'
-
+                else:
+                    stock_data.mfi_clash = None
+                    stock_data.mfi_color = ''
 
                 # Getting the dividend
                 try:

@@ -49,6 +49,7 @@ CORS_ORIGIN_WHITELIST = [
 
 INSTALLED_APPS = [
     'kadima',
+    'dashboard',
     'rest_framework',
     'background_task',
     'corsheaders',

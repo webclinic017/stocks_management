@@ -106,6 +106,9 @@ class Stock():
         if (self.trend > 0 and self.macd < 0) or (self.trend < 0 and self.macd > 0):
             self.macd_clash = True
             self.macd_color = 'red'
+        elif (self.trend < 0 and self.macd < 0) or (self.trend > 0 and self.macd > 0):
+            self.macd_clash = False
+            self.macd_color = 'green'
         else:
             self.macd_clash = False
             self.macd_color = 'green'
@@ -121,8 +124,7 @@ class Stock():
         # self.earnings_call, self.earnings_call_displayed, self.earnings_warning = self.get_earnings()
 
     def stock_regression(self):
-        
-        df = self.stock_df.copy().reset_index()
+        df = self.stock_df.tail(30).copy().reset_index()
         prices = df['Close'].tolist()
         dates = df.index.tolist()
         dates = np.reshape(dates, (len(dates),1))
@@ -134,7 +136,7 @@ class Stock():
         return a
     
     def macd_regression(self):
-        df = self.stock_df.copy().reset_index()
+        df = self.stock_df.tail(30).copy().reset_index()
         dates = df.index.tolist()
         dates = np.reshape(dates, (len(dates),1))
         df_ohlc = df.rename(columns={"High": "high", "Low": "low", 'Open':'open', 'Close':'close', 'Volume':'volume', 'Adj Close':'adj close'})
@@ -146,7 +148,6 @@ class Stock():
 
         macd_a = macd_regressor.coef_[0]
         macd_b = macd_regressor.intercept_
-
         return macd_a
     
     def mfi_regression(self):

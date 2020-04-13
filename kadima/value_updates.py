@@ -49,7 +49,7 @@ def update_values(request):
 
     current_stocks = StockData.objects.all()
 
-    messages.info(request, 'Updading values...')
+    # messages.info(request, 'Updading values...')
 
     for stock in current_stocks:
         stock_to_update = Stock(ticker=stock.ticker, table_index=stock.table_index)
@@ -85,10 +85,13 @@ def update_values(request):
         stock.gap_1_color = stock_to_update.gap_1_color
 
 
-        stock.earnings_call = stock_to_update.earnings_call
-        stock.earnings_call_displayed = stock_to_update.earnings_call_displayed
-        stock.earnings_warning = stock_to_update.earnings_warning
-
+        # stock.earnings_call = stock_to_update.earnings_call
+        # stock.earnings_call_displayed = stock_to_update.earnings_call_displayed
+        # stock.earnings_warning = stock_to_update.earnings_warning
+        
+        stock.stock_trend = stock_to_update.trend
+        
+        stock.macd_trend = stock_to_update.macd
         stock.macd_clash = stock_to_update.macd_clash
         stock.macd_color = stock_to_update.macd_color
 
@@ -130,27 +133,41 @@ def indexes_updates():
         nasdaq_data = IndicesData()
         nasdaq_data.index_symbol = 'Nasdaq'
         # nasdaq_data.index_prev_close = round(float(nasdaq_df['Close'].iloc[-2]),2)
-        nasdaq_data.index_prev_close = round(index_df['Close']['^IXIC'][-1],2)
+        if index_df.index[-1].day == TODAY.day:
+            nasdaq_data.index_prev_close = round(index_df['Close']['^IXIC'][-2],2)
+        else:
+            nasdaq_data.index_prev_close = round(index_df['Close']['^IXIC'][-1],2)
+
         nasdaq_data.index_api_id = 55555
         nasdaq_data.save()
 
         snp_data = IndicesData()
         snp_data.index_symbol = 'S&P'
         # snp_data.index_prev_close = round(float(snp_df['Close'].iloc[-2]),2)
-        snp_data.index_prev_close = round(index_df['Close']['^GSPC'][-1],2)
+
+        if index_df.index[-1].day == TODAY.day:
+            snp_data.index_prev_close = round(index_df['Close']['^GSPC'][-2],2)
+        else:
+            snp_data.index_prev_close = round(index_df['Close']['^GSPC'][-1],2)
+        
         snp_data.index_api_id = 88888
         snp_data.save()
 
         dow_data = IndicesData()
         dow_data.index_symbol = 'Dow-Jones'
         # dow_data.index_prev_close = round(float(dow_df['Close'].iloc[-2]),2)
-        dow_data.index_prev_close = round(index_df['Close']['^DJI'][-1],2)
+        if index_df.index[-1].day == TODAY.day:
+            dow_data.index_prev_close = round(index_df['Close']['^DJI'][-2],2)
+        else:
+            dow_data.index_prev_close = round(index_df['Close']['^DJI'][-1],2)
+        
         dow_data.index_api_id = 77777
         dow_data.save()
     
     except Exception as e:
         logger.error(f'Failed saving indexes data to DB.')
         print(f'Failed daving indexes data to DB')
+        messages.error('Failed to update DB with Indeces data.')
         # return False, e
 
     nasdaq_change = 0 if historical else round(index_df['Close']['^IXIC'].pct_change()[1],2)

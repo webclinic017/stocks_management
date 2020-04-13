@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from kadima import views as views_kadima
 from ib_api import views as views_ib_api
+from dashboard import views as views_dashboard
 
 from rest_framework import routers
 
@@ -33,6 +34,8 @@ urlpatterns = [
     
     path('stock-alarms/', views_kadima.stock_alarms, name='stock-alarms'),
     path('alarm-trigger/', views_kadima.alarm_trigger, name='alarm-trigger'),
+    
+    path('dashboard/', views_dashboard.dashboard, name='dashboard'),
     
 
     path('admin/', admin.site.urls),

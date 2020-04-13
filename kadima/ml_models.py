@@ -20,7 +20,7 @@ START = today - timedelta(30)
 END = today
 
 def stock_regression(stock):
-    df = data.get_data_yahoo(stock.upper(), start=START, end=END)
+    df = data.get_data_yahoo(stock.upper(), start=datetime.datetime.today() - timedelta(44), end=datetime.datetime.today())
     df = df.copy().reset_index()
     prices = df['Close'].tolist()
     dates = df.index.tolist()
@@ -29,12 +29,12 @@ def stock_regression(stock):
     regressor = LinearRegression().fit(dates, prices)
 
     # Slop of Y = ax + b    
-    a = regressor.coef_
+    a = regressor.coef_[0]
     return a
     
 def macd_regression(stock):
-    df = data.get_data_yahoo(stock.upper(), start=START, end=END)
-    df = df.copy().reset_index()
+    df = data.get_data_yahoo(stock.upper(), start=datetime.datetime.today() - timedelta(44), end=datetime.datetime.today())
+    df = df.tail(30).copy().reset_index()
     dates = df.index.tolist()
     dates = np.reshape(dates, (len(dates),1))
     df_ohlc = df.rename(columns={"High": "high", "Low": "low", 'Open':'open', 'Close':'close', 'Volume':'volume', 'Adj Close':'adj close'})
@@ -44,10 +44,9 @@ def macd_regression(stock):
 
     macd_regressor = LinearRegression().fit(dates,df_macd_points)
 
-    a = macd_regressor.coef_
-    b = macd_regressor.intercept_
-    print(a,b)
-    return macd_regressor
+    macd_a = macd_regressor.coef_[0]
+    macd_b = macd_regressor.intercept_
+    return macd_a
 
 def mfi_regression(stock):
     df = data.get_data_yahoo(stock.upper(), start=START-timedelta(14), end=END)
@@ -60,20 +59,18 @@ def mfi_regression(stock):
 
     mfi_regressor = LinearRegression().fit(dates[14:],df_mfi.values[14:])
     
-    a = mfi_regressor.coef_
-    b = mfi_regressor.intercept_
-    print(a,b)
-    return mfi_regressor
+    mfi_a = mfi_regressor.coef_[0]
+    mfi_b = mfi_regressor.intercept_
+    return mfi_a
 
 
 def trend_calculator(stock, indicator):
 
-    if indicator == 'MFI':
-        regressor = mfi_regression(stock)
-    elif indicator == 'MACD':
-        regressor = macd_regression(stock)
-
     # Slop of Y = ax + b    
-    a = regressor.coef_
-    
+
+    if indicator == 'MFI':
+        a = mfi_regression(stock)
+    elif indicator == 'MACD':
+        a = macd_regression(stock)
+
     return a
