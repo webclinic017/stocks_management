@@ -106,7 +106,7 @@ class Stock():
 
         tan_deviation_angle = math.tan(math.radians(settings.DEVIATION_ANGLE))
 
-        if np.abs(self.trend) > tan_deviation_angle and np.abs(self.macd) > tan_deviation_angle:                    
+        if np.abs(self.macd) > tan_deviation_angle:                    
 
             if (self.trend > 0 and self.macd < 0) or (self.trend < 0 and self.macd > 0):
                 self.macd_clash = True
@@ -118,7 +118,7 @@ class Stock():
             self.macd_clash = False
             self.macd_color = 'green'
 
-        if np.abs(self.trend) > tan_deviation_angle and np.abs(self.mfi) > tan_deviation_angle:                    
+        if np.abs(self.mfi) > tan_deviation_angle:                    
 
             if (self.trend > 0 and self.mfi < 0) or (self.trend < 0 and self.mfi > 0):
                 self.mfi_clash = True

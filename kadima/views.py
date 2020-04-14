@@ -394,7 +394,7 @@ def home(request, table_index=1):
                 a_macd = trend_calculator(stock, 'MACD')
                 stock_data.macd_trend = round(a_macd,2)
 
-                if np.abs(a_stock) > tan_deviation_angle and np.abs(a_macd) > tan_deviation_angle:                    
+                if np.abs(a_macd) > tan_deviation_angle:                    
                 
                     if (a_stock > 0 and a_macd < 0) or (a_stock < 0 and a_macd > 0):
                         stock_data.macd_clash = True
@@ -412,7 +412,7 @@ def home(request, table_index=1):
                 stock_data.money_flow_trend = round(a_mfi,2)
 
 
-                if np.abs(a_stock) > tan_deviation_angle and np.abs(a_mfi) > tan_deviation_angle:                    
+                if np.abs(a_mfi) > tan_deviation_angle:                    
 
                         if (a_stock > 0 and a_mfi < 0) or (a_stock < 0 and a_mfi > 0):
                             stock_data.mfi_clash = True
