@@ -21,7 +21,7 @@ END = today
 
 def stock_regression(stock):
     df = data.get_data_yahoo(stock.upper(), start=datetime.datetime.today() - timedelta(44), end=datetime.datetime.today())
-    df = df.copy().reset_index()
+    df = df.tail(22).copy().reset_index()
     prices = df['Close'].tolist()
     dates = df.index.tolist()
     dates = np.reshape(dates, (len(dates),1))
@@ -34,7 +34,7 @@ def stock_regression(stock):
     
 def macd_regression(stock):
     df = data.get_data_yahoo(stock.upper(), start=datetime.datetime.today() - timedelta(44), end=datetime.datetime.today())
-    df = df.tail(30).copy().reset_index()
+    df = df.tail(22).copy().reset_index()
     dates = df.index.tolist()
     dates = np.reshape(dates, (len(dates),1))
     df_ohlc = df.rename(columns={"High": "high", "Low": "low", 'Open':'open', 'Close':'close', 'Volume':'volume', 'Adj Close':'adj close'})
@@ -57,7 +57,7 @@ def mfi_regression(stock):
     df_mfi = TA.MFI(df_ohlc,14)
     df_mfi.fillna(0, inplace=True)
 
-    mfi_regressor = LinearRegression().fit(dates[14:],df_mfi.values[14:])
+    mfi_regressor = LinearRegression().fit(dates[-14:],df_mfi.values[-14:])
     
     mfi_a = mfi_regressor.coef_[0]
     mfi_b = mfi_regressor.intercept_

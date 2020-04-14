@@ -106,22 +106,26 @@ class Stock():
 
         tan_deviation_angle = math.tan(math.radians(settings.DEVIATION_ANGLE))
 
-        if (self.trend > 0 and self.macd < tan_deviation_angle) or (self.trend < 0 and self.macd > tan_deviation_angle):
-            self.macd_clash = True
-            self.macd_color = 'red'
-        elif (self.trend < 0 and self.macd < tan_deviation_angle) or (self.trend > 0 and self.macd > tan_deviation_angle):
-            self.macd_clash = False
-            self.macd_color = 'green'
+        if np.abs(self.trend) > tan_deviation_angle and np.abs(self.macd) > tan_deviation_angle:                    
+
+            if (self.trend > 0 and self.macd < 0) or (self.trend < 0 and self.macd > 0):
+                self.macd_clash = True
+                self.macd_color = 'red'
+            elif (self.trend < 0 and self.macd < 0) or (self.trend > 0 and self.macd > 0):
+                self.macd_clash = False
+                self.macd_color = 'green'
         else:
             self.macd_clash = False
             self.macd_color = 'green'
 
-        if (self.trend > 0 and self.mfi < tan_deviation_angle) or (self.trend < 0 and self.mfi > tan_deviation_angle):
-            self.mfi_clash = True
-            self.mfi_color = 'red'
-        if (self.trend < 0 and self.mfi < tan_deviation_angle) or (self.trend > 0 and self.mfi > tan_deviation_angle):
-            self.mfi_clash = False
-            self.mfi_color = 'green'
+        if np.abs(self.trend) > tan_deviation_angle and np.abs(self.mfi) > tan_deviation_angle:                    
+
+            if (self.trend > 0 and self.mfi < 0) or (self.trend < 0 and self.mfi > 0):
+                self.mfi_clash = True
+                self.mfi_color = 'red'
+            elif (self.trend < 0 and self.mfi < 0) or (self.trend > 0 and self.mfi > 0):
+                self.mfi_clash = False
+                self.mfi_color = 'green'
         else:
             self.mfi_clash = False
             self.mfi_color = 'green'
@@ -130,7 +134,7 @@ class Stock():
         # self.earnings_call, self.earnings_call_displayed, self.earnings_warning = self.get_earnings()
 
     def stock_regression(self):
-        df = self.stock_df.tail(30).copy().reset_index()
+        df = self.stock_df.tail(22).copy().reset_index()
         prices = df['Close'].tolist()
         dates = df.index.tolist()
         dates = np.reshape(dates, (len(dates),1))
@@ -142,7 +146,7 @@ class Stock():
         return a
     
     def macd_regression(self):
-        df = self.stock_df.tail(30).copy().reset_index()
+        df = self.stock_df.tail(22).copy().reset_index()
         dates = df.index.tolist()
         dates = np.reshape(dates, (len(dates),1))
         df_ohlc = df.rename(columns={"High": "high", "Low": "low", 'Open':'open', 'Close':'close', 'Volume':'volume', 'Adj Close':'adj close'})
@@ -164,7 +168,7 @@ class Stock():
         df_mfi = TA.MFI(df_ohlc,14)
         df_mfi.fillna(0, inplace=True)
 
-        mfi_regressor = LinearRegression().fit(dates[14:],df_mfi.values[14:])
+        mfi_regressor = LinearRegression().fit(dates[-14:],df_mfi.values[-14:])
         
         mfi_a = mfi_regressor.coef_[0]
         mfi_b = mfi_regressor.intercept_

@@ -394,29 +394,35 @@ def home(request, table_index=1):
                 a_macd = trend_calculator(stock, 'MACD')
                 stock_data.macd_trend = round(a_macd,2)
 
-                if (a_stock > 0 and a_macd < tan_deviation_angle) or (a_stock < 0 and a_macd > tan_deviation_angle):
-                    stock_data.macd_clash = True
-                    stock_data.macd_color = 'red'
-                elif (a_stock < 0 and a_macd < tan_deviation_angle) or (a_stock > 0 and a_macd > tan_deviation_angle):
+                if np.abs(a_stock) > tan_deviation_angle and np.abs(a_macd) > tan_deviation_angle:                    
+                
+                    if (a_stock > 0 and a_macd < 0) or (a_stock < 0 and a_macd > 0):
+                        stock_data.macd_clash = True
+                        stock_data.macd_color = 'red'
+                    elif (a_stock < 0 and a_macd < 0) or (a_stock > 0 and a_macd > 0):
+                        stock_data.macd_clash = False
+                        stock_data.macd_color = 'green'
+
+                else:
                     stock_data.macd_clash = False
                     stock_data.macd_color = 'green'
-                else:
-                    stock_data.macd_clash = None
-                    stock_data.macd_color = ''
 
                 # MFI trend
                 a_mfi = trend_calculator(stock, 'MFI')
                 stock_data.money_flow_trend = round(a_mfi,2)
 
-                if (a_stock > 0 and a_mfi < tan_deviation_angle) or (a_stock < 0 and a_mfi > tan_deviation_angle):
-                    stock_data.mfi_clash = True
-                    stock_data.mfi_color = 'red'
-                elif (a_stock < 0 and a_mfi < tan_deviation_angle) or (a_stock > 0 and a_mfi > tan_deviation_angle):
+
+                if np.abs(a_stock) > tan_deviation_angle and np.abs(a_mfi) > tan_deviation_angle:                    
+
+                        if (a_stock > 0 and a_mfi < 0) or (a_stock < 0 and a_mfi > 0):
+                            stock_data.mfi_clash = True
+                            stock_data.mfi_color = 'red'
+                        elif (a_stock < 0 and a_mfi < 0) or (a_stock > 0 and a_mfi > 0):
+                            stock_data.mfi_clash = False
+                            stock_data.mfi_color = 'green'
+                else:
                     stock_data.mfi_clash = False
                     stock_data.mfi_color = 'green'
-                else:
-                    stock_data.mfi_clash = None
-                    stock_data.mfi_color = ''
 
                 # Getting the dividend
                 try:
