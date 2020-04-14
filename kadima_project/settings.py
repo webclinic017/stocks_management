@@ -162,3 +162,6 @@ IB_CLIENT_ID = config['IB_CLIENT_ID']
 # IB_PORT = 7497
 # IB_CLIENT_ID = 17
 
+# Clash angle threshhold
+DEVIATION_ANGLE = 15
+

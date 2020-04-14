@@ -384,6 +384,8 @@ def home(request, table_index=1):
                     pass
 
 
+                tan_deviation_angle = math.tan(math.radians(settings.DEVIATION_ANGLE))
+
                 # Stock Trend 
                 a_stock = stock_regression(stock)
                 stock_data.stock_trend = round(a_stock,2)
@@ -392,10 +394,10 @@ def home(request, table_index=1):
                 a_macd = trend_calculator(stock, 'MACD')
                 stock_data.macd_trend = round(a_macd,2)
 
-                if (a_stock > 0 and a_macd < 0) or (a_stock < 0 and a_macd > 0):
+                if (a_stock > 0 and a_macd < tan_deviation_angle) or (a_stock < 0 and a_macd > tan_deviation_angle):
                     stock_data.macd_clash = True
                     stock_data.macd_color = 'red'
-                elif (a_stock < 0 and a_macd < 0) or (a_stock > 0 and a_macd > 0):
+                elif (a_stock < 0 and a_macd < tan_deviation_angle) or (a_stock > 0 and a_macd > tan_deviation_angle):
                     stock_data.macd_clash = False
                     stock_data.macd_color = 'green'
                 else:
@@ -406,10 +408,10 @@ def home(request, table_index=1):
                 a_mfi = trend_calculator(stock, 'MFI')
                 stock_data.money_flow_trend = round(a_mfi,2)
 
-                if (a_stock > 0 and a_mfi < 0) or (a_stock < 0 and a_mfi > 0):
+                if (a_stock > 0 and a_mfi < tan_deviation_angle) or (a_stock < 0 and a_mfi > tan_deviation_angle):
                     stock_data.mfi_clash = True
                     stock_data.mfi_color = 'red'
-                elif (a_stock < 0 and a_mfi < 0) or (a_stock > 0 and a_mfi > 0):
+                elif (a_stock < 0 and a_mfi < tan_deviation_angle) or (a_stock > 0 and a_mfi > tan_deviation_angle):
                     stock_data.mfi_clash = False
                     stock_data.mfi_color = 'green'
                 else:

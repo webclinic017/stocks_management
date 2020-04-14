@@ -1,6 +1,7 @@
 import datetime
 import time
 import json
+import math
 import pandas as pd
 import numpy as np
 from pandas_datareader import data as fin_data
@@ -103,19 +104,24 @@ class Stock():
         self.macd = self.macd_regression()
         self.mfi = self.mfi_regression()
 
-        if (self.trend > 0 and self.macd < 0) or (self.trend < 0 and self.macd > 0):
+        tan_deviation_angle = math.tan(math.radians(settings.DEVIATION_ANGLE))
+
+        if (self.trend > 0 and self.macd < tan_deviation_angle) or (self.trend < 0 and self.macd > tan_deviation_angle):
             self.macd_clash = True
             self.macd_color = 'red'
-        elif (self.trend < 0 and self.macd < 0) or (self.trend > 0 and self.macd > 0):
+        elif (self.trend < 0 and self.macd < tan_deviation_angle) or (self.trend > 0 and self.macd > tan_deviation_angle):
             self.macd_clash = False
             self.macd_color = 'green'
         else:
             self.macd_clash = False
             self.macd_color = 'green'
 
-        if (self.trend > 0 and self.mfi < 0) or (self.trend < 0 and self.mfi > 0):
+        if (self.trend > 0 and self.mfi < tan_deviation_angle) or (self.trend < 0 and self.mfi > tan_deviation_angle):
             self.mfi_clash = True
             self.mfi_color = 'red'
+        if (self.trend < 0 and self.mfi < tan_deviation_angle) or (self.trend > 0 and self.mfi > tan_deviation_angle):
+            self.mfi_clash = False
+            self.mfi_color = 'green'
         else:
             self.mfi_clash = False
             self.mfi_color = 'green'
