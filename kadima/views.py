@@ -244,6 +244,8 @@ def home(request, table_index=1):
     context = {}
     context['table_index'] = table_index
     ib_api_connected = api_connection_status()
+    sample_period = StockData.objects.last().sample_period_14
+    context['sample_period_14'] = sample_period
 
     context['ib_api_connected'] = ib_api_connected
 
@@ -386,43 +388,83 @@ def home(request, table_index=1):
 
                 tan_deviation_angle = math.tan(math.radians(settings.DEVIATION_ANGLE))
 
-                # Stock Trend 
-                a_stock = stock_regression(stock)
-                stock_data.stock_trend = round(a_stock,2)
+
+                # Stock Trend - 30 days sample
+                a_stock_30 = stock_regression(stock, 30)
+                stock_data.stock_trend_30 = round(a_stock_30,2)
 
                 # MACD trend
-                a_macd = trend_calculator(stock, 'MACD')
-                stock_data.macd_trend = round(a_macd,2)
+                a_macd_30 = trend_calculator(stock, 'MACD', period=30)
+                stock_data.macd_trend_30 = round(a_macd_30,2)
 
-                if np.abs(a_macd) > tan_deviation_angle:                    
+                if np.abs(a_macd_30) > tan_deviation_angle:                    
                 
-                    if (a_stock > 0 and a_macd < 0) or (a_stock < 0 and a_macd > 0):
-                        stock_data.macd_clash = True
-                        stock_data.macd_color = 'red'
-                    elif (a_stock < 0 and a_macd < 0) or (a_stock > 0 and a_macd > 0):
-                        stock_data.macd_clash = False
-                        stock_data.macd_color = 'green'
+                    if (a_stock_30 > 0 and a_macd_30 < 0) or (a_stock_30 < 0 and a_macd_30 > 0):
+                        stock_data.macd_30_clash = True
+                        stock_data.macd_30_color = 'red'
+                    elif (a_stock_30 < 0 and a_macd_30 < 0) or (a_stock_30 > 0 and a_macd_30 > 0):
+                        stock_data.macd_30_clash = False
+                        stock_data.macd_30_color = 'green'
 
                 else:
-                    stock_data.macd_clash = False
-                    stock_data.macd_color = 'green'
+                    stock_data.macd_30_clash = False
+                    stock_data.macd_30_color = 'green'
 
                 # MFI trend
-                a_mfi = trend_calculator(stock, 'MFI')
-                stock_data.money_flow_trend = round(a_mfi,2)
+                a_mfi_30 = trend_calculator(stock, 'MFI', period=30)
+                stock_data.money_flow_trend_30 = round(a_mfi_30,2)
 
 
-                if np.abs(a_mfi) > tan_deviation_angle:                    
+                if np.abs(a_mfi_30) > tan_deviation_angle:                    
 
-                        if (a_stock > 0 and a_mfi < 0) or (a_stock < 0 and a_mfi > 0):
-                            stock_data.mfi_clash = True
-                            stock_data.mfi_color = 'red'
-                        elif (a_stock < 0 and a_mfi < 0) or (a_stock > 0 and a_mfi > 0):
-                            stock_data.mfi_clash = False
-                            stock_data.mfi_color = 'green'
+                        if (a_stock_30 > 0 and a_mfi_30 < 0) or (a_stock_30 < 0 and a_mfi_30 > 0):
+                            stock_data.mfi_30_clash = True
+                            stock_data.mfi_30_color = 'red'
+                        elif (a_stock_30 < 0 and a_mfi_30 < 0) or (a_stock_30 > 0 and a_mfi_30 > 0):
+                            stock_data.mfi_30_clash = False
+                            stock_data.mfi_30_color = 'green'
                 else:
-                    stock_data.mfi_clash = False
-                    stock_data.mfi_color = 'green'
+                    stock_data.mfi_30_clash = False
+                    stock_data.mfi_30_color = 'green'
+
+                # Stock Trend - 14 days sample
+                a_stock_14 = stock_regression(stock, 14)
+                stock_data.stock_trend_14 = round(a_stock_14,2)
+
+                # MACD trend
+                a_macd_14 = trend_calculator(stock, 'MACD', period=14)
+                stock_data.macd_trend_14 = round(a_macd_14,2)
+
+                if np.abs(a_macd_14) > tan_deviation_angle:                    
+                
+                    if (a_stock_14 > 0 and a_macd_14 < 0) or (a_stock_14 < 0 and a_macd_14 > 0):
+                        stock_data.macd_14_clash = True
+                        stock_data.macd_14_color = 'red'
+                    elif (a_stock_14 < 0 and a_macd_14 < 0) or (a_stock_14 > 0 and a_macd_14 > 0):
+                        stock_data.macd_14_clash = False
+                        stock_data.macd_14_color = 'green'
+
+                else:
+                    stock_data.macd_14_clash = False
+                    stock_data.macd_14_color = 'green'
+
+                # MFI trend
+                a_mfi_14 = trend_calculator(stock, 'MFI', period=14)
+                stock_data.money_flow_trend_14 = round(a_mfi_14,2)
+
+
+                if np.abs(a_mfi_30) > tan_deviation_angle:                    
+
+                        if (a_stock_14 > 0 and a_mfi_14 < 0) or (a_stock_14 < 0 and a_mfi_14 > 0):
+                            stock_data.mfi_14_clash = True
+                            stock_data.mfi_14_color = 'red'
+                        elif (a_stock_14 < 0 and a_mfi_14 < 0) or (a_stock_14 > 0 and a_mfi_14 > 0):
+                            stock_data.mfi_14_clash = False
+                            stock_data.mfi_14_color = 'green'
+                else:
+                    stock_data.mfi_14_clash = False
+                    stock_data.mfi_14_color = 'green'
+
 
                 # Getting the dividend
                 try:
@@ -461,6 +503,19 @@ def home(request, table_index=1):
 
             return render(request, 'kadima/home.html', context)
         
+        elif 'sample_period' in request.POST:
+            stocks = StockData.objects.all()
+            for stock in stocks:
+                if request.POST['sample_period'] == '14':
+                    stock.sample_period_14 = True
+                    stock.save()
+                    context['sample_period_14'] = True
+
+                else:
+                    stock.sample_period_14 = False
+                    stock.save()
+                    context['sample_period_14'] = False
+
         elif 'delete_stock' in request.POST:
             old_stocks = StockData.objects.all()
             old_stocks_list = []

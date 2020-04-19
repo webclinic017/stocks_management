@@ -35,9 +35,12 @@ class Stock():
         self.prev_close = None
         self.todays_open = None
 
-        self.trend = None
-        self.macd = None
-        self.mfi = None
+        self.trend_30 = None
+        self.trend_14 = None
+        self.macd_30 = None
+        self.macd_14 = None
+        self.mfi_30 = None
+        self.mfi_14 = None
 
         self.week_1 = None
         self.week_1_min = None
@@ -64,10 +67,17 @@ class Stock():
         self.gap_1_color = ''
         # updading_gap_1_flag = models.BooleanField(default=False, null=True)
 
-        self.macd_clash = False
-        self.mfi_clash = False
-        self.macd_color = ''
-        self.mfi_color = ''
+        self.macd_30_clash = False
+        self.macd_14_clash = False
+
+        self.macd_30_color = ''
+        self.macd_14_color = ''
+
+        self.mfi_30_clash = False
+        self.mfi_14_clash = False
+
+        self.mfi_30_color = ''
+        self.mfi_14_color = ''
 
         self.earnings_call = None
         self.earnings_call_displayed = ''
@@ -100,41 +110,73 @@ class Stock():
         self.week_3_color = week_color(self.week_3, week3=True)
         self.week_5_color = week_color(self.week_5)
 
-        self.trend = self.stock_regression()
-        self.macd = self.macd_regression()
-        self.mfi = self.mfi_regression()
+        self.trend_30 = self.stock_regression(30)
+        self.trend_14 = self.stock_regression(14)
+
+        self.macd_30 = self.macd_regression(30)
+        self.macd_14 = self.macd_regression(14)
+
+        self.mfi_30 = self.mfi_regression(30)
+        self.mfi_14 = self.mfi_regression(14)
 
         tan_deviation_angle = math.tan(math.radians(settings.DEVIATION_ANGLE))
 
-        if np.abs(self.macd) > tan_deviation_angle:                    
+        if np.abs(self.macd_30) > tan_deviation_angle:                    
 
-            if (self.trend > 0 and self.macd < 0) or (self.trend < 0 and self.macd > 0):
-                self.macd_clash = True
-                self.macd_color = 'red'
-            elif (self.trend < 0 and self.macd < 0) or (self.trend > 0 and self.macd > 0):
-                self.macd_clash = False
-                self.macd_color = 'green'
+            if (self.trend_30 > 0 and self.macd_30 < 0) or (self.trend_30 < 0 and self.macd_30 > 0):
+                self.macd_30_clash = True
+                self.macd_30_color = 'red'
+            elif (self.trend_30 < 0 and self.macd_30 < 0) or (self.trend_30 > 0 and self.macd_30 > 0):
+                self.macd_30_clash = False
+                self.macd_30_color = 'green'
         else:
-            self.macd_clash = False
-            self.macd_color = 'green'
+            self.macd_30_clash = False
+            self.macd_30_color = 'green'
 
-        if np.abs(self.mfi) > tan_deviation_angle:                    
+        if np.abs(self.macd_14) > tan_deviation_angle:                    
 
-            if (self.trend > 0 and self.mfi < 0) or (self.trend < 0 and self.mfi > 0):
-                self.mfi_clash = True
-                self.mfi_color = 'red'
-            elif (self.trend < 0 and self.mfi < 0) or (self.trend > 0 and self.mfi > 0):
-                self.mfi_clash = False
-                self.mfi_color = 'green'
+            if (self.trend_14 > 0 and self.macd_14 < 0) or (self.trend_14 < 0 and self.macd_14 > 0):
+                self.macd_14_clash = True
+                self.macd_14_color = 'red'
+            elif (self.trend_14 < 0 and self.macd_14 < 0) or (self.trend_14 > 0 and self.macd_14 > 0):
+                self.macd_14_clash = False
+                self.macd_14_color = 'green'
         else:
-            self.mfi_clash = False
-            self.mfi_color = 'green'
-        
+            self.macd_14_clash = False
+            self.macd_14_color = 'green'
+
+
+        if np.abs(self.mfi_30) > tan_deviation_angle:                    
+
+            if (self.trend_30 > 0 and self.mfi_30 < 0) or (self.trend_30 < 0 and self.mfi_30 > 0):
+                self.mfi_30_clash = True
+                self.mfi_30_color = 'red'
+            elif (self.trend_30 < 0 and self.mfi_30 < 0) or (self.trend_30 > 0 and self.mfi_30 > 0):
+                self.mfi_30_clash = False
+                self.mfi_30_color = 'green'
+        else:
+            self.mfi_30_clash = False
+            self.mfi_30_color = 'green'
+
+
+        if np.abs(self.mfi_14) > tan_deviation_angle:                    
+
+            if (self.trend_14 > 0 and self.mfi_14 < 0) or (self.trend_14 < 0 and self.mfi_14 > 0):
+                self.mfi_14_clash = True
+                self.mfi_14_color = 'red'
+            elif (self.trend_14 < 0 and self.mfi_14 < 0) or (self.trend_14 > 0 and self.mfi_14 > 0):
+                self.mfi_14_clash = False
+                self.mfi_14_color = 'green'
+        else:
+            self.mfi_14_clash = False
+            self.mfi_14_color = 'green'
+
+
         # TODO: Upddae earnings dates with task, not during runs
         # self.earnings_call, self.earnings_call_displayed, self.earnings_warning = self.get_earnings()
 
-    def stock_regression(self):
-        df = self.stock_df.tail(22).copy().reset_index()
+    def stock_regression(self, period):
+        df = self.stock_df.tail(period).copy().reset_index()
         prices = df['Close'].tolist()
         dates = df.index.tolist()
         dates = np.reshape(dates, (len(dates),1))
@@ -145,8 +187,8 @@ class Stock():
         a = regressor.coef_[0]
         return a
     
-    def macd_regression(self):
-        df = self.stock_df.tail(22).copy().reset_index()
+    def macd_regression(self,period):
+        df = self.stock_df.tail(period).copy().reset_index()
         dates = df.index.tolist()
         dates = np.reshape(dates, (len(dates),1))
         df_ohlc = df.rename(columns={"High": "high", "Low": "low", 'Open':'open', 'Close':'close', 'Volume':'volume', 'Adj Close':'adj close'})
@@ -160,8 +202,8 @@ class Stock():
         macd_b = macd_regressor.intercept_
         return macd_a
     
-    def mfi_regression(self):
-        df = self.stock_df.copy().reset_index()
+    def mfi_regression(self,period):
+        df = self.stock_df.tail(period+14).copy().reset_index()
         dates = df.index.tolist()
         dates = np.reshape(dates, (len(dates),1))
         df_ohlc = df.rename(columns={"High": "high", "Low": "low", 'Open':'open', 'Close':'close', 'Volume':'volume', 'Adj Close':'adj close'})

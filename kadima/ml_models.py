@@ -19,9 +19,9 @@ today = datetime.datetime.today()
 START = today - timedelta(30) 
 END = today
 
-def stock_regression(stock):
+def stock_regression(stock, period):
     df = data.get_data_yahoo(stock.upper(), start=datetime.datetime.today() - timedelta(44), end=datetime.datetime.today())
-    df = df.tail(22).copy().reset_index()
+    df = df.tail(period).copy().reset_index()
     prices = df['Close'].tolist()
     dates = df.index.tolist()
     dates = np.reshape(dates, (len(dates),1))
@@ -32,9 +32,9 @@ def stock_regression(stock):
     a = regressor.coef_[0]
     return a
     
-def macd_regression(stock):
+def macd_regression(stock,period):
     df = data.get_data_yahoo(stock.upper(), start=datetime.datetime.today() - timedelta(44), end=datetime.datetime.today())
-    df = df.tail(22).copy().reset_index()
+    df = df.tail(period).copy().reset_index()
     dates = df.index.tolist()
     dates = np.reshape(dates, (len(dates),1))
     df_ohlc = df.rename(columns={"High": "high", "Low": "low", 'Open':'open', 'Close':'close', 'Volume':'volume', 'Adj Close':'adj close'})
@@ -48,9 +48,9 @@ def macd_regression(stock):
     macd_b = macd_regressor.intercept_
     return macd_a
 
-def mfi_regression(stock):
+def mfi_regression(stock, period):
     df = data.get_data_yahoo(stock.upper(), start=START-timedelta(14), end=END)
-    df = df.copy().reset_index()
+    df = df.tail(period+14).copy().reset_index()
     dates = df.index.tolist()
     dates = np.reshape(dates, (len(dates),1))
     df_ohlc = df.rename(columns={"High": "high", "Low": "low", 'Open':'open', 'Close':'close', 'Volume':'volume', 'Adj Close':'adj close'})
@@ -64,13 +64,13 @@ def mfi_regression(stock):
     return mfi_a
 
 
-def trend_calculator(stock, indicator):
+def trend_calculator(stock, indicator, period):
 
     # Slop of Y = ax + b    
 
     if indicator == 'MFI':
-        a = mfi_regression(stock)
+        a = mfi_regression(stock, period)
     elif indicator == 'MACD':
-        a = macd_regression(stock)
+        a = macd_regression(stock, period)
 
     return a

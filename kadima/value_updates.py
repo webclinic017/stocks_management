@@ -89,14 +89,23 @@ def update_values(request):
         # stock.earnings_call_displayed = stock_to_update.earnings_call_displayed
         # stock.earnings_warning = stock_to_update.earnings_warning
         
-        stock.stock_trend = stock_to_update.trend
+        stock.stock_trend_30 = stock_to_update.trend_30
         
-        stock.macd_trend = stock_to_update.macd
-        stock.macd_clash = stock_to_update.macd_clash
-        stock.macd_color = stock_to_update.macd_color
+        stock.macd_trend_30 = stock_to_update.macd_30
+        stock.macd_30_clash = stock_to_update.macd_30_clash
+        stock.macd_30_color = stock_to_update.macd_30_color
 
-        stock.mfi_clash = stock_to_update.mfi_clash
-        stock.mfi_color = stock_to_update.mfi_color
+        stock.macd_trend_14 = stock_to_update.macd_14
+        stock.macd_14_clash = stock_to_update.macd_14_clash
+        stock.macd_14_color = stock_to_update.macd_14_color
+
+        stock.money_flow_trend_30 = stock_to_update.mfi_30
+        stock.mfi_30_clash = stock_to_update.mfi_30_clash
+        stock.mfi_30_color = stock_to_update.mfi_30_color
+
+        stock.money_flow_trend_14 = stock_to_update.mfi_14
+        stock.mfi_14_clash = stock_to_update.mfi_14_clash
+        stock.mfi_14_color = stock_to_update.mfi_14_color
 
         stock.save()
 

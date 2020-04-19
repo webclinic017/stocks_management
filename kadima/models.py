@@ -15,9 +15,16 @@ class StockData(models.Model):
     prev_close = models.FloatField(null=True)
     todays_open = models.FloatField(null=True)
 
-    stock_trend = models.FloatField(null=True)
-    macd_trend = models.FloatField(null=True)
-    money_flow_trend = models.FloatField(null=True)
+    sample_period_14 = models.BooleanField(default=False)
+
+    stock_trend_30 = models.FloatField(null=True)
+    stock_trend_14 = models.FloatField(null=True)
+
+    macd_trend_30 = models.FloatField(null=True)
+    macd_trend_14 = models.FloatField(null=True)
+
+    money_flow_trend_30 = models.FloatField(null=True)
+    money_flow_trend_14 = models.FloatField(null=True)
 
     week_1 = models.FloatField(null=True)
     week_1_min = models.FloatField(null=True)
@@ -54,10 +61,16 @@ class StockData(models.Model):
     earnings_call_displayed = models.CharField(max_length=100, null=True)
     earnings_warning = models.CharField(max_length=100, null=True)
 
-    macd_clash = models.BooleanField(null=True, default=False)
-    mfi_clash = models.BooleanField(null=True, default=False)
-    macd_color = models.CharField(max_length=100)
-    mfi_color = models.CharField(max_length=100)
+    macd_30_clash = models.BooleanField(null=True, default=False)
+    macd_14_clash = models.BooleanField(null=True, default=False)
+    macd_30_color = models.CharField(max_length=100)
+    macd_14_color = models.CharField(max_length=100)
+    
+    mfi_30_clash = models.BooleanField(null=True, default=False)
+    mfi_14_clash = models.BooleanField(null=True, default=False)
+    mfi_30_color = models.CharField(max_length=100)
+    mfi_14_color = models.CharField(max_length=100)
+
 
     dividend_date = models.CharField(max_length=100,null=True)
     dividend = models.FloatField(null=True)
