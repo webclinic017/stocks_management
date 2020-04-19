@@ -503,7 +503,8 @@ def home(request, table_index=1):
 
             return render(request, 'kadima/home.html', context)
         
-        elif 'sample_period' in request.POST:
+        elif 'update_sample_period' in request.POST:
+            print('SAMPLING')
             stocks = StockData.objects.all()
             for stock in stocks:
                 if request.POST['sample_period'] == '14':
@@ -517,6 +518,7 @@ def home(request, table_index=1):
                     context['sample_period_14'] = False
 
         elif 'delete_stock' in request.POST:
+            print('POP')
             old_stocks = StockData.objects.all()
             old_stocks_list = []
             for stock in old_stocks:
