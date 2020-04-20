@@ -272,15 +272,15 @@ def home(request, table_index=1):
     #########################
     
     # Updating indexes data every time homepage rendered
-    indexes_update_done, indexes_info = indexes_updates()
+    # indexes_update_done, indexes_info = indexes_updates()
 
-    if indexes_update_done:
-        print('Finished updating indexes')
-        context.update(indexes_info)
-    else:
-        messages.error(request, 'Failed updating indexes.')
-        logger.error('Failed updating indexes.')
-        print('Failed updating indexes.')
+    # if indexes_update_done:
+    #     print('Finished updating indexes')
+    #     context.update(indexes_info)
+    # else:
+    #     messages.error(request, 'Failed updating indexes.')
+    #     logger.error('Failed updating indexes.')
+    #     print('Failed updating indexes.')
 
 
     # Stock data will be updated at API connect

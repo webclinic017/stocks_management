@@ -35,12 +35,12 @@ def update_values(request):
     errors = {}
 
     # Indexes update
-    indexes_update_done, indexes_info = indexes_updates()
+    # indexes_update_done, indexes_info = indexes_updates()
 
-    if indexes_update_done:
-        context.update(indexes_info)
-    else:
-        errors['indexes'] = True
+    # if indexes_update_done:
+    #     context.update(indexes_info)
+    # else:
+    #     errors['indexes'] = True
 
 
     start_run = time.perf_counter()
