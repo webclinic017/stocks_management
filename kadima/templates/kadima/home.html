@@ -7,16 +7,6 @@
             </div>
         {% else %}
           <div class="row sticky-top" id="indeces_delayed" style="background-color: #1e1d2e;">
-              <!-- <div class="col-lg-2 ">
-                  <form method="POST" action="" enctype="multipart/form-data">{% csrf_token %}
-                  {% if ib_api_connected %}
-                    <button type="submit" name="connect_ib_api" class="btn btn-success" disabled> IB API Connected </button>
-                    <button type="submit" name="disconnect_ib_api" class="btn btn-danger"> Disconnect </button>
-                    {% else %}
-                    <button type="submit" name="connect_ib_api" class="btn btn-default" > Connect API </button>
-                  {% endif %}
-                </form>
-              </div> -->
               <div class="col-lg-2 ">
                 <div class="card card-chart " style="background-color:{{ dow_color }};">
                   <div class="card-header">
@@ -24,11 +14,6 @@
                     <h3 class="card-title"><i class="text-primary"></i>{{ dow_value }}</h3>
                     <h1 class="card-title" style="color: black;"><i class="text-primary" style="color: black;"></i>{{ dow_change }}%</h1>
                   </div>
-                  <!-- <div class="card-body">
-                    <div class="chart-area">
-                      <canvas id="chartLinePurple"></canvas>
-                    </div>
-                  </div> -->
                 </div>
               </div>
               <div class="col-lg-2">
@@ -38,11 +23,6 @@
                     <h3 class="card-title"><i class="text-info"></i> {{ snp_value }}</h3>
                     <h1 class="card-title" style="color: black;"><i class="text-info" style="color: black;"></i> {{ snp_change }}%</h1>
                   </div>
-                  <!-- <div class="card-body">
-                    <div class="chart-area">
-                      <canvas id="CountryChart"></canvas>
-                    </div>
-                  </div> -->
                 </div>
               </div>
               <div class="col-lg-2">
@@ -52,11 +32,6 @@
                     <h3 class="card-title"><i class="text-success"></i> {{ nas_value }}</h3>
                     <h1 class="card-title" style="color: black;"><i style="color: black;"></i> {{ nas_change }}%</h1>
                   </div>
-                  <!-- <div class="card-body">
-                    <div class="chart-area">
-                      <canvas id="chartLineGreen"></canvas>
-                    </div>
-                  </div> -->
                 </div>
               </div>
             </div>

@@ -244,7 +244,12 @@ def home(request, table_index=1):
     context = {}
     context['table_index'] = table_index
     ib_api_connected = api_connection_status()
-    sample_period = StockData.objects.last().sample_period_14
+
+    try:
+        sample_period = StockData.objects.last().sample_period_14
+    except:
+        sample_period = None
+        
     context['sample_period_14'] = sample_period
 
     context['ib_api_connected'] = ib_api_connected
