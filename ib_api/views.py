@@ -175,12 +175,14 @@ def indeces_data(request):
         pass
 
     dow_close = IndicesData.objects.get(index_api_id=77777).index_prev_close
-    # dow_current_value = IndicesData.objects.get(index_api_id=77777).index_current_value
 
     snp_close = IndicesData.objects.get(index_api_id=88888).index_prev_close
 
     nas_close = IndicesData.objects.get(index_api_id=55555).index_prev_close
-    # nas_current_value = IndicesData.objects.get(index_api_id=55555).index_current_value
+
+    vix_close = IndicesData.objects.get(index_api_id=11111).index_prev_close
+
+    r2k_close = IndicesData.objects.get(index_api_id=22222).index_prev_close
 
     try:
         dow_value = stock_dick[77777]
@@ -206,17 +208,41 @@ def indeces_data(request):
         nas_value = -1.0
         nas_change = -1.0
 
+    try:
+        vix_value = stock_dick[11111]
+        vix_change = round(100 * (stock_dick[11111] - vix_close) / vix_close,2)
+    except Exception as e:
+        print(f'Failed calculating vix_change. Reason: {e}')
+        vix_value = -1.0
+        vix_change = -1.0
+
+    try:
+        r2k_value = stock_dick[22222]
+        r2k_change = round(100 * (stock_dick[22222] - r2k_close) / r2k_close,2)
+    except Exception as e:
+        print(f'Failed calculating r2k_change. Reason: {e}')
+        r2k_value = -1.0
+        r2k_change = -1.0
+
 
     context = {
         'dow_value': round(dow_value,2), 
         'snp_value': round(snp_current_value,2),
         'nas_value': round(nas_value,2),
+        'vix_value': round(vix_value,2),
+        'r2k_value': round(r2k_value,2),
+
         'dow_change': dow_change,
         'snp_change': snp_change,
         'nas_change': nas_change,
+        'vix_change': vix_change,
+        'r2k_change': r2k_change,
+
         'snp_color': change_check(snp_change),
         'dow_color': change_check(dow_change),
         'nas_color': change_check(nas_change),
+        'vix_color': change_check(vix_change),
+        'r2k_color': change_check(r2k_change),
 
         'ib_api_connected': connection_status
     }
@@ -438,6 +464,19 @@ def ib_stock_api(old_stocks_list, stocks, action):
         contract.currency = "USD"
         contract.exchange = "CME"
         app.reqMktData(77777, contract, 221, False, False, [])
+
+        contract.symbol = "VIX"
+        contract.secType = "IND"
+        contract.currency = "USD"
+        contract.exchange = "CBOE"
+        app.reqMktData(11111, contract, 221, False, False, [])
+
+        contract.symbol = "RUT"
+        contract.secType = "IND"
+        contract.currency = "USD"
+        contract.exchange = "RUSSELL"
+        app.reqMktData(22222, contract, 221, False, False, [])
+
 
         sleep(2)
 

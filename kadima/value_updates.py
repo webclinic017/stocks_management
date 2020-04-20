@@ -172,7 +172,29 @@ def indexes_updates():
         
         dow_data.index_api_id = 77777
         dow_data.save()
-    
+
+        vix_data = IndicesData()
+        vix_data.index_symbol = 'VIX'
+        if index_df.index[-1].day == TODAY.day:
+            vix_data.index_prev_close = round(index_df['Close']['^VIX'][-2],2)
+        else:
+            vix_data.index_prev_close = round(index_df['Close']['^VIX'][-1],2)
+        
+        vix_data.index_api_id = 11111
+        vix_data.save()
+
+        r2k_data = IndicesData()
+        r2k_data.index_symbol = 'Russell-2k'
+        # dow_data.index_prev_close = round(float(dow_df['Close'].iloc[-2]),2)
+        if index_df.index[-1].day == TODAY.day:
+            r2k_data.index_prev_close = round(index_df['Close']['^RUT'][-2],2)
+        else:
+            r2k_data.index_prev_close = round(index_df['Close']['^RUT'][-1],2)
+        
+        r2k_data.index_api_id = 22222
+        r2k_data.save()
+
+
     except Exception as e:
         logger.error(f'Failed saving indexes data to DB.')
         print(f'Failed daving indexes data to DB')
@@ -182,18 +204,26 @@ def indexes_updates():
     nasdaq_change = 0 if historical else round(index_df['Close']['^IXIC'].pct_change()[1],2)
     snp_change = 0 if historical else round(index_df['Close']['^GSPC'].pct_change()[1],2)
     dow_change = 0 if historical else round(index_df['Close']['^DJI'].pct_change()[1],2)
+    vix_change = 0 if historical else round(index_df['Close']['^VIX'].pct_change()[1],2)
+    r2k_change = 0 if historical else round(index_df['Close']['^RUT'].pct_change()[1],2)
 
     indexes_context['nas_value'] = historical_index_data[0] if historical else round(index_df['Close']['^IXIC'][1],2)
     indexes_context['snp_value'] = historical_index_data[1] if historical else round(index_df['Close']['^GSPC'][1],2)
     indexes_context['dow_value'] = historical_index_data[2] if historical else round(index_df['Close']['^DJI'][1],2)
+    indexes_context['vix_value'] = historical_index_data[2] if historical else round(index_df['Close']['^VIX'][1],2)
+    indexes_context['r2k_value'] = historical_index_data[2] if historical else round(index_df['Close']['^RUT'][1],2)
 
     indexes_context['nas_color'] = change_check(nasdaq_change)
     indexes_context['snp_color'] = change_check(snp_change)
     indexes_context['dow_color'] = change_check(dow_change)
+    indexes_context['vix_color'] = change_check(vix_change)
+    indexes_context['r2k_color'] = change_check(r2k_change)
 
     indexes_context['nas_change'] = float("%0.2f"%(nasdaq_change * 100))
     indexes_context['snp_change'] = float("%0.2f"%(snp_change * 100))
     indexes_context['dow_change'] = float("%0.2f"%(dow_change * 100))
+    indexes_context['vix_change'] = float("%0.2f"%(vix_change * 100))
+    indexes_context['r2k_change'] = float("%0.2f"%(r2k_change * 100))
 
     return True, indexes_context
 
