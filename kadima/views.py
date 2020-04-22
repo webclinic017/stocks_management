@@ -611,8 +611,8 @@ def api_connect(request):
     return
 
 def api_disconnect(request):
-    print('Updating values before disconnecting')
-    update_values(request)
+    # print('Updating values before disconnecting')
+    # update_values(request)
 
     print('Stopping the IB API...')
     ib_api_wrapper(request,action=STOP_API )
