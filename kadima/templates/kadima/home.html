@@ -1,12 +1,17 @@
 {% extends 'kadima/base.html' %}
+{% load static %}
 {% block content %}
 
-      <div class="content">
+  <div class="content" style="padding-top: 1rem !important;">
+        <!-- <div class="loader hidden">
+          <img src="{% static 'assets/img/loader.gif' %}" alt="Loading...">
+        </div> -->
+      
         {% if ib_api_connected %}
             <div class="row sticky-top" id="indeces" style="background-color: #1e1d2e;" indeces_url="{% url 'indeces-data' %}">
             </div>
         {% else %}
-          <div class="row sticky-top" id="indeces_delayed" style="background-color: #1e1d2e;">
+          <div class="row sticky-top" id="indeces_delayed" style="background-color: #1e1d2e; top: 0 !important">
               <div class="col-lg-2">
                 <div class="card card-chart" style="background-color:{{ snp_color }};">
                   <div class="card-header">
@@ -51,19 +56,38 @@
         {% endif %}
         
         <div class="row">
-            <div class="col-md-5 pr-md-1">
+            <div class="col-md-12 pr-md-1">
                 <form method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
-                    <div class="row">
-                      <div class="col-md-5 pr-md-1">
+                    <div class="row" style="padding-bottom: 0 !important;">
+                      <div class="col-2" style="border-right: 1px solid white;">
+                        <div class="form-group">
+                            <h4 class="card-title" id="table_index" value="{% url 'stock-data-api' table_index=table_index %}" >Stock Table {{ table_index }}</h4>
+                            <p class="category"> Information about individual stocks</p>
+                        </div>
+                      </div>
+                      <div class="col-md-3 pr-md-1">
                         <div class="form-group">
                           <label style="color: aliceblue;">Enter stock to to add to the table</label>
                           <input type="text" class="form-control" name="stock" placeholder="Stock ticker, e.g. AAPL">
                         </div>
                       </div>
-                      <div class="col-md-5 pr-md-1 mt-auto">
-                        <button type="submit" name="add_stock" class="btn btn-fill btn-secondary bg-secondary">Add</button>
-                      </div>
+                      <div class="col-md-1 pr-md-1 pt-4" style="border-right: 1px solid white;">
+                        <input type="submit" name="add_stock" class="btn btn-fill btn-secondary bg-secondary" value='Add'>
+                      </div>                        <div class="col-3">
+                          <h6>Change sapmling period. Current is {% if sample_period_14 %} 14 {% else %} 30 {% endif %} days.</h6>
+                          <div class="pt-2">
+                            <select name="sample_period" id="sample_period">
+                              <option value="">------------</option>
+                              {% if sample_period_14 %}
+                                <option value="30">30 Days</option> 
+                              {% else %}
+                                <option value="14">14 Days</option>
+                              {% endif %}
+                            </select>
+                            <input type="submit" name="update_sample_period" class="btn btn-fill btn-sm" value='Update' >
+                          </div>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -81,29 +105,8 @@
             <form method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
             <div class="card  card-plain">
-              <div class="row">
-                <div class="col-6">
-                  <div class="card-header">
-                    <h4 class="card-title" id="table_index" value="{% url 'stock-data-api' table_index=table_index %}" >Stock Table {{ table_index }}</h4>
-                    <p class="category"> Information about individual stocks</p>
-                  </div>    
-                </div>
-                  <div class="col-6">
-                    <h6>Change sapmling period. Current is {% if sample_period_14 %} 14 {% else %} 30 {% endif %} days.</h6>
-                    <div>
-                      <select name="sample_period" id="sample_period">
-                        <option value="">------------</option>
-                        {% if sample_period_14 %}
-                          <option value="30">30 Days</option> 
-                        {% else %}
-                          <option value="14">14 Days</option>
-                        {% endif %}
-                      </select>
-                      <button type="submit" name="update_sample_period" class="btn btn-fill btn-sm">Update</button>
-                    </div>
-                  </div>
-              </div>
               <div class="card-body">
+
                 {% if ib_api_connected %}
                   <div class="table-responsive" id="stocks_table">
                     <!-- API DATA -->
@@ -113,6 +116,9 @@
                     <table id="example" class="table table-striped table-bordered" style="width:100%">
                       <thead class=" text-primary">
                         <tr>
+                          <th>
+                            #
+                          </th>
                           <th>
                             <!-- <button type="submit" name="sort_by_date" class="text-primary"></button>   -->
                             Date
@@ -178,6 +184,9 @@
                           {% else %}
                             <tr>
                           {% endif %}
+                              <td>
+                                {{ forloop.counter }}
+                              </td>
                               <td  class="">
                                     {{ stock.stock_displayed_date }}
                                 </td>

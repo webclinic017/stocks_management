@@ -171,6 +171,7 @@ class Stock():
             self.mfi_14_clash = False
             self.mfi_14_color = 'green'
 
+        self.earnings_warning = self.check_earnings_alert()
 
         # TODO: Upddae earnings dates with task, not during runs
         # self.earnings_call, self.earnings_call_displayed, self.earnings_warning = self.get_earnings()
@@ -215,6 +216,29 @@ class Stock():
         mfi_a = mfi_regressor.coef_[0]
         mfi_b = mfi_regressor.intercept_
         return mfi_a
+
+    def check_earnings_alert(self):
+        stock = StockData.objects.filter(ticker=self.ticker).first()
+        # Removing the earnings alert for earnings date passed
+        try:
+            earnings_ts = datetime.datetime.timestamp(stock.earnings_call)
+            today_ts = datetime.datetime.timestamp(self.today)
+            if earnings_ts >= today_ts:
+                # earnings_alert_signal = stock.earnings_warning
+                earnings_alert_signal = "blink-bg"
+                
+            else:
+                earnings_alert_signal = ""
+        except Exception as e:
+            print(f'Failed to find earnings for {self.ticker}. Reason: {e}')
+            earnings_alert_signal = ""
+            # There is no earnings date registered, so checking if there is. 
+            # Should run only when there is no earnings date in DB for that stock
+            # TODO
+            # Add check of stocks that have no earnings call in DB
+            # stock_earnings_update(ticker)
+
+        return earnings_alert_signal
 
     def get_earnings(self):
         yec = YahooEarningsCalendar()

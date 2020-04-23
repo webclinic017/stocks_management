@@ -84,11 +84,10 @@ def update_values(request):
         stock.gap_1 = stock_to_update.gap_1
         stock.gap_1_color = stock_to_update.gap_1_color
 
-
         # stock.earnings_call = stock_to_update.earnings_call
         # stock.earnings_call_displayed = stock_to_update.earnings_call_displayed
-        # stock.earnings_warning = stock_to_update.earnings_warning
-        
+        stock.earnings_warning = stock_to_update.earnings_warning
+                
         stock.stock_trend_30 = stock_to_update.trend_30
         
         stock.macd_trend_30 = stock_to_update.macd_30
@@ -227,14 +226,13 @@ def indexes_updates():
 
     return True, indexes_context
 
-def update_stock(stock):
-    
-    stock = StockData.objects.get(ticker=stock)
+def update_stock_LOCAL(ticker):
+    stock = StockData.objects.get(ticker=ticker)
 
-    if stock:
+    if stock: # Stock is in the table thus continue to update or...
         pass
     else:
-        stock = StockData()
+        stock = StockData() # Create a new stock entry
     
     stock_df = fin_data.get_data_yahoo(str(stock), start=MAX_PAST, end=TODAY)
 
@@ -245,7 +243,6 @@ def update_stock(stock):
     gap_1, gap_1_color = gap_1_check(stock.prev_close, stock.todays_open)
     stock.gap_1 = gap_1
     stock.gap_1_color = gap_1_color
-
 
 def update_gaps_wrapper():
     current_stocks = StockData.objects.all()
@@ -267,7 +264,7 @@ def update_stock_gaps(ticker):
     
     stock.prev_close = round(stock_df.loc[stock_df.index[-2]]['Close'],2)
     stock.todays_open = round(stock_df.loc[stock_df.index[-1]]['Open'],2)
-    stock.stock_date = stock_df.index[-1]
+    # stock.stock_date = stock_df.index[-1]
 
     gap_1, gap_1_color = gap_1_check(stock.prev_close, stock.todays_open)
     stock.gap_1 = gap_1
@@ -282,7 +279,41 @@ def update_stock_gaps(ticker):
     msg = f'>>> Updating {ticker}'
 
     return msg
+
+def stock_earnings_update(ticker):
+    print(f'Updating earnings for {ticker}')
+    try:
+        yec = YahooEarningsCalendar()
+
+        # Updating the DB
+        stock_to_update = StockData.objects.get(ticker=ticker)
+
+        try:
+            timestmp = yec.get_next_earnings_date(ticker)
+            earnings_date_obj = datetime.datetime.fromtimestamp(timestmp)
+            stock_to_update.earnings_call = earnings_date_obj
+        except Exception as e:
+            earnings_date_obj = None    
+
+        if earnings_date_obj:
+            stock_to_update.earnings_call_displayed = date_obj_to_date(earnings_date_obj, date_format='slash')
+        
+            if (earnings_date_obj - TODAY).days <= 7 and (earnings_date_obj - TODAY).days >= 0:
+                print(f"***************{(earnings_date_obj - TODAY).days}****************")
+                stock_to_update.earnings_warning = 'blink-bg'
+            else:
+                pass
+        else:
+            pass
+
+        stock_to_update.save()
+
+        return True
     
+    except Exception as e:
+        logger.error('Failed updating the earnings')
+        return False
+
 
 def earnings_update():
     current_stocks = StockData.objects.all()

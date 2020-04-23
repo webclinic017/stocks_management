@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np 
 import datetime
 import re
+import arrow
 from threading import Thread
 
 from math import *
@@ -26,7 +27,7 @@ from django.urls import reverse_lazy, reverse
 from django.contrib import messages
 from django.utils import timezone
 
-from yahoo_earnings_calendar import YahooEarningsCalendar
+# from yahoo_earnings_calendar import YahooEarningsCalendar
 import yfinance as yf
 
 from ib_api.views import *
@@ -286,7 +287,6 @@ def home(request, table_index=1):
     # Stock data will be updated at API connect
 
     if request.method == 'POST':
-
         if 'connect_ib_api' in request.POST:
 
             api_connect(request)
@@ -344,7 +344,7 @@ def home(request, table_index=1):
                 
                 stock_data.table_index = table_index
 
-                stock_data.stock_date = stock_df.index[-1]
+                # stock_data.stock_date = stock_df.index[-1]
                 stock_data.stock_displayed_date = date_obj_to_date(pd.Timestamp("today"), date_format='slash')
 
                 stock_data.ticker = stock.upper()
@@ -371,24 +371,35 @@ def home(request, table_index=1):
                 stock_data.gap_1_color = gap_1_color
 
                 # Earning dates
-                yec = YahooEarningsCalendar()
                 try:
-                    timestmp = yec.get_next_earnings_date(stock)
-                    earnings_date_obj = datetime.datetime.fromtimestamp(timestmp)
-                    stock_data.earnings_call = earnings_date_obj
-                except Exception as e:
-                    messages.error(request, 'Stock does not have an earnings call date defined.')
-                    earnings_date_obj = None    
 
-                if earnings_date_obj:
-                    stock_data.earnings_call_displayed = date_obj_to_date(earnings_date_obj, date_format='slash')
-                
-                    if (earnings_date_obj - today).days <= 7 and (earnings_date_obj - today).days >= 0:
+                    earnings = yf.Ticker(stock).calendar['Value'][0]
+                    arrow_object = arrow.get(earnings, 'US/Eastern')
+                    stock_data.earnings_call = arrow_object.datetime
+                    year = arrow_object.datetime.year
+                    month = arrow_object.datetime.month
+                    day = arrow_object.datetime.day
+                    stock_data.earnings_call_displayed = str(f'{day}/{month}/{year}')
+                    
+                    if (earnings - today).days <= 7 and (earnings - today).days >= 0:
                         stock_data.earnings_warning = 'blink-bg'
                     else:
                         pass
-                else:
-                    pass
+
+                except Exception as e:
+                    messages.error(request, 'Stock does not have an earnings call date defined.')
+                    print(f'Stock {stock} does not have an earnings call date defined.')
+                    earnings = None    
+
+                # if earnings_date_obj:
+                #     stock_data.earnings_call_displayed = date_obj_to_date(earnings_date_obj, date_format='slash')
+                
+                #     if (earnings_date_obj - today).days <= 7 and (earnings_date_obj - today).days >= 0:
+                #         stock_data.earnings_warning = 'blink-bg'
+                #     else:
+                #         pass
+                # else:
+                #     pass
 
 
                 tan_deviation_angle = math.tan(math.radians(settings.DEVIATION_ANGLE))
@@ -508,7 +519,8 @@ def home(request, table_index=1):
 
             return render(request, 'kadima/home.html', context)
         
-        elif 'update_sample_period' in request.POST:
+        # Update sample period for MACD and MFI calculations
+        elif 'sample_period' in request.POST:
             print('SAMPLING')
             stocks = StockData.objects.all()
             for stock in stocks:
@@ -522,6 +534,7 @@ def home(request, table_index=1):
                     stock.save()
                     context['sample_period_14'] = False
 
+        # Stock Delete
         elif 'delete_stock' in request.POST:
             print('POP')
             old_stocks = StockData.objects.all()
@@ -547,6 +560,7 @@ def home(request, table_index=1):
 
             return render(request, 'kadima/home.html', context)
 
+        # Save stock to history
         elif 'save_stock' in request.POST:
             stock_id = request.POST['save_stock']
             stock_data = StockData.objects.get(id=stock_id)

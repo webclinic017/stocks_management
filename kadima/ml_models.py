@@ -9,7 +9,7 @@ import lxml
 from math import *
 from datetime import timedelta
 from pandas_datareader import data
-from yahoo_earnings_calendar import YahooEarningsCalendar
+# from yahoo_earnings_calendar import YahooEarningsCalendar
 from finta import TA
 
 from sklearn.linear_model import LinearRegression

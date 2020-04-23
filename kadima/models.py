@@ -7,7 +7,7 @@ class StockData(models.Model):
     table_index = models.IntegerField(default=0)
 
 
-    stock_date = models.DateTimeField(default=datetime.now)
+    stock_date = models.DateTimeField(auto_now=True)
     stock_displayed_date = models.CharField(max_length=100)
     ticker = models.CharField(max_length=100)
     stock_price = models.FloatField()
