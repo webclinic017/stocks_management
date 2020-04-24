@@ -36,7 +36,7 @@ from kadima.k_utils import week_values, gap_1_check,date_obj_to_date
 from .models import StockData, IndicesData
 from .forms import DateForm
 from .ml_models import *
-from .value_updates import indexes_updates, earnings_update, update_values
+from .value_updates import indexes_updates, update_values
 # Create and configure logger
 import logging
 
@@ -381,26 +381,16 @@ def home(request, table_index=1):
                     day = arrow_object.datetime.day
                     stock_data.earnings_call_displayed = str(f'{day}/{month}/{year}')
                     
+                    # print(f'DELTA {stock}: {earnings - today}')
                     if (earnings - today).days <= 7 and (earnings - today).days >= 0:
                         stock_data.earnings_warning = 'blink-bg'
                     else:
-                        pass
+                        stock_data.earnings_warning = ''
 
                 except Exception as e:
                     messages.error(request, 'Stock does not have an earnings call date defined.')
                     print(f'Stock {stock} does not have an earnings call date defined.')
                     earnings = None    
-
-                # if earnings_date_obj:
-                #     stock_data.earnings_call_displayed = date_obj_to_date(earnings_date_obj, date_format='slash')
-                
-                #     if (earnings_date_obj - today).days <= 7 and (earnings_date_obj - today).days >= 0:
-                #         stock_data.earnings_warning = 'blink-bg'
-                #     else:
-                #         pass
-                # else:
-                #     pass
-
 
                 tan_deviation_angle = math.tan(math.radians(settings.DEVIATION_ANGLE))
 
@@ -521,7 +511,7 @@ def home(request, table_index=1):
         
         # Update sample period for MACD and MFI calculations
         elif 'sample_period' in request.POST:
-            print('SAMPLING')
+            print('>> Sampling <<')
             stocks = StockData.objects.all()
             for stock in stocks:
                 if request.POST['sample_period'] == '14':
@@ -536,7 +526,7 @@ def home(request, table_index=1):
 
         # Stock Delete
         elif 'delete_stock' in request.POST:
-            print('POP')
+            print('>> Deleting <<')
             old_stocks = StockData.objects.all()
             old_stocks_list = []
             for stock in old_stocks:
@@ -562,6 +552,7 @@ def home(request, table_index=1):
 
         # Save stock to history
         elif 'save_stock' in request.POST:
+            print('>> Saving <<')
             stock_id = request.POST['save_stock']
             stock_data = StockData.objects.get(id=stock_id)
             stock_data.saved_to_history = True  

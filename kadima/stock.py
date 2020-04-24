@@ -173,7 +173,7 @@ class Stock():
 
         self.earnings_warning = self.check_earnings_alert()
 
-        # TODO: Upddae earnings dates with task, not during runs
+        # TODO: Upddae earnings dates with task (Celery), not during runs
         # self.earnings_call, self.earnings_call_displayed, self.earnings_warning = self.get_earnings()
 
     def stock_regression(self, period):
@@ -223,10 +223,12 @@ class Stock():
         try:
             earnings_ts = datetime.datetime.timestamp(stock.earnings_call)
             today_ts = datetime.datetime.timestamp(self.today)
-            if earnings_ts >= today_ts:
+            earnings_dt = datetime.datetime.fromtimestamp(earnings_ts)
+            today_dt = datetime.datetime.fromtimestamp(today_ts)
+            
+            if (earnings_dt - today_dt).days <= 7 and (earnings_dt - today_dt).days >= 0:
                 # earnings_alert_signal = stock.earnings_warning
                 earnings_alert_signal = "blink-bg"
-                
             else:
                 earnings_alert_signal = ""
         except Exception as e:
@@ -240,27 +242,27 @@ class Stock():
 
         return earnings_alert_signal
 
-    def get_earnings(self):
-        yec = YahooEarningsCalendar()
+    # def get_earnings(self):
+    #     yec = YahooEarningsCalendar()
 
-        try:
-            timestmp = yec.get_next_earnings_date(self.ticker)
-            earnings_date_obj = datetime.datetime.fromtimestamp(timestmp)
-            earnings_call = earnings_date_obj
-        except Exception as e:
-            earnings_date_obj = None    
+    #     try:
+    #         timestmp = yec.get_next_earnings_date(self.ticker)
+    #         earnings_date_obj = datetime.datetime.fromtimestamp(timestmp)
+    #         earnings_call = earnings_date_obj
+    #     except Exception as e:
+    #         earnings_date_obj = None    
 
-        if earnings_date_obj:
-            earnings_call_displayed = date_obj_to_date(earnings_date_obj, date_format='slash')
+    #     if earnings_date_obj:
+    #         earnings_call_displayed = date_obj_to_date(earnings_date_obj, date_format='slash')
         
-            if (earnings_date_obj - self.today).days <= 7 and (earnings_date_obj - self.today).days >= 0:
-                earnings_warning = 'blink-bg'
-            else:
-                earnings_warning = ''
-        else:
-            earnings_call_displayed = None
-            earnings_call = None
-            earnings_warning = ''
+    #         if (earnings_date_obj - self.today).days <= 7 and (earnings_date_obj - self.today).days >= 0:
+    #             earnings_warning = 'blink-bg'
+    #         else:
+    #             earnings_warning = ''
+    #     else:
+    #         earnings_call_displayed = None
+    #         earnings_call = None
+    #         earnings_warning = ''
 
         
         return earnings_call, earnings_call_displayed, earnings_warning
