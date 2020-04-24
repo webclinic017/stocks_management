@@ -15,40 +15,40 @@
               <div class="col-lg-2">
                 <div class="card card-chart" style="background-color:{{ snp_color }};">
                   <div class="card-header">
-                    <h1 class="card-title" style="color: aliceblue;">DOW</h1>
-                    <h3 class="card-title"><i class="text-info"></i> {{ dow_value }} / {{ dow_change }}%</h3>
+                    <h2 class="card-title" style="color: aliceblue;">DOW</h2>
+                    <h4 class="card-title"><i class="text-info"></i> {{ dow_value }} / {{ dow_change }}%</h4>
                   </div>
                 </div>
               </div>
               <div class="col-lg-2">
                 <div class="card card-chart" style="background-color:{{ snp_color }};">
                   <div class="card-header">
-                    <h1 class="card-title" style="color: aliceblue;">S&P</h1>
-                    <h3 class="card-title"><i class="text-info"></i> {{ snp_value }} / {{ snp_change }}%</h3>
+                    <h2 class="card-title" style="color: aliceblue;">S&P</h2>
+                    <h4 class="card-title"><i class="text-info"></i> {{ snp_value }} / {{ snp_change }}%</h4>
                   </div>
                 </div>
               </div>
               <div class="col-lg-2">
                 <div class="card card-chart" style="background-color:{{ nas_color }};">
                   <div class="card-header">
-                    <h1 class="card-title" style="color: aliceblue;">NASDAQ</h1>
-                    <h3 class="card-title"><i class="text-success"></i> {{ nas_value }} / {{ nas_change }}%</h3>
+                    <h2 class="card-title" style="color: aliceblue;">NASDAQ</h2>
+                    <h4 class="card-title"><i class="text-success"></i> {{ nas_value }} / {{ nas_change }}%</h4>
                   </div>
                 </div>
               </div>
               <div class="col-lg-2">
                 <div class="card card-chart" style="background-color:{{ vix_color }};">
                   <div class="card-header">
-                    <h1 class="card-title" style="color: aliceblue;">VIX</h1>
-                    <h3 class="card-title"><i class="text-info"></i> {{ vix_value }} / {{ vix_change }}%</h3>
+                    <h2 class="card-title" style="color: aliceblue;">VIX</h2>
+                    <h4 class="card-title"><i class="text-info"></i> {{ vix_value }} / {{ vix_change }}%</h4>
                   </div>
                 </div>
               </div>
               <div class="col-lg-2">
                 <div class="card card-chart" style="background-color:{{ r2k_color }};">
                   <div class="card-header">
-                    <h1 class="card-title" style="color: aliceblue;">Russell 2K</h1>
-                    <h3 class="card-title"><i class="text-info"></i> {{ r2k_value }} / {{ r2k_change }}%</h3>
+                    <h2 class="card-title" style="color: aliceblue;">Russ-2K</h2>
+                    <h4 class="card-title"><i class="text-info"></i> {{ r2k_value }} / {{ r2k_change }}%</h4>
                   </div>
                 </div>
               </div>
@@ -56,25 +56,27 @@
         {% endif %}
         
         <div class="row">
-            <div class="col-md-12 pr-md-1">
+            <div class="col-sm-12 pr-md-1">
                 <form method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="row" style="padding-bottom: 0 !important;">
-                      <div class="col-2" style="border-right: 1px solid white;">
+
+                      <div class="col-sm-2" style="border-right: 1px solid white;">
                         <div class="form-group">
                             <h4 class="card-title" id="table_index" value="{% url 'stock-data-api' table_index=table_index %}" >Stock Table {{ table_index }}</h4>
                             <p class="category"> Information about individual stocks</p>
                         </div>
                       </div>
-                      <div class="col-md-3 pr-md-1">
+
+                      <div class="col-sm-3 pr-md-1" >
                         <div class="form-group">
                           <label style="color: aliceblue;">Enter stock to to add to the table</label>
                           <input type="text" class="form-control" name="stock" placeholder="Stock ticker, e.g. AAPL">
                         </div>
                       </div>
-                      <div class="col-md-1 pr-md-1 pt-4" style="border-right: 1px solid white;">
-                        <input type="submit" name="add_stock" class="btn btn-fill btn-secondary bg-secondary" value='Add'>
-                      </div>                        <div class="col-3">
+                        <input type="submit" name="add_stock" class="btn btn-sm mt-4 mb-2 mr-2" value='Add'>
+
+                        <div class="col-sm-3" style="border-left: 1px solid white;">
                           <h6>Change sapmling period. Current is {% if sample_period_14 %} 14 {% else %} 30 {% endif %} days.</h6>
                           <div class="pt-2">
                             <select name="sample_period" id="sample_period">
