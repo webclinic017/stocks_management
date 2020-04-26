@@ -140,13 +140,13 @@
                               Week 2
                           </th>
                           <th class="text-center">
+                              Week 5
+                          </th>
+                          <th class="text-center" style="font-size: 1rem;">
                             <!-- <button type="submit" name="sort_by_week3" class=" text-primary"></button>   -->
                               Week 3
                           </th>
-                          <th class="text-center">
-                              Week 5
-                          </th>
-                          <th class="text-center">
+                          <th class="text-center" style="font-size: 1rem;">
                             <!-- <button type="submit" name="sort_by_gap1" class=" text-primary"></button>   -->
                               Gap 1
                           </th>
@@ -201,18 +201,18 @@
                                 <td  class="" style="background-color: {{ stock.week_1_color }}; ">
                                     {{ stock.week_1 }}%
                                 </td>
-                                <td  class="" style="border-right: 5px solid white; background-color: {{ stock.week_2_color }};">
+                                <td  class="" style="background-color: {{ stock.week_2_color }};">
                                     {{ stock.week_2 }}%
                                 </td >
-                                <td  class="" style="border-right: 5px solid white; background-color: {{ stock.week_3_color }}; ">
-                                    {{ stock.week_3 }}%
-                                </td>
                                 <td  class="" style="border-right: 5px solid white; background-color: {{ stock.week_5_color }}; ">
                                     {{ stock.week_5 }}%
                                 </td>
-                                <td  class="" style="border-right: 5px solid white; background-color: {{ stock.gap_1_color }}; ">
+                                <td  class="text-center" style="border-right: 5px solid white; background-color: {{ stock.week_3_color }}; font-size: 1rem;">
+                                  <b>{{ stock.week_3 }}%</b>
+                              </td>
+                              <td  class="text-center" style="border-right: 5px solid white; background-color: {{ stock.gap_1_color }}; font-size: 1rem;">
                                 <!-- <td  class="bg-success-light"> -->
-                                    {{ stock.gap_1 }}%
+                                  <b>{{ stock.gap_1 }}% </b>
                                 </td>
                                 <td class="{{ stock.earnings_warning }} " style="height: 100%;">
                                     {{ stock.earnings_call_displayed }}

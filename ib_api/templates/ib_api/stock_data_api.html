@@ -32,11 +32,11 @@
             Week 2
         </th>
         <th class="text-center">
-          <!-- <button type="submit" name="sort_by_week3" class="tim-icons icon-minimal-down text-primary"></button>   -->
-          Week 3
+            Week 5
         </th>
         <th class="text-center">
-            Week 5
+          <!-- <button type="submit" name="sort_by_week3" class="tim-icons icon-minimal-down text-primary"></button>   -->
+          Week 3
         </th>
         <th class="text-center">
           <!-- <button type="submit" name="sort_by_gap1" class="tim-icons icon-minimal-down text-primary"></button>   -->
@@ -92,16 +92,16 @@
                 <td  class="" style="background-color: {{ stock.week_1_color }}; ">
                     {{ stock.week_1 }}%
                 </td>
-                <td  class="" style="border-right: 5px solid white; background-color: {{ stock.week_2_color }}; ">
+                <td  class="" style="background-color: {{ stock.week_2_color }}; ">
                     {{ stock.week_2 }}%
                 </td >
-                <td  class="" style="border-right: 5px solid white; background-color: {{ stock.week_3_color }}; ">
-                    {{ stock.week_3 }}%
-                </td>
                 <td  class="" style="border-right: 5px solid white; background-color: {{ stock.week_5_color }}; ">
                     {{ stock.week_5 }}%
                 </td>
-                <td  class="" style="border-right: 5px solid white; background-color: {{ stock.gap_1_color }}; ">
+                <td  class="" style="border-right: 5px solid white; background-color: {{ stock.week_3_color }}; ">
+                  {{ stock.week_3 }}%
+              </td>
+              <td  class="" style="border-right: 5px solid white; background-color: {{ stock.gap_1_color }}; ">
                     {{ stock.gap_1 }}%
                 </td>
                 <td class="{{ stock.earnings_warning }} " style="height: 100%;">
