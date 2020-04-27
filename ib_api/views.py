@@ -331,6 +331,8 @@ def stock_data_api(request, table_index=1, sort=None):
                 'mfi_30_color': stock.mfi_30_color,
                 'mfi_14_color': stock.mfi_14_color,
                 'sample_period_14': stock.sample_period_14,
+                'rsi': stock.rsi,
+                'rsi_color': stock.rsi_color,
                 'dividend_date':stock.dividend_date,
                 'dividend': stock.dividend,
                 'updading_gap_1_flag': stock.updading_gap_1_flag
