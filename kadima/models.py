@@ -57,10 +57,8 @@ class StockData(models.Model):
     gap_2_color = models.CharField(max_length=100)
     gap_3_color = models.CharField(max_length=100)
 
-    earnings_call = models.DateTimeField(null=True)
-    earnings_call_displayed = models.CharField(max_length=100, null=True)
-    earnings_warning = models.CharField(max_length=100, null=True)
 
+    # Technical Indicators 
     macd_30_clash = models.BooleanField(null=True, default=False)
     macd_14_clash = models.BooleanField(null=True, default=False)
     macd_30_color = models.CharField(max_length=100)
@@ -71,6 +69,13 @@ class StockData(models.Model):
     mfi_30_color = models.CharField(max_length=100)
     mfi_14_color = models.CharField(max_length=100)
 
+    rsi = models.FloatField()
+    rsi_color = models.CharField(max_length=10, blank=True, null=True)
+
+    # Company information
+    earnings_call = models.DateTimeField(null=True)
+    earnings_call_displayed = models.CharField(max_length=100, null=True)
+    earnings_warning = models.CharField(max_length=100, null=True)
 
     dividend_date = models.CharField(max_length=100,null=True)
     dividend = models.FloatField(null=True)

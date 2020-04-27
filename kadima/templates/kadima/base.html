@@ -12,19 +12,12 @@
   <title>
     Kadima Portfolio Advisor
   </title>
-  <!--     Fonts and icons     -->
-  <!-- <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,600,700,800" rel="stylesheet" /> -->
-  <!-- <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet"> -->
   <!-- Nucleo Icons -->
   <link href="{% static 'assets/css/nucleo-icons.css' %}" rel="stylesheet" />
   
   <!-- CSS Files -->
   <link href="{% static 'assets/css/black-dashboard.css' %}" rel="stylesheet" />
   
-  <!-- CSS Just for demo purpose, don't include it in your project -->
-  <!-- <link href="{% static 'assets/demo/demo.css' %}" rel="stylesheet" /> -->
-  
-  <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css" rel="stylesheet"> -->
   <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet">
   
   <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
@@ -33,39 +26,6 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" integrity="sha256-DOS9W6NR+NFe1fUhEE0PGKY/fubbUCnOfTje2JMDw3Y=" crossorigin="anonymous" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha256-FEqEelWI3WouFOo2VWP/uJfs1y8KJ++FLh2Lbqc8SJk=" crossorigin="anonymous"></script>
-
-  <!-- Loader -->
-  <style>
-    .loader {
-      position: fixed;
-      z-index: 99;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: gray;
-      opacity: 0.5;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .loader.hidden {
-      animation: fadeOut 1s;
-      animation-fill-mode: forwards;
-    }
-
-    @keyframes fadeOut{
-     100% {
-       opacity: 0;
-       visibility: hidden;
-     } 
-    }
-
-
-    </style>
-
-
 </head>
 
 <body class="" onload="startTime()">
@@ -105,54 +65,68 @@
             Kadima Portfolio Advisor
           </a>
         </div>
-        <ul class="nav">
-          <li> 
+        <div class="row mt-3">
+          <div class="col-6 text-right">
             <a href="{% url 'home' %}">
               <i class="tim-icons icon-coins" style="color: black;"></i>
-              <p style="color: black;">Table 1</p>
+              <span style="color: black;">Table 1</span>
             </a>
-          </li>
-
-          <li>
+          </div>
+          <div class="col-6">
             <a href="{% url 'history' table_index=1 %}">
               <i class="tim-icons icon-bullet-list-67" style="color: black;"></i>
-              <p style="color: black;">History 1</p>
+              <span style="color: black;">History 1</span>
             </a>
-          </li>
-
-
-          <li class="border-top">
+          </div>
+        </div>
+        <div class="row border-top mt-3">
+          <div class="col-6 text-right mt-2">
             <a href="{% url 'table-2' table_index=2 %}">
               <i class="tim-icons icon-coins" style="color: black;"></i>
-              <p style="color: black;">Table 2</p>
+              <span style="color: black;">Table 2</span>
             </a>
-          </li>
-
-          <li class="border-bottom">
+          </div>
+          <div class="col-6 mt-2">
             <a href="{% url 'history' table_index=2 %}">
               <i class="tim-icons icon-bullet-list-67" style="color: black;"></i>
-              <p style="color: black;">History 2</p>
+              <span style="color: black;">History 2</span>
             </a>
-          </li>
-
-          <div class="mt-5 h1" id="clock" style="text-align: center;"></div>
-
-          <li class="">
-            <a href="{% url 'stock-alarms'%}">
-              <i class="tim-icons icon-bell-55" style="color: black;"></i>
-              <p style="color: black;">Stock Alarms</p>
-            </a>
-          </li>
-
-
-          <!-- Trigger Alerts -->
-          <div class="" id="trigger_alerts">
           </div>
-          <!-- END Trigger Alerts -->
-          
-        </ul>
-      </div>
-    </div>
+        </div>
+
+        <!-- Table Control section -->
+        <div class="row mt-3">
+          <div class="col-12 text-center">
+            {% include 'kadima/stock_control.html' %}
+          </div>
+        </div>
+
+        <!-- Alarms section -->
+        <div class="row mt-5 border-top">
+          <div class="col-12 text-center mt-2">
+              <a href="{% url 'stock-alarms'%}">
+                <i class="tim-icons icon-bell-55" style="color: black;"></i>
+                <span style="color: black;">Stock Alarms</span>
+              </a>
+          </div>
+        </div>
+
+        <!-- Time Section -->
+        <div class="row mt-2 border-top">
+          <div class="col-12 text-center">
+            <div class="mt-2 h3" id="date" style="text-align: center;"></div>
+          </div>
+        </div> 
+
+        <div class="row">
+          <div class="col-12 text-center">
+            <div class="h1" id="clock" style="text-align: center;"></div>
+          </div>
+        </div> 
+
+      </div> 
+    </div><!-- End sidebar -->
+
     <div class="main-panel">
       {% block content %}
 
@@ -181,21 +155,22 @@
   </div>
 
 </body>
-<script type="text/javascript">
-  window.addEventListener("load", function () {
-    const loader = document.querySelector('.loader');
-    loader.className += " hidden";
-  })
 
-</script>
 <script>
   function startTime() {
     var today = new Date();
+    var year = today.getFullYear()
+    var month = today.getMonth()
+    var day = today.getDate()
     var h = today.getHours();
     var m = today.getMinutes();
     var s = today.getSeconds();
     m = checkTime(m);
     s = checkTime(s);
+
+    document.getElementById('date').innerHTML = 
+    day + "/" + month + "/" + year;
+
     document.getElementById('clock').innerHTML =
     h + ":" + m + ":" + s;
     var t = setTimeout(startTime, 500);

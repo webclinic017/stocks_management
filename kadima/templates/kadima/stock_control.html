@@ -1,0 +1,38 @@
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="row border-top mt-3" style="padding-bottom: 0 !important;">
+
+        <div class="col-sm-12 mt-2" style="border-right: 1px solid white;">
+        <div class="form-group">
+            <h4 style="color: black;" class="card-title" id="table_index" value="{% url 'stock-data-api' table_index=table_index %}" >Current Stock Table <b>{{ table_index }}</b></h4>
+        </div>
+        </div>
+    </div>
+    
+    <div class="row border-top mt-3" style="padding-bottom: 0 !important;">
+        <div class="col-sm-12" >
+        <div class="form-group">
+            <label style="color: rgb(2, 16, 27);">Enter stock to to add to the table</label>
+            <input style="color: black;" type="text" class="form-control" name="stock" placeholder="Stock ticker, e.g. AAPL">
+            <input type="submit" name="add_stock" class="btn btn-sm mt-1 mb-2 mr-2" value='Add'>
+        </div>
+        </div>
+    </div>
+
+    <div class="row border-top mt-2" style="padding-bottom: 0 !important;">
+        <div class="col-sm-12" style="border-left: 1px solid white;">
+            <label style="color: black;">Change sapmling period. Current is {% if sample_period_14 %} 14 {% else %} 30 {% endif %} days.</label>
+            <div class="pt-2">
+            <select name="sample_period" id="sample_period">
+                <option value="">------------</option>
+                {% if sample_period_14 %}
+                <option value="30">30 Days</option> 
+                {% else %}
+                <option value="14">14 Days</option>
+                {% endif %}
+            </select>
+            <input type="submit" name="update_sample_period" class="btn btn-fill btn-sm" value='Update' >
+            </div>
+        </div>
+    </div>
+</form>

@@ -63,6 +63,15 @@ def mfi_regression(stock, period):
     mfi_b = mfi_regressor.intercept_
     return mfi_a
 
+def last_rsi(stock, period):
+    df = data.get_data_yahoo(stock.upper(), start=START-timedelta(14), end=END)
+    df = df.tail(period+14).copy().reset_index()
+    dates = df.index.tolist()
+    dates = np.reshape(dates, (len(dates),1))
+    df_ohlc = df.rename(columns={"High": "high", "Low": "low", 'Open':'open', 'Close':'close', 'Volume':'volume', 'Adj Close':'adj close'})
+    df_rsi = TA.RSI(df_ohlc,14)
+    return round(df_rsi.tail(1).values[0],2)
+
 
 def trend_calculator(stock, indicator, period):
 

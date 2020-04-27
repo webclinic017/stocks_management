@@ -79,6 +79,9 @@ class Stock():
         self.mfi_30_color = ''
         self.mfi_14_color = ''
 
+        self.rsi = None
+        self.rsi_color = ''
+
         self.earnings_call = None
         self.earnings_call_displayed = ''
         self.earnings_warning = ''
@@ -121,6 +124,7 @@ class Stock():
 
         tan_deviation_angle = math.tan(math.radians(settings.DEVIATION_ANGLE))
 
+        # MACD
         if np.abs(self.macd_30) > tan_deviation_angle:                    
 
             if (self.trend_30 > 0 and self.macd_30 < 0) or (self.trend_30 < 0 and self.macd_30 > 0):
@@ -145,7 +149,7 @@ class Stock():
             self.macd_14_clash = False
             self.macd_14_color = 'green'
 
-
+        # MFI
         if np.abs(self.mfi_30) > tan_deviation_angle:                    
 
             if (self.trend_30 > 0 and self.mfi_30 < 0) or (self.trend_30 < 0 and self.mfi_30 > 0):
@@ -170,6 +174,18 @@ class Stock():
         else:
             self.mfi_14_clash = False
             self.mfi_14_color = 'green'
+
+        # RSI 
+        self.rsi = self.last_rsi(30)
+        
+        if self.rsi > 0 and self.rsi <=30:
+            self.rsi_color = 'red'
+        elif self.rsi > 30 and self.rsi <= 65:
+            self.rsi_color = 'orange'
+        elif self.rsi > 65 and self.rsi <=100:
+            self.rsi_color = 'green'
+        else:
+            self.rsi_color = ''
 
         self.earnings_warning = self.check_earnings_alert()
 
@@ -217,6 +233,12 @@ class Stock():
         mfi_b = mfi_regressor.intercept_
         return mfi_a
 
+    def last_rsi(self, period):
+        df = self.stock_df.tail(period).copy().reset_index()
+        df_ohlc = df.rename(columns={"High": "high", "Low": "low", 'Open':'open', 'Close':'close', 'Volume':'volume', 'Adj Close':'adj close'})
+        df_rsi = TA.RSI(df_ohlc,14)
+        return round(df_rsi.tail(1).values[0],2)
+
     def check_earnings_alert(self):
         stock = StockData.objects.filter(ticker=self.ticker).first()
         # Removing the earnings alert for earnings date passed
@@ -241,28 +263,6 @@ class Stock():
             # stock_earnings_update(ticker)
 
         return earnings_alert_signal
-
-    # def get_earnings(self):
-    #     yec = YahooEarningsCalendar()
-
-    #     try:
-    #         timestmp = yec.get_next_earnings_date(self.ticker)
-    #         earnings_date_obj = datetime.datetime.fromtimestamp(timestmp)
-    #         earnings_call = earnings_date_obj
-    #     except Exception as e:
-    #         earnings_date_obj = None    
-
-    #     if earnings_date_obj:
-    #         earnings_call_displayed = date_obj_to_date(earnings_date_obj, date_format='slash')
-        
-    #         if (earnings_date_obj - self.today).days <= 7 and (earnings_date_obj - self.today).days >= 0:
-    #             earnings_warning = 'blink-bg'
-    #         else:
-    #             earnings_warning = ''
-    #     else:
-    #         earnings_call_displayed = None
-    #         earnings_call = None
-    #         earnings_warning = ''
 
         
         return earnings_call, earnings_call_displayed, earnings_warning

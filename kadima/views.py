@@ -37,6 +37,8 @@ from .models import StockData, IndicesData
 from .forms import DateForm
 from .ml_models import *
 from .value_updates import indexes_updates, update_values
+from kadima.stock import Stock
+
 # Create and configure logger
 import logging
 
@@ -245,14 +247,6 @@ def home(request, table_index=1):
     context = {}
     context['table_index'] = table_index
     ib_api_connected = api_connection_status()
-
-    try:
-        sample_period = StockData.objects.last().sample_period_14
-    except:
-        sample_period = None
-        
-    context['sample_period_14'] = sample_period
-
     context['ib_api_connected'] = ib_api_connected
 
     stock_ref = StockData.objects.all().last()
@@ -262,6 +256,14 @@ def home(request, table_index=1):
         last_update = stock_ref.stock_date
     else:
         last_update = False
+
+    # Checking current sample_ period
+    try:
+        sample_period = stock_ref.sample_period_14
+    except:
+        sample_period = None
+        
+    context['sample_period_14'] = sample_period
 
     current_running_threads = threading.active_count()
     print(f"ACTIVE THREADS: ***************{current_running_threads}****************")
@@ -471,6 +473,17 @@ def home(request, table_index=1):
                     stock_data.mfi_14_clash = False
                     stock_data.mfi_14_color = 'green'
 
+                # RSI
+                rsi = last_rsi(stock, period=30)
+                stock_data.rsi = rsi
+                if rsi > 0 and rsi <=30:
+                    stock_data.rsi_color = 'red'
+                elif rsi > 30 and rsi <= 65:
+                    stock_data.rsi_color = 'orange'
+                elif rsi > 65 and rsi <=100:
+                    stock_data.rsi_color = 'green'
+                else:
+                    stock_data.rsi_color = ''
 
                 # Getting the dividend
                 try:
@@ -489,6 +502,7 @@ def home(request, table_index=1):
                 try:
                     stock_data.save()
                 except Exception as e:
+                    print(f'ERROR Adding Stock. Reason: {e}')
                     messages.error(request, f'Stock {stock} was not added. Already in the list.')
                     return render(request, 'kadima/home.html', context)
                 

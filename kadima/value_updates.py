@@ -106,6 +106,9 @@ def update_values(request):
         stock.mfi_14_clash = stock_to_update.mfi_14_clash
         stock.mfi_14_color = stock_to_update.mfi_14_color
 
+        stock.rsi = stock_to_update.rsi
+        stock.rsi_color = stock_to_update.rsi_color
+
         stock.save()
 
     finish_run = time.perf_counter()

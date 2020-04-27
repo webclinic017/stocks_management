@@ -21,6 +21,9 @@ from dashboard import views as views_dashboard
 
 from rest_framework import routers
 
+# Admin Header
+admin.site.site_header = 'KADIMA'
+
 urlpatterns = [
     
     path('', views_kadima.home, name='home'),
