@@ -8,6 +8,12 @@ def apiConnectionStatus(request):
     context['ib_api_connected'] = ib_api_connected
     return context
 
+def tableIndex(request):
+    context = {}
+    context['table_index'] = request.session['table_index']
+    return context
+
+
 def updaingGaps(request):
     context = {}
     stock_data = StockData.objects.all()

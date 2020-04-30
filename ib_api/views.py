@@ -33,8 +33,9 @@ TODAY = datetime.datetime.today()
 
 
 stock_dick = dict()
-connection_status = False
+stock_open = dict()
 
+connection_status = False
 
 def trading_status():
     if -1.0 in stock_dick.values():
@@ -174,15 +175,38 @@ def indeces_data(request):
         snp_current_value = -1.0
         pass
 
-    dow_close = IndicesData.objects.get(index_api_id=77777).index_prev_close
-
-    snp_close = IndicesData.objects.get(index_api_id=88888).index_prev_close
-
     nas_close = IndicesData.objects.get(index_api_id=55555).index_prev_close
 
-    vix_close = IndicesData.objects.get(index_api_id=11111).index_prev_close
+    dow_close = IndicesData.objects.get(index_api_id=77777).index_prev_close
+    dow_macd_color = IndicesData.objects.get(index_api_id=77777).index_macd_color
+    dow_mfi_color = IndicesData.objects.get(index_api_id=77777).index_mfi_color
+
+    snp_close = IndicesData.objects.get(index_api_id=88888).index_prev_close
+    snp_macd_color = IndicesData.objects.get(index_api_id=88888).index_macd_color
+    snp_mfi_color = IndicesData.objects.get(index_api_id=88888).index_mfi_color
 
     r2k_close = IndicesData.objects.get(index_api_id=22222).index_prev_close
+    r2k_macd_color = IndicesData.objects.get(index_api_id=22222).index_macd_color
+    r2k_mfi_color = IndicesData.objects.get(index_api_id=22222).index_mfi_color
+
+    vix_index = IndicesData.objects.get(index_api_id=11111)
+    vix_close = vix_index.index_prev_close
+
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+    vix_week2, vix_w2_color = week_check(vix_index.index_week2_min, vix_index.index_week2_max, stock_dick[11111])
+    vix_week3, vix_w3_color = week_check(vix_index.index_week3_min, vix_index.index_week3_max, stock_dick[11111], week3=True)
+
+    if trading_status():
+        # Updating new minimum prices to the DB
+        if vix_week1 == 0:
+            stock.index_week1_min = stock_dick[11111]
+        if vix_week2 == 0:
+            stock.index_week2_min = stock_dick[11111]
+        if vix_week3 == 0:
+            stock.index_week3_min = stock_dick[11111]
+
+        vix_index.save()
+
 
     try:
         dow_value = stock_dick[77777]
@@ -243,6 +267,21 @@ def indeces_data(request):
         'nas_color': change_check(nas_change),
         'vix_color': change_check(vix_change),
         'r2k_color': change_check(r2k_change),
+
+        'dow_macd_color': dow_macd_color,
+        'dow_mfi_color': dow_mfi_color,
+        'snp_macd_color': snp_macd_color,
+        'snp_mfi_color': snp_mfi_color,
+        'r2k_macd_color': r2k_macd_color,
+        'r2k_mfi_color': r2k_mfi_color,
+
+        'vix_week1': vix_week1,
+        'vix_week2': vix_week2,
+        'vix_week3': vix_week3,
+
+        'vix_w1_color': vix_w1_color,
+        'vix_w2_color': vix_w2_color,
+        'vix_w3_color': vix_w3_color,
 
         'ib_api_connected': connection_status
     }
@@ -388,7 +427,24 @@ class TestApp(EClient, EWrapper):
         print("Ticker Price Data:  Ticket ID: ", reqId, " ","tickType: ", TickTypeEnum.to_str(tickType), "Price: ", price, end=" ")
 
         stock_dick[reqId] = price
-    
+
+        # Tick types: https://interactivebrokers.github.io/tws-api/tick_types.html
+
+        if tickType == 9:
+            # stock_close[reqId] = price
+            if reqId < 10000:
+                stock = StockData.objects.get(id=reqId)
+                stock.prev_close = price
+                stock.save()
+
+        if tickType == 14:
+            if reqId < 10000:
+                stock = StockData.objects.get(id=reqId)
+                stock.todays_open = price
+                stock.save()
+
+
+
     @iswrapper
     def tickSize(self, reqId, tickType, size):
         print("Ticket ID: ", reqId, " ","tickType: ", TickTypeEnum.to_str(tickType), "Size: ", size)

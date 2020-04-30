@@ -91,6 +91,7 @@ TEMPLATES = [
                 'kadima.context_processors.apiConnectionStatus',
                 'kadima.context_processors.updaingGaps',
                 'kadima.context_processors.isTrading',
+                'kadima.context_processors.tableIndex',
             ],
         },
     },
@@ -149,6 +150,16 @@ USE_TZ = True
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 STATIC_ROOT = STATIC_URL
+
+# Email Setup
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'in-v3.mailjet.com'
+EMAIL_HOST_USER = '5967d051b3c966ff07930e4cc50eecdc'
+EMAIL_HOST_PASSWORD = '8a44521108784c8c952a005c1009e771'
+EMAIL_PORT = 587
+DEFAULT_FROM_EMAIL = "alfreds@actappon.com"
+
+
 
 # This is the path to the index file
 INDEX_FILE_PATH = os.path.join(BASE_DIR, 'ib_api')

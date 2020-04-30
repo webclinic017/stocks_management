@@ -1,6 +1,13 @@
 from django.db import models
 from datetime import datetime
 
+from django.contrib.auth.models import User
+
+# class KadimaUser(User):
+#     email_active = models.BooleanField(default=False)
+
+#     def __str__(self):
+#         return self.username
 
 class StockData(models.Model):
 
@@ -129,6 +136,31 @@ class IndicesData(models.Model):
     index_current_value = models.FloatField(null=True)
     index_api_id = models.IntegerField(null=True)
 
+    index_week1 = models.FloatField(null=True)
+    index_week1_min = models.FloatField(null=True)
+    index_week1_max = models.FloatField(null=True)
+
+    index_week2 = models.FloatField(null=True)
+    index_week2_min = models.FloatField(null=True)
+    index_week2_max = models.FloatField(null=True)
+    
+    index_week3 = models.FloatField(null=True)
+    index_week3_min = models.FloatField(null=True)
+    index_week3_max = models.FloatField(null=True)
+
+    index_week_1_color = models.CharField(max_length=100)
+    index_week_2_color = models.CharField(max_length=100)
+    index_week_3_color = models.CharField(max_length=100)
+
+    index_trend = models.FloatField(null=True)
+
+    index_macd = models.FloatField(null=True)
+    index_macd_clash = models.BooleanField(null=True, default=False)
+    index_macd_color = models.CharField(max_length=50, null=True)
+
+    index_mfi = models.FloatField(null=True)
+    index_mfi_clash = models.BooleanField(null=True, default=False)
+    index_mfi_color = models.CharField(max_length=50, null=True)
 
     def __str__(self):
             return self.index_symbol

@@ -24,9 +24,10 @@ from .k_utils import change_check, gap_1_check, date_obj_to_date, week_values, w
 
 class Stock():
 
-    def __init__(self, ticker, table_index, ):
+    def __init__(self, ticker,stock_id, table_index, ):
         self.today = datetime.datetime.today()
         self.ticker = ticker
+        self.stock_id = stock_id
         self.table_index = 1
         self.date = ''
         self.displayed_date = ''
@@ -94,11 +95,16 @@ class Stock():
         self.stock_df = fin_data.get_data_yahoo(str(self.ticker), start=self.today - timedelta(44), end=self.today)
 
         self.stock_price = round(self.stock_df.loc[self.stock_df.index[-1]]['Close'],2)
-        self.prev_close = round(self.stock_df.loc[self.stock_df.index[-2]]['Close'],2)
-        self.todays_open = round(self.stock_df.loc[self.stock_df.index[-1]]['Open'],2)
+
+        # self.prev_close = round(self.stock_df.loc[self.stock_df.index[-2]]['Close'],2)
+        # self.todays_open = round(self.stock_df.loc[self.stock_df.index[-1]]['Open'],2)
+
+        self.prev_close = StockData.objects.filter(ticker=self.ticker).first().prev_close
+        self.todays_open = StockData.objects.filter(ticker=self.ticker).first().todays_open
+        self.gap_1, self.gap_1_color = gap_1_check(self.prev_close, self.todays_open)
+
         self.date = self.stock_df.index[-1]
 
-        self.gap_1, self.gap_1_color = gap_1_check(self.prev_close, self.todays_open)
         
         self.date = self.stock_df.index[-1]
         self.displayed_date = date_obj_to_date(pd.Timestamp("today"), date_format='slash')
@@ -191,6 +197,7 @@ class Stock():
 
         # TODO: Upddae earnings dates with task (Celery), not during runs
         # self.earnings_call, self.earnings_call_displayed, self.earnings_warning = self.get_earnings()
+
 
     def stock_regression(self, period):
         df = self.stock_df.tail(period).copy().reset_index()

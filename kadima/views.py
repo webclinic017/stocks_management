@@ -35,7 +35,7 @@ from kadima.k_utils import week_values, gap_1_check,date_obj_to_date
 
 from .models import StockData, IndicesData
 from .forms import DateForm
-from .ml_models import *
+from .ml_models import trends
 from .value_updates import indexes_updates, update_values
 from kadima.stock import Stock
 
@@ -156,10 +156,10 @@ def history(request, table_index=1):
     saved_stocks = StockData.objects.filter(saved_to_history=True, table_index=table_index)
     context['stocks'] = saved_stocks
     context['table_index'] = table_index
+    request.session['table_index'] = table_index
 
     ib_api_connected = api_connection_status()
     context['ib_api_connected'] = ib_api_connected
-
 
     date_picker = DateForm()
 
@@ -249,6 +249,8 @@ def home(request, table_index=1):
     ib_api_connected = api_connection_status()
     context['ib_api_connected'] = ib_api_connected
 
+    request.session['table_index'] = table_index
+
     stock_ref = StockData.objects.all().last()
 
     # Check if there are any stocks in the DB
@@ -273,9 +275,11 @@ def home(request, table_index=1):
 
     # VALUES UPDATES
     #########################
-    
+
+    #TODO: Replace this update with current database data query.
+        
     # Updating indexes data every time homepage rendered
-    indexes_update_done, indexes_info = indexes_updates()
+    indexes_update_done, indexes_info = indexes_updates(request)
 
     if indexes_update_done:
         print('Finished updating indexes')
@@ -292,13 +296,6 @@ def home(request, table_index=1):
         if 'connect_ib_api' in request.POST:
 
             api_connect(request)
-
-            current_stocks = StockData.objects.all()
-            current_stocks_list = dict()
-            for stock in current_stocks:
-                current_stocks_list[stock.id] = stock.ticker
-            
-            ib_api_wrapper(request, updated_stock_list=current_stocks_list, action=UPADATE_STOCKS)
 
             stocks = StockData.objects.filter(table_index=table_index)
             context['stocks'] = stocks
@@ -374,7 +371,6 @@ def home(request, table_index=1):
 
                 # Earning dates
                 try:
-
                     earnings = yf.Ticker(stock).calendar['Value'][0]
                     arrow_object = arrow.get(earnings, 'US/Eastern')
                     stock_data.earnings_call = arrow_object.datetime
@@ -384,7 +380,7 @@ def home(request, table_index=1):
                     stock_data.earnings_call_displayed = str(f'{day}/{month}/{year}')
                     
                     # print(f'DELTA {stock}: {earnings - today}')
-                    if (earnings - today).days <= 7 and (earnings - today).days >= 0:
+                    if (earnings - TODAY).days <= 7 and (earnings - TODAY).days >= 0:
                         stock_data.earnings_warning = 'blink-bg'
                     else:
                         stock_data.earnings_warning = ''
@@ -398,11 +394,13 @@ def home(request, table_index=1):
 
 
                 # Stock Trend - 30 days sample
-                a_stock_30 = stock_regression(stock, 30)
+                a_stock_30, a_macd_30, a_mfi_30, rsi, week1, week2, week3 = trends(stock,30)
+
+                # a_stock_30 = stock_regression(stock, 30)
                 stock_data.stock_trend_30 = round(a_stock_30,2)
 
                 # MACD trend
-                a_macd_30 = trend_calculator(stock, 'MACD', period=30)
+                # a_macd_30 = trend_calculator(stock, 'MACD', period=30)
                 stock_data.macd_trend_30 = round(a_macd_30,2)
 
                 if np.abs(a_macd_30) > tan_deviation_angle:                    
@@ -419,7 +417,7 @@ def home(request, table_index=1):
                     stock_data.macd_30_color = 'green'
 
                 # MFI trend
-                a_mfi_30 = trend_calculator(stock, 'MFI', period=30)
+                # a_mfi_30 = trend_calculator(stock, 'MFI', period=30)
                 stock_data.money_flow_trend_30 = round(a_mfi_30,2)
 
 
@@ -436,11 +434,13 @@ def home(request, table_index=1):
                     stock_data.mfi_30_color = 'green'
 
                 # Stock Trend - 14 days sample
-                a_stock_14 = stock_regression(stock, 14)
+                a_stock_14, a_macd_14, a_mfi_14, rsi_14, week1, week2, week3= trends(stock,14) # rsi_14 is just for unpacking. it's not user.
+
+                # a_stock_14 = stock_regression(stock, 14)
                 stock_data.stock_trend_14 = round(a_stock_14,2)
 
                 # MACD trend
-                a_macd_14 = trend_calculator(stock, 'MACD', period=14)
+                # a_macd_14 = trend_calculator(stock, 'MACD', period=14)
                 stock_data.macd_trend_14 = round(a_macd_14,2)
 
                 if np.abs(a_macd_14) > tan_deviation_angle:                    
@@ -457,7 +457,7 @@ def home(request, table_index=1):
                     stock_data.macd_14_color = 'green'
 
                 # MFI trend
-                a_mfi_14 = trend_calculator(stock, 'MFI', period=14)
+                # a_mfi_14 = trend_calculator(stock, 'MFI', period=14)
                 stock_data.money_flow_trend_14 = round(a_mfi_14,2)
 
 
@@ -474,7 +474,7 @@ def home(request, table_index=1):
                     stock_data.mfi_14_color = 'green'
 
                 # RSI
-                rsi = last_rsi(stock, period=30)
+                # rsi = last_rsi(stock, period=30)
                 stock_data.rsi = rsi
                 if rsi > 0 and rsi <=30:
                     stock_data.rsi_color = 'red'
@@ -615,7 +615,16 @@ def api_connect(request):
         print('Sleeping...')
         timer += 1 
 
-    # Updating valuse
+    # Laoad current stocks
+    current_stocks = StockData.objects.all()
+    current_stocks_list = dict()
+    for stock in current_stocks:
+        current_stocks_list[stock.id] = stock.ticker
+    
+    ib_api_wrapper(request, updated_stock_list=current_stocks_list, action=UPADATE_STOCKS)
+
+
+    # Updating values
     finish_updates = update_values(request)
 
     if finish_updates:
