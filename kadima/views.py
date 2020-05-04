@@ -271,9 +271,15 @@ def home(request, table_index=1):
     context['table_index'] = table_index
     ib_api_connected = api_connection_status()
     context['ib_api_connected'] = ib_api_connected
-    context['email_enabled'] = EmailSupport.objects.all().first().enabled
-    print(f'EM: {context["email_enabled"]}')
     request.session['table_index'] = table_index
+
+    try:
+        context['email_enabled'] = EmailSupport.objects.all().first().enabled
+        print(f'EM: {context["email_enabled"]}')
+    except:
+        email_support = EmailSupport()
+        email_support.enabled = False
+        email_support.save()
 
     stock_ref = StockData.objects.all().last()
 
