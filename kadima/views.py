@@ -696,6 +696,9 @@ def api_disconnect(request):
     # print('Updating values before disconnecting')
     # update_values(request)
 
+    # Resetting all email alerts to False
+    reset_email_alerts()
+
     print('Stopping the IB API...')
     ib_api_wrapper(request,action=STOP_API )
     sleep(2)
