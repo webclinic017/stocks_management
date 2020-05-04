@@ -152,13 +152,14 @@ STATIC_URL = '/static/'
 STATIC_ROOT = STATIC_URL
 
 # Email Setup
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
-EMAIL_HOST = 'in-v3.mailjet.com'
-EMAIL_HOST_USER = '5967d051b3c966ff07930e4cc50eecdc'
-EMAIL_HOST_PASSWORD = '8a44521108784c8c952a005c1009e771'
 EMAIL_PORT = 587
-DEFAULT_FROM_EMAIL = "alfreds@actappon.com"
+EMAIL_HOST_USER = 'kadimagrouppanama@gmail.com'
+EMAIL_HOST_PASSWORD = 'Kadima2020!'
 
+EMAIL_DEFAULT_TO = ['alfred.shaffir@gmail.com', 'interkoby@gmail.com']
 
 
 # This is the path to the index file

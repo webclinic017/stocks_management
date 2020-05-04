@@ -20,8 +20,8 @@ from django.contrib import messages
 
 from threading import Timer
 
-from kadima.models import StockData, IndicesData
-from kadima.k_utils import week_color, change_check
+from kadima.models import StockData, IndicesData, EmailSupport
+from kadima.k_utils import week_color, change_check, send_email_alert
 
 # Create and configure logger
 import logging
@@ -300,7 +300,53 @@ def week_check(history_min, history_max ,realtime_price, week3=False):
 
     return relative_value, w_color 
 
+def check_email_alerts(request):
+    stocks = StockData.objects.all()
+    email_support = EmailSupport.objects.all().first().enabled
+    
+    if email_support:
+        for stock in stocks:
+            week3_color = stock.week3_color
+            gap1_color = stock.gap1_color
+            rsi_color = stock.rsi_color
+            email_flag = stock.stock_email_alert
+            email_alert = False
+
+            if not email_flag:
+                if week3_color == 'green' and gap1_color == 'red':
+                    buy = True
+                    email_alert = True
+                elif week3_color == '#FF1000' and gap1_color == 'green':
+                    sell = True
+                    email_alert = True
+                elif  week3_color == 'green' and gap1_color == 'red' and rsi_color == 'red':
+                    buy = True
+                    email_alert = True
+                elif week3_color == '#FF1000' and gap1_color == 'green' and rsi_color == 'green':
+                    sell = True
+                    email_alert = True
+                else:
+                    email_alert = False
+                    pass
+
+            if email_alert:
+                email_body = f'''
+                Stock:          {stock.ticker}
+                Week3 color:    {week3_color}
+                GAP1:           {gap1_color}
+                RSI:            {rsi_color}
+                '''
+                send_email_alert(request,email_body,[settings.EMAIL_DEFAULT_TO])
+                stock.stock_email_alert = True
+                stock.save()
+    else:
+        pass
+    
+    return
+
 def stock_data_api(request, table_index=1, sort=None):
+
+    check_email_alerts()
 
     stocks_db = StockData.objects.filter(table_index=table_index)
     stocks_db_dict = {}

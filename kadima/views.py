@@ -31,9 +31,9 @@ from django.utils import timezone
 import yfinance as yf
 
 from ib_api.views import *
-from kadima.k_utils import week_values, gap_1_check,date_obj_to_date
+from kadima.k_utils import week_values, gap_1_check,date_obj_to_date, reset_email_alerts
 
-from .models import StockData, IndicesData
+from .models import StockData, IndicesData, EmailSupport
 from .forms import DateForm
 from .ml_models import trends
 from .value_updates import indexes_updates, update_values
@@ -154,6 +154,7 @@ def stock_alarms(request):
 def history(request, table_index=1):
     context = {}
     saved_stocks = StockData.objects.filter(saved_to_history=True, table_index=table_index)
+    context['email_enabled'] = EmailSupport.objects.all().first().enabled
     context['stocks'] = saved_stocks
     context['table_index'] = table_index
     request.session['table_index'] = table_index
@@ -206,6 +207,28 @@ def history(request, table_index=1):
 
             context['stocks'] = saved_stocks
 
+        ## Enable email support
+        elif 'email_enable' in request.POST:
+            print('>> Enable Email <<')
+            try:
+                email_enable = EmailSupport.objects.all().first()
+                if email_enable.enabled:
+                    email_enable.enabled = False
+                    context['email_enabled'] = False
+                    email_enable.save()
+                    
+                    # Resetting all email alerts to False
+                    reset_email_alerts()
+
+                else:
+                    email_enable.enabled = True
+                    context['email_enabled'] = True
+                    email_enable.save()
+            except:
+                email_enable = EmailSupport()
+                email_enable.enabled = True
+                context['email_enabled'] = True
+                email_enable.save()
 
         elif 'delete_stock' in request.POST:
             stock_id = request.POST['delete_stock']
@@ -248,7 +271,8 @@ def home(request, table_index=1):
     context['table_index'] = table_index
     ib_api_connected = api_connection_status()
     context['ib_api_connected'] = ib_api_connected
-
+    context['email_enabled'] = EmailSupport.objects.all().first().enabled
+    print(f'EM: {context["email_enabled"]}')
     request.session['table_index'] = table_index
 
     stock_ref = StockData.objects.all().last()
@@ -291,7 +315,6 @@ def home(request, table_index=1):
 
 
     # Stock data will be updated at API connect
-
     if request.method == 'POST':
         if 'connect_ib_api' in request.POST:
 
@@ -522,7 +545,30 @@ def home(request, table_index=1):
 
 
             return render(request, 'kadima/home.html', context)
-        
+
+        ## Enable email support
+        elif 'email_enable' in request.POST:
+            print('>> Enable Email <<')
+            try:
+                email_enable = EmailSupport.objects.all().first()
+                if email_enable.enabled:
+                    email_enable.enabled = False
+                    context['email_enabled'] = False
+                    email_enable.save()
+
+                    # Resetting all email alerts to False
+                    reset_email_alerts()
+
+                else:
+                    email_enable.enabled = True
+                    context['email_enabled'] = True
+                    email_enable.save()
+            except:
+                email_enable = EmailSupport()
+                email_enable.enabled = True
+                context['email_enabled'] = True
+                email_enable.save()
+
         # Update sample period for MACD and MFI calculations
         elif 'sample_period' in request.POST:
             print('>> Sampling <<')
@@ -537,7 +583,9 @@ def home(request, table_index=1):
                     stock.sample_period_14 = False
                     stock.save()
                     context['sample_period_14'] = False
-
+        
+        
+        
         # Stock Delete
         elif 'delete_stock' in request.POST:
             print('>> Deleting <<')

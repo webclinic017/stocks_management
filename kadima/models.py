@@ -9,6 +9,12 @@ from django.contrib.auth.models import User
 #     def __str__(self):
 #         return self.username
 
+class EmailSupport(models.Model):
+    enabled = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.enabled
+
 class StockData(models.Model):
 
     table_index = models.IntegerField(default=0)
@@ -96,6 +102,8 @@ class StockData(models.Model):
     stock_alarm_trigger_set = models.BooleanField(default=False) # True when the alarm is set/trigger armed
     stock_alarm_sound_on_off = models.BooleanField(default=False) # Flag to control the sound (play only once)
 
+    # Email alert flag
+    stock_email_alert = models.BooleanField(default=False)
 
     # History Page Section
     saved_to_history = models.BooleanField(default=False)

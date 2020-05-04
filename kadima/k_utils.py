@@ -6,6 +6,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.template import RequestContext, TemplateDoesNotExist
 from django.template.loader import render_to_string
 from django.conf import settings
+from django.core.mail import send_mail
 
 from .models import StockData
 from pandas_datareader import data as fin_data
@@ -213,3 +214,16 @@ def week_values(stock_df, week_index):
     relative_value = 100 if relative_value_tmp > 100 else relative_value_tmp
 
     return relative_value, last_min, last_max
+
+def send_email_alert(request, email_body, send_to_list):
+    email_subject = 'Kadima - Alert'
+    email_body = email_body
+    send_mail(email_subject, email_body, settings.EMAIL_HOST_USER, send_to_list, fail_silently=False)
+    return
+
+def reset_email_alerts():
+    # Resetting all email alerts to False
+    stocks = StockData.objects.all()
+    for stock in stocks:
+        stock.stock_email_alert = False
+        stock.save()

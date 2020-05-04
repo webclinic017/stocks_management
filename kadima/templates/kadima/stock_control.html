@@ -35,4 +35,13 @@
             </div>
         </div>
     </div>
+    <div class="row border-top mt-2 justify-content-center" style="padding-bottom: 0 !important;">
+        <div class="form-group" center>
+            <div class="col-sm-12">
+                <div class="pt-2" style="color:black">
+                    <input name="email_enable" type="submit"  {% if email_enabled %}class="btn btn-sm btn-danger" value='Disable Email' {% else %} value="Enable Email" class="btn btn-sm btn-success"{% endif %} >
+                </div>
+            </div>
+        </div>
+    </div>
 </form>
