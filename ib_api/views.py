@@ -346,7 +346,7 @@ def check_email_alerts(request):
 
 def stock_data_api(request, table_index=1, sort=None):
 
-    check_email_alerts()
+    check_email_alerts(request)
 
     stocks_db = StockData.objects.filter(table_index=table_index)
     stocks_db_dict = {}
