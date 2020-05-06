@@ -10,7 +10,10 @@ def apiConnectionStatus(request):
 
 def tableIndex(request):
     context = {}
-    context['table_index'] = request.session['table_index']
+    try:
+        context['table_index'] = request.session['table_index']
+    except:
+        context['table_index'] = 1
     return context
 
 

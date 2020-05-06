@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'background_task',
     'corsheaders',
+    'crispy_forms',
     'ib_api.apps.IbApiConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -176,4 +177,9 @@ IB_CLIENT_ID = config['IB_CLIENT_ID']
 
 # Clash angle threshhold
 DEVIATION_ANGLE = 15
+
+CRISPY_TEMPLATE_PACK='bootstrap4'
+
+LOGIN_REDIRECT_URL='/'
+LOGOUT_REDIRECT_URL='/'
 

@@ -46,13 +46,19 @@
             <button type="submit" name="connect_ib_api" class="btn btn-success" disabled> IB API Connected </button>
             <button type="submit" name="disconnect_ib_api" class="btn btn-danger"> Disconnect </button>
             {% else %}
-            <button type="submit" name="connect_ib_api" class="btn btn-success" > Connect API </button>
+              {% if user.is_authenticated %}
+                <button type="submit" name="connect_ib_api" class="btn btn-success" > Connect API </button>
+                <a href="/logout">Logout</a>
+                {% else %}
+                <button type="submit" name="connect_ib_api" class="btn btn-success" disabled > Connect API </button>
+                <a href="/login">Login</a>
+              {% endif %}
           {% endif %}
           <!-- <button type="submit" name="update_now" class="btn btn-info" > Update </button> -->
         </form>  
       </div>
       <div class="col-sm-8 text-center" style="height: 5em;">
-        <img src="{% static 'assets/img/kadima-logo.png' %}" alt="Kadima Group logo";" style="height: 100%; width: auto">
+        <a href='/'><img src="{% static 'assets/img/kadima-logo.png' %}" alt="Kadima Group logo";" style="height: 100%; width: auto"></a>
       </div>
     </div>
   </div>

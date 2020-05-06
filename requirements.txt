@@ -37,3 +37,4 @@ sqlparse==0.3.0
 urllib3==1.25.7
 yahoo-earnings-calendar==0.5.2
 yfinance==0.1.54
+django-crispy-forms==1.9.0
