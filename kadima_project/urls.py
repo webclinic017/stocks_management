@@ -27,6 +27,8 @@ admin.site.site_header = 'KADIMA'
 urlpatterns = [
     
     path('', views_kadima.home, name='home'),
+    path('', include('django.contrib.auth.urls')),
+
     path('table_index=<table_index>/', views_kadima.home, name='table-2'),
     path('history/<int:table_index>', views_kadima.history, name='history'),
 
