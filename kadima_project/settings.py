@@ -93,6 +93,8 @@ TEMPLATES = [
                 'kadima.context_processors.updaingGaps',
                 'kadima.context_processors.isTrading',
                 'kadima.context_processors.tableIndex',
+                'kadima.context_processors.stockAlert',
+                'kadima.context_processors.tableSort',
             ],
         },
     },

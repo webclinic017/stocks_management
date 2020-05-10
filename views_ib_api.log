@@ -1,0 +1,24 @@
+ERROR 2020-05-10 13:30:55,515 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 195, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-05-10 13:31:00,464 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 195, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+WARNING 2020-05-10 13:40:37,616 - Forbidden (CSRF cookie not set.): /
+WARNING 2020-05-10 13:40:37,779 - Not Found: /favicon.ico

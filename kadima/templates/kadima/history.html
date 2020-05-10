@@ -1,6 +1,6 @@
 {% extends 'kadima/base.html' %}
 {% block content %}
-<div class="content">
+<div class="content" id="historyTable">
     <div class="row">
         <div class="col-md-12">
         <form method="POST" enctype="multipart/form-data">
@@ -197,6 +197,15 @@
     /*
     */
     </script> -->
+{% if user.is_authenticated %}
+{%  else %}
+<script>
+    var childNodes = document.getElementById("historyTable").getElementsByTagName('*');
+    for (var node of childNodes) {
+        node.disabled = true;
+}
+</script>
+{% endif %}
 
 <style>
     .border-3 {

@@ -1,0 +1,98 @@
+{% for stock in stocks|dictsort:'week_3' %}
+{% if stock_alert == 'condition_3'%}
+    <tr class="fast-blink-row-buy">
+{% elif stock_alert == 'condition_4'%}
+    <tr class="fast-blink-row-sell">
+{% elif stock.week_3_color == 'green' and stock.gap_1_color == 'red' %}
+  <tr class="blink-row-buy">
+{% elif stock.week_3_color == '#FF1000' and stock.gap_1_color == 'green' %}
+    <tr class="blink-row-sell">
+{% else %}
+  <tr>
+{% endif %}
+    <!-- <td  class="">
+          {{ stock.stock_displayed_date }}
+      </td> -->
+      <td  class="">
+          <b>{{ stock.ticker }}</b>
+      </td>
+      <td  class="">
+          {{ stock.stock_price }}
+      </td>
+      <td  class="" style="background-color: {{ stock.week_1_color }}; ">
+          {{ stock.week_1 }}%
+      </td>
+      <td  class="" style="background-color: {{ stock.week_2_color }};">
+          {{ stock.week_2 }}%
+      </td >
+      <td  class="" style="border-right: 5px solid white; background-color: {{ stock.week_5_color }}; ">
+          {{ stock.week_5 }}%
+      </td>
+      <td  class="text-center" style="border-right: 5px solid white; background-color: {{ stock.week_3_color }}; font-size: 1rem;">
+        <b>{{ stock.week_3 }}%</b>
+    </td>
+    <td  class="text-center" style="border-right: 5px solid white; background-color: {{ stock.gap_1_color }}; font-size: 1rem;">
+      <!-- <td  class="bg-success-light"> -->
+        <b>{{ stock.gap_1 }}% </b>
+      </td>
+      <td  class="border-right border-3" style="background-color: {{ stock.rsi_color }}; text-align: center;">
+        <!-- <td  class="bg-success-light"> -->
+          {{ stock.rsi }}
+        </td>
+
+      {% if sample_period_14 %}
+        <td  class=" border-right border-3" style="background-color: {{ stock.macd_14_color }}; text-align: center;">
+            {% if stock.macd_14_clash %}
+              <span>><</span>
+            {% else %}
+              <span>=</span>
+            {% endif %}
+        </td>
+        {% else %}
+        <td  class=" border-right border-3" style="background-color: {{ stock.macd_30_color }}; text-align: center;">
+          {% if stock.macd_30_clash %}
+            <span>><</span>
+          {% else %}
+            <span>=</span>
+          {% endif %}
+      </td>
+      {% endif %}
+
+      {% if sample_period_14 %}
+        <td  class="" style="background-color: {{ stock.mfi_14_color }}; text-align: center;">
+          {% if stock.mfi_14_clash %}
+            <span>><</span>
+          {% else %}
+            <span>=</span>
+          {% endif %}
+        </td>
+      {% else %}
+        <td  class="" style="background-color: {{ stock.mfi_30_color }}; text-align: center;">
+          {% if stock.mfi_30_clash %}
+            <span>><</span>
+          {% else %}
+            <span>=</span>
+          {% endif %}
+        </td>
+      {% endif %}
+
+      <td class="{{ stock.earnings_warning }} " style="height: 100%;">
+        {{ stock.earnings_call_displayed }}
+      </td>
+      <td class="" style="height: 100%;">
+          {{ stock.dividend_date }}
+      </td>
+      <td class="" style="height: 100%;">
+          ${{ stock.dividend }}
+      </td>
+      <td  class="">
+        <button type="submit" value="{{ stock.id }}" name="alarm_stock" class="tim-icons icon-bell-55"></button>
+      </td>  
+      <td  class="">
+          <button type="submit" value="{{ stock.id }}" name="save_stock" class="tim-icons icon-bullet-list-67"></button>
+      </td>
+      <td  class="">
+          <button type="submit" value="{{ stock.id }}" name="delete_stock" class="tim-icons icon-trash-simple"></button>
+      </td>
+  </tr>
+{% endfor %}

@@ -35,7 +35,7 @@ urlpatterns = [
     # IB API URLS
     path('indeces-data/', views_ib_api.indeces_data, name='indeces-data'), 
     path('stocks-alarms-data/', views_ib_api.stock_alarms_data, name='stocks-alarms-data'), 
-    path('stock-data-api/<int:table_index>', views_ib_api.stock_data_api, name='stock-data-api'),
+    path('stock-data-api/<int:table_index>/', views_ib_api.stock_data_api, name='stock-data-api'),
     
     path('stock-alarms/', views_kadima.stock_alarms, name='stock-alarms'),
     path('alarm-trigger/', views_kadima.alarm_trigger, name='alarm-trigger'),

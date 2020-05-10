@@ -202,7 +202,7 @@ def indexes_updates(request):
 
         else:
             snp_data.index_mfi_clash = False
-            snp_data.index_mficolor= 'green'
+            snp_data.index_mfi_color= 'green'
 
         indexes_context['snp_macd'] =  snp_index_macd   
         indexes_context['snp_macd_color'] =  snp_data.index_macd_color   

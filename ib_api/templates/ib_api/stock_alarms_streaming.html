@@ -88,3 +88,13 @@
     {% endfor %}
     </tbody>
 </table>
+
+{% if user.is_authenticated %}
+{%  else %}
+<script>
+  var childNodes = document.getElementById("stocks_alarms").getElementsByTagName('*');
+  for (var node of childNodes) {
+      node.disabled = true;
+}
+</script>
+{% endif %}

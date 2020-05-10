@@ -1,6 +1,6 @@
 {% extends 'kadima/base.html' %}
 {% block content %}
-<div class="content">
+<div class="content" id="alarmsTable">
     <div class="row">
         <div class="col-md-12">
             <form method="POST" enctype="multipart/form-data">
@@ -74,6 +74,7 @@
 
                     <div class="card-body">
                         {% if ib_api_connected %}
+
                         <div class="table-responsive" id="stocks_alarms">
                         <!-- STREAMING DATA -->
                         </div>
@@ -181,13 +182,24 @@
 
 <!-- Source : https://bytutorial.com/blogs/css3/how-to-create-blinking-background-color-and-text-using-css3-animation -->
 
-{% if ib_api_connected %}
+{% if user.is_authenticated %}
+{%  else %}
+<script>
+    var childNodes = document.getElementById("alarmsTable").getElementsByTagName('*');
+    for (var node of childNodes) {
+        node.disabled = true;
+}
+</script>
+{% endif %}
 
+{% if ib_api_connected %}
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script type="text/javascript">
         (function worker() {
             $.ajax({
-            url: {% url 'stocks-alarms-data' %},
+            url: '/stocks-alarms-data/',
             success: function(response) {
+                console.log(`RESP: ${response}`)
                 //console.log($('#price_up').html(response));
                 //console.log($('#price_down').html(response));
                 $('#stocks_alarms').html(response);

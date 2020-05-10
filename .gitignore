@@ -3,3 +3,6 @@ cors.py
 kadima/migrations/*
 *.pyc*
 kadima/__pycache__/*
+*.db
+*.sqlite3
+*.sqlite

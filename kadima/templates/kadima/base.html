@@ -1,8 +1,9 @@
 <!-- Theme template demo: https://demos.creative-tim.com/black-dashboard/examples/dashboard.html -->
 <!DOCTYPE html>
-{% load static %}
 
 <html lang="en">
+{% load static %}
+{% block head %} {% endblock head %}
 
 <head>
   <meta charset="utf-8" />
@@ -16,19 +17,12 @@
   <link href="{% static 'assets/css/nucleo-icons.css' %}" rel="stylesheet" />
   
   <!-- CSS Files -->
-  <link href="{% static 'assets/css/black-dashboard.css' %}" rel="stylesheet" />
-  
+  <link href="{% static 'assets/css/black-dashboard.css' %}" rel="stylesheet" /> 
   <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet">
-  
-  <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
-  <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
-  <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
-
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" integrity="sha256-DOS9W6NR+NFe1fUhEE0PGKY/fubbUCnOfTje2JMDw3Y=" crossorigin="anonymous" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha256-FEqEelWI3WouFOo2VWP/uJfs1y8KJ++FLh2Lbqc8SJk=" crossorigin="anonymous"></script>
 </head>
 
-<body class="" onload="startTime()">
+<body class="" onload="startTime()" id="main">
 
   <audio id="up_sound">
     <source src="{% static 'audio/up.mp3' %}" type="audio/mpeg">
@@ -44,7 +38,11 @@
         <form method="POST" action="" enctype="multipart/form-data">{% csrf_token %}
           {% if ib_api_connected %}
             <button type="submit" name="connect_ib_api" class="btn btn-success" disabled> IB API Connected </button>
-            <button type="submit" name="disconnect_ib_api" class="btn btn-danger"> Disconnect </button>
+            {% if user.is_authenticated %}
+              <button type="submit" name="disconnect_ib_api" class="btn btn-danger"> Disconnect </button>
+            {% else %}
+              <button type="submit" name="disconnect_ib_api" class="btn btn-danger" disabled> Disconnect </button>
+            {% endif %}
             {% else %}
               {% if user.is_authenticated %}
                 <button type="submit" name="connect_ib_api" class="btn btn-success" > Connect API </button>
@@ -57,8 +55,23 @@
           <!-- <button type="submit" name="update_now" class="btn btn-info" > Update </button> -->
         </form>  
       </div>
-      <div class="col-sm-8 text-center" style="height: 5em;">
+      <div class="col-sm-4 text-center" style="height: 5em;">
         <a href='/'><img src="{% static 'assets/img/kadima-logo.png' %}" alt="Kadima Group logo";" style="height: 100%; width: auto"></a>
+      </div>
+      <div class="col-sm-4 text-center" style="height: 5em;">
+        <div class="row">
+          <div class="col-sm-3"></div>
+          <div class="col-sm-3"></div>
+          {% if stock_alert == 'condition_3' %}
+            <div class="col-sm-3 fast-blink-row-buy">
+              <img class="pt-3 pb-3" src="{% static 'assets/img/attention.png' %}" alt="Stock alert";" style="max-width:30%">
+          {% elif stock_alert == 'condition_4' %}
+            <div class="col-sm-3 fast-blink-row-sell">
+              <img class="pt-3 pb-3" src="{% static 'assets/img/attention.png' %}" alt="Stock alert";" style="max-width:30%">
+          {% endif %}
+          </div>
+          <div class="col-sm-3"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -160,35 +173,10 @@
     </div>
   </div>
 
+
 </body>
 
-<script>
-  function startTime() {
-    var today = new Date();
-    var year = today.getFullYear()
-    var month = today.getMonth()
-    var day = today.getDate()
-    var h = today.getHours();
-    var m = today.getMinutes();
-    var s = today.getSeconds();
-    m = checkTime(m);
-    s = checkTime(s);
-
-    document.getElementById('date').innerHTML = 
-    day + "/" + month + "/" + year;
-
-    document.getElementById('clock').innerHTML =
-    h + ":" + m + ":" + s;
-    var t = setTimeout(startTime, 500);
-  }
-  function checkTime(i) {
-    if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
-    return i;
-  }
-  </script>
-
 {% if ib_api_connected %}
-
   <script type="text/javascript">
       (function worker() {
           $.ajax({
@@ -214,31 +202,6 @@
 
   </script>
 {% endif %}
-<script>
-  $(document).ready(function(){
-      setTimeout(function() {
-              // $(".display-message").hide('blind', {}, 300)
-        $(".display-message").hide();
-      }, 5000);
-  });
-</script>
-
-<script>
-  var up = document.getElementById("up_sound"); 
-  var down = document.getElementById("down_sound"); 
-  
-  function playUpAudio() { 
-    up.play(); 
-  } 
-
-  function playDownAudio() { 
-      down.play(); 
-  } 
-
-//    function pauseAudio() { 
-//      x.pause(); 
-//    } 
-</script>
 
 
 

@@ -303,50 +303,51 @@ def week_check(history_min, history_max ,realtime_price, week3=False):
 def check_email_alerts(request):
     stocks = StockData.objects.all()
     email_support = EmailSupport.objects.all().first().enabled
-    
-    if email_support:
-        for stock in stocks:
-            week3_color = stock.week3_color
-            gap1_color = stock.gap1_color
-            rsi_color = stock.rsi_color
-            email_flag = stock.stock_email_alert
-            email_alert = False
+    stock_alert = ''
 
-            if not email_flag:
-                if week3_color == 'green' and gap1_color == 'red':
-                    buy = True
-                    email_alert = True
-                elif week3_color == '#FF1000' and gap1_color == 'green':
-                    sell = True
-                    email_alert = True
-                elif  week3_color == 'green' and gap1_color == 'red' and rsi_color == 'red':
-                    buy = True
-                    email_alert = True
-                elif week3_color == '#FF1000' and gap1_color == 'green' and rsi_color == 'green':
-                    sell = True
-                    email_alert = True
-                else:
-                    email_alert = False
-                    pass
+    for stock in stocks:
+        week3_color = stock.week_3_color
+        gap1_color = stock.gap_1_color
+        rsi_color = stock.rsi_color
+        email_flag = stock.stock_email_alert
+        email_alert = False
 
-            if email_alert:
-                email_body = f'''
-                Stock:          {stock.ticker}
-                Week3 color:    {week3_color}
-                GAP1:           {gap1_color}
-                RSI:            {rsi_color}
-                '''
-                send_email_alert(request,email_body,[settings.EMAIL_DEFAULT_TO])
-                stock.stock_email_alert = True
-                stock.save()
+        if not email_flag:
+            if week3_color == 'green' and gap1_color == 'red':
+                stock_alert = 'condition_1'
+                email_alert = True
+            elif week3_color == '#FF1000' and gap1_color == 'green':
+                stock_alert = 'condition_2'
+                email_alert = True
+            elif  week3_color == 'green' and gap1_color == 'red' and rsi_color == 'red':
+                stock_alert = 'condition_3'
+                email_alert = True
+            elif week3_color == '#FF1000' and gap1_color == 'green' and rsi_color == 'green':
+                stock_alert = 'condition_4'
+                email_alert = True
+            else:
+                stock_alert = ''
+                email_alert = False
+
+    if email_support and email_alert:
+        email_body = f'''
+        Stock:          {stock.ticker}
+        Week3 color:    {week3_color}
+        GAP1:           {gap1_color}
+        RSI:            {rsi_color}
+        '''
+        send_email_alert(request,email_body,[settings.EMAIL_DEFAULT_TO])
+        stock.stock_email_alert = True
+        stock.save()
     else:
         pass
     
-    return
+    return stock_alert
 
 def stock_data_api(request, table_index=1, sort=None):
 
-    check_email_alerts(request)
+    stock_alert = check_email_alerts(request)
+    request.session['stock_alert'] = stock_alert
 
     stocks_db = StockData.objects.filter(table_index=table_index)
     stocks_db_dict = {}
@@ -378,7 +379,7 @@ def stock_data_api(request, table_index=1, sort=None):
                 pass
             
             stocks_db_dict[stock.id] = {
-                'stock_id': stock.id,
+                'id': stock.id,
                 'ticker': stock.ticker,
                 'stock_price': stock_dick[stock.id],
                 'table_index': stock.table_index,
@@ -427,13 +428,22 @@ def stock_data_api(request, table_index=1, sort=None):
         except Exception as e:
             print(f'(ERROR: Failed loading stock {stock}  to API. Reason: {e}')
 
-    sorted_list = sorted(stocks_db_dict_list, key=lambda k: k['week_3'])
+    if sort == 'gap':
+        sorted_list = sorted(stocks_db_dict_list, key=lambda k: k['gap_1'])
+        print(f'SORTED: {sorted_list}')
+
+    elif sort == 'week3':
+        sorted_list = sorted(stocks_db_dict_list, key=lambda k: k['week_3'])
+        print(f'WEEK SORTED: {sorted_list}')
+    else:
+        sorted_list = sorted(stocks_db_dict_list, key=lambda k: k['week_3'])
     
     context = {
         # 'stocks_streaming': stock_dick.items(), 
         'ib_api_connected': connection_status,
+        'stock_alert': stock_alert,
         # 'stocks_processed': stocks_db_dict.items()
-        'stocks_processed': sorted_list
+        'stocks': sorted_list
     }
 
     print(f'CONNECTION STATUS: {connection_status}')
@@ -470,7 +480,7 @@ class TestApp(EClient, EWrapper):
 
     @iswrapper
     def tickPrice(self, reqId, tickType, price, attrib):
-        print("Ticker Price Data:  Ticket ID: ", reqId, " ","tickType: ", TickTypeEnum.to_str(tickType), "Price: ", price, end=" ")
+        # print("Ticker Price Data:  Ticket ID: ", reqId, " ","tickType: ", TickTypeEnum.to_str(tickType), "Price: ", price, end=" ")
 
         stock_dick[reqId] = price
 
@@ -491,9 +501,9 @@ class TestApp(EClient, EWrapper):
 
 
 
-    @iswrapper
-    def tickSize(self, reqId, tickType, size):
-        print("Ticket ID: ", reqId, " ","tickType: ", TickTypeEnum.to_str(tickType), "Size: ", size)
+    # @iswrapper
+    # def tickSize(self, reqId, tickType, size):
+    #     print("Ticket ID: ", reqId, " ","tickType: ", TickTypeEnum.to_str(tickType), "Size: ", size)
 
     @iswrapper
     def isConnected(self):

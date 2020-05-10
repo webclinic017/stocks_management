@@ -8,8 +8,8 @@ import numpy as np
 import datetime
 import re
 import arrow
-from threading import Thread
-
+import threading
+from time import sleep
 from math import *
 from numpy import round
 
@@ -30,8 +30,8 @@ from django.utils import timezone
 # from yahoo_earnings_calendar import YahooEarningsCalendar
 import yfinance as yf
 
-from ib_api.views import *
-from kadima.k_utils import week_values, gap_1_check,date_obj_to_date, reset_email_alerts
+from ib_api.views import stock_data_api, alarm_trigger, api_connection_status,ib_api_wrapper
+from kadima.k_utils import week_values, gap_1_check,date_obj_to_date, reset_email_alerts, week_color
 
 from .models import StockData, IndicesData, EmailSupport
 from .forms import DateForm
@@ -307,11 +307,8 @@ def home(request, table_index=1):
     #########################
 
     #TODO: Replace this update with current database data query.
-
-    # ASDFASDFASDFASDFASDFASDFAs
-    # 
-    #         
     # Updating indexes data every time homepage rendered
+    
     # indexes_update_done, indexes_info = indexes_updates(request)
 
     # if indexes_update_done:
@@ -347,7 +344,17 @@ def home(request, table_index=1):
             api_disconnect(request)
             context['ib_api_connected'] = api_connection_status()
             return render(request, 'kadima/home.html', context)
-            
+
+        elif 'sort_gap' in request.POST:
+            print('>> Gap Sorting <<')
+            request.session['sort_by'] = 'gap_1'
+            context['sort_by'] = request.session['sort_by']
+
+        elif 'sort_week3' in request.POST:
+            print('>> Week3 Sorting <<')
+            request.session['sort_by'] = 'week_3'
+            context['sort_by'] = request.session['sort_by']
+
         elif 'add_stock' in request.POST:
             
             stocks_to_add  = request.POST.get('stock').split(',')
@@ -635,6 +642,7 @@ def home(request, table_index=1):
             return render(request, 'kadima/home.html', context)
 
         elif 'alarm_stock' in request.POST:
+            print('>> Alarm Stock <<')
             stock_id = request.POST['alarm_stock']
             stock_data = StockData.objects.get(id=stock_id)
             stock_data.stock_alarm = True  

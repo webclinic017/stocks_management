@@ -16,6 +16,21 @@ def tableIndex(request):
         context['table_index'] = 1
     return context
 
+def stockAlert(request):
+    context = {}
+    try:
+        context['stock_alert'] = request.session['stock_alert']
+    except:
+        context['stock_alert'] = ''
+    return context
+
+def tableSort(request):
+    context = {}
+    try:
+        context['sort_by'] = request.session['sort_by']
+    except:
+        context['sort_by'] = 'week_3'
+    return context
 
 def updaingGaps(request):
     context = {}
