@@ -69,6 +69,33 @@
   <div class="col">
     <div class="index">
       <div class="row">
+        <div class="card card-chart" style="background-color:{{ r2k_color }};">
+          <div class="card-header">
+            <h2 class="card-title" style="color: aliceblue;">Russ-2K</h2>
+            <h4 class="card-title"><i class="text-info"></i> {{ r2k_value }} / {{ r2k_change }}%</h4>
+          </div>
+        </div>  
+      </div>  
+    </div>
+    <div class="row">
+      <div class="col-6 text-center">
+        <div class="card card-chart" style="background-color:{{ r2k_macd_color }};color:white">
+          <div class="card-header">
+            MACD
+          </div>
+        </div>
+      </div>
+      <div class="col-6 text-center">
+        <div class="card card-chart" style="background-color:{{ r2k_mfi_color }};color:white">
+          <div class="card-header">
+            MFI
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>  <div class="col">
+    <div class="index">
+      <div class="row">
         <div class="card card-chart" style="background-color:{{ vix_color }};">
           <div class="card-header">
             <h2 class="card-title" style="color: aliceblue;">VIX</h2>
@@ -102,33 +129,5 @@
             </div>
           </div>
         </div>
-    </div>
-  </div>
-  <div class="col">
-    <div class="index">
-      <div class="row">
-        <div class="card card-chart" style="background-color:{{ r2k_color }};">
-          <div class="card-header">
-            <h2 class="card-title" style="color: aliceblue;">Russ-2K</h2>
-            <h4 class="card-title"><i class="text-info"></i> {{ r2k_value }} / {{ r2k_change }}%</h4>
-          </div>
-        </div>  
-      </div>  
-    </div>
-    <div class="row">
-      <div class="col-6 text-center">
-        <div class="card card-chart" style="background-color:{{ r2k_macd_color }};color:white">
-          <div class="card-header">
-            MACD
-          </div>
-        </div>
-      </div>
-      <div class="col-6 text-center">
-        <div class="card card-chart" style="background-color:{{ r2k_mfi_color }};color:white">
-          <div class="card-header">
-            MFI
-          </div>
-        </div>
-      </div>
     </div>
   </div>
