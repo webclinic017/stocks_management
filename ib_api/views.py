@@ -314,6 +314,7 @@ def check_email_alerts(request):
 
         if not email_flag:
             if week3_color == 'green' and gap1_color == 'red':
+                print(f'stock: {stock.ticker}. w3: {week3_color}  g1: {gap1_color}')
                 stock_alert = 'condition_1'
                 email_alert = True
             elif week3_color == '#FF1000' and gap1_color == 'green':
@@ -329,18 +330,24 @@ def check_email_alerts(request):
                 stock_alert = ''
                 email_alert = False
 
-    if email_support and email_alert:
-        email_body = f'''
-        Stock:          {stock.ticker}
-        Week3 color:    {week3_color}
-        GAP1:           {gap1_color}
-        RSI:            {rsi_color}
-        '''
-        send_email_alert(request,email_body,[settings.EMAIL_DEFAULT_TO])
-        stock.stock_email_alert = True
-        stock.save()
-    else:
-        pass
+        if email_support and email_alert:
+            mail_context = {
+                'domain': request._current_scheme_host,
+                'stock': stock.ticker,
+                'week3_color': week3_color,
+                'gap1_color': gap1_color,
+                'rsi_color': rsi_color
+            }
+
+            send_email_alert(subject='KADIMA Stock Alert', email_template_name=None,
+                            context=mail_context, to_email=[settings.EMAIL_DEFAULT_TO], 
+                            html_email_template_name='kadima/email_stock_alert.html')
+            # send_email_alert(request,email_body,[settings.EMAIL_DEFAULT_TO])
+
+            stock.stock_email_alert = True
+            stock.save()
+        else:
+            pass
     
     return stock_alert
 

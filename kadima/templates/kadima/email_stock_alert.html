@@ -1,0 +1,17 @@
+{% load static %}
+<body style="padding: 0px; margin: 0px; background-color: #F7F8F9;">
+    <div class="main-wrapper" style="box-sizing: border-box; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -o-box-sizing: border-box; -ms-box-sizing: border-box; display: block; width: 634px; padding: 30px 30px; background-color: #ffffff; border-radius: 2px; margin: auto;" style="text-align: left;">
+		<div class="header-sec">
+			<!-- <img src="{{ domain }}{% static 'assets/img/kadima-logo.png' %}" alt="Logo" style="max-width: 20%;"> -->
+		</div>
+		<div class="content-sec">
+			<h5 style="font-size: 20px; font-family: sans-serif; color: #333333;">Stock Alert from KADIMA Platform</h5>
+		</div>
+        <h4>Stock Ticker: {{ stock }}</h4>
+        
+        <p><b>Week 3 Colort:</b> {{ week3_color }}</p>
+        <p><b>Gap 1 Color:</b> {{ gap1_color }}</p>        
+        <p><b>rsi_color:</b> {{ rsi_color }}</p>        
+        <hr>
+</body>
+</html>

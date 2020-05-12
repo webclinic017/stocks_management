@@ -39,6 +39,8 @@ from .ml_models import trends
 from .value_updates import indexes_updates, update_values
 from kadima.stock import Stock
 
+from ib_api.views import check_email_alerts
+
 # Create and configure logger
 import logging
 
@@ -272,6 +274,9 @@ def home(request, table_index=1):
     ib_api_connected = api_connection_status()
     context['ib_api_connected'] = ib_api_connected
     request.session['table_index'] = table_index
+
+
+    # check_email_alerts(request)
 
     try:
         context['email_enabled'] = EmailSupport.objects.all().first().enabled

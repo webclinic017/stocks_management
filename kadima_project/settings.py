@@ -162,7 +162,7 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'kadimagrouppanama@gmail.com'
 EMAIL_HOST_PASSWORD = 'Kadima2020!'
 
-EMAIL_DEFAULT_TO = ['alfred.shaffir@gmail.com', 'interkoby@gmail.com']
+EMAIL_DEFAULT_TO = 'interkoby@gmail.com'
 
 
 # This is the path to the index file
