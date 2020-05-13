@@ -73,6 +73,9 @@
           {% elif stock_alert == 'condition_4' %}
             <div class="col-sm-3 fast-blink-row-sell">
               <img class="pt-3 pb-3" src="{% static 'assets/img/attention.png' %}" alt="Stock alert";" style="max-width:30%">
+          {% else %}
+              <div class="col-sm-3 ">
+                <img class="pt-3 pb-3" src="{% static 'assets/img/attention.png' %}" alt="Stock alert";" style="max-width:30%">
           {% endif %}
           </div>
           <div class="col-sm-3"></div>
