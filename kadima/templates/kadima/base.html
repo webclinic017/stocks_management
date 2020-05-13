@@ -20,10 +20,15 @@
   <link href="{% static 'assets/css/black-dashboard.css' %}" rel="stylesheet" /> 
   <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" integrity="sha256-DOS9W6NR+NFe1fUhEE0PGKY/fubbUCnOfTje2JMDw3Y=" crossorigin="anonymous" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+  <!-- <script src="{% static 'assets/js/kadima.js' %}" ></script> -->
+
 </head>
 
 <body class="" onload="startTime()" id="main">
 
+  <!-- Stocks alarms trigger sounds -->
+  <div id="trigger_alerts" hidden></div>
   <audio id="up_sound">
     <source src="{% static 'audio/up.mp3' %}" type="audio/mpeg">
   </audio>
@@ -196,7 +201,7 @@
             $('#trigger_alerts').html(response);
         }
     });		
-    // Polling the API page every second
+    // Polling the API page every second for the TRIGGER
     setTimeout(worker, 2000);
     })();
 

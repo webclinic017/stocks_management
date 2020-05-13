@@ -39,8 +39,6 @@ from .ml_models import trends
 from .value_updates import indexes_updates, update_values
 from kadima.stock import Stock
 
-from ib_api.views import check_email_alerts
-
 # Create and configure logger
 import logging
 
@@ -64,14 +62,14 @@ def stock_alarms(request):
     if request.method  == 'POST':
         if 'connect_ib_api' in request.POST:
             api_connect(request)
-            context = {}
+            # context = {}
             ib_api_connected = api_connection_status()
             context['ib_api_connected'] = ib_api_connected
             return render(request, 'kadima/stock_alarms.html', context)
 
         elif 'disconnect_ib_api' in request.POST:
             api_disconnect(request)
-            context = {}
+            # context = {}
             ib_api_connected = api_connection_status()
             context['ib_api_connected'] = ib_api_connected
             return render(request, 'kadima/stock_alarms.html', context)
@@ -169,14 +167,14 @@ def history(request, table_index=1):
     if request.method == 'POST':
         if 'connect_ib_api' in request.POST:
             api_connect(request)
-            context = {}
+            # context = {}
             ib_api_connected = api_connection_status()
             context['ib_api_connected'] = ib_api_connected
             return render(request, 'kadima/history.html', context)
  
         elif 'disconnect_ib_api' in request.POST:
             api_disconnect(request)
-            context = {}
+            # context = {}
             ib_api_connected = api_connection_status()
             context['ib_api_connected'] = ib_api_connected
             return render(request, 'kadima/history.html', context)
@@ -274,9 +272,6 @@ def home(request, table_index=1):
     ib_api_connected = api_connection_status()
     context['ib_api_connected'] = ib_api_connected
     request.session['table_index'] = table_index
-
-
-    # check_email_alerts(request)
 
     try:
         context['email_enabled'] = EmailSupport.objects.all().first().enabled
@@ -709,13 +704,20 @@ def api_connect(request):
     return
 
 def api_disconnect(request):
+    # context = {}
     # print('Updating values before disconnecting')
     # update_values(request)
 
     # Resetting all email alerts to False
     reset_email_alerts()
 
+    # Resetting the alarms
+    saved_alarms_stocks = StockData.objects.filter(stock_alarm=True)
+    for stock in saved_alarms_stocks:
+        stock.stock_alarm_trigger_set = False
+        stock.save()
+
     print('Stopping the IB API...')
     ib_api_wrapper(request,action=STOP_API )
     sleep(2)
-    return
+    return 

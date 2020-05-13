@@ -53,7 +53,7 @@ def alarm_trigger(request):
     for stock in stocks_in_alarm:
 
         if stock.stock_price_up_alarm:
-            messages.success(request, f'UP TRIGGER: {stock.ticker}')
+            # messages.success(request, f'UP TRIGGER: {stock.ticker}')
 
             if stock.stock_alarm_sound_on_off:
                 pass
@@ -63,7 +63,7 @@ def alarm_trigger(request):
                 stock.save()
         
         elif stock.stock_price_down_alarm:
-            messages.warning(request, f'DOWN TRIGGER: {stock.ticker}')
+            # messages.warning(request, f'DOWN TRIGGER: {stock.ticker}')
 
             if stock.stock_alarm_sound_on_off:
                 pass
@@ -78,7 +78,7 @@ def alarm_trigger(request):
     return render(request,'kadima/alarm_trigger.html', context)
 
 
-def stock_alarms_data(request):
+def stocks_alarms_data(request):
     context = {}
     saved_alarms_stocks = StockData.objects.filter(stock_alarm=True)
     
@@ -115,13 +115,14 @@ def stock_alarms_data(request):
                     price_down = True
                     stock.stock_price_down_alarm = True
                     stock.save()
+                else:
+                    price_up = False
+                    price_down = False
 
             else:
                 price_up = False
                 price_down = False
-            
-            
-
+        
             stocks_db_alarms_dict[stock.id] = {
                 'stock_id': stock.id,
                 'ticker': stock.ticker,
@@ -140,6 +141,7 @@ def stock_alarms_data(request):
             }
 
             stocks_db_dict_list.append(stocks_db_alarms_dict[stock.id])
+        
         except Exception as e:
             print(f'ERROR: Failed loading stock: {stock} to alarm list. Reason: {e}')
 

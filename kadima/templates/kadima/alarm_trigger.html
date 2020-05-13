@@ -1,15 +1,35 @@
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
-{% if messages %}
-{% for message in messages %}
-  <div class="alert alert-{{ message.tags }} display-message border " id="trigger_alerts">
-        {{ message }}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Alarm trigger sound page</title>
+        <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script> -->
+</head>
+<body>
+        <h1>Alarm trigger sound page</h1>
+        <audio id="up_sound">
+        <source src="{% static 'audio/up.mp3' %}" type="audio/mpeg">
+        </audio>
+        
+        <audio id="down_sound">
+        <source src="{% static 'audio/down.mp3' %}" type="audio/mpeg">
+        </audio>
+        
+        <script src="{% static 'assets/js/kadima.js' %}" ></script>
+        
+        <div id="trigger_alerts">
         {% if play_sound == 'up' %}
+                <h3>Playing UP</h3>
                 <script>playUpAudio()</script>
         {% elif play_sound == 'down' %}
+                <h3>Playing Down</h3>
                 <script>playDownAudio()</script>
         {% else %}
 
         {% endif %}
-  </div>
-{% endfor %}
-{% endif %}
+        </div>
+                
+</body>
+</html>

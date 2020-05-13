@@ -64,11 +64,13 @@
             </td>
             
             <!-- Stock Up -->
-            <td  {% if stock.price_up %} class="blink-buy" id="price_up"  {% endif %} style="border: 2px solid white;">
+            <td id="price_up" {% if stock.price_up %} class="blink-buy" {% else %} {% endif %} style="border: 2px solid white;">
+                UP
             </td>
 
             <!-- Stock Down -->
-            <td  {% if stock.price_down %} class="blink-sell"  id="price_down" {% endif %} style="border: 2px solid white;">
+            <td id="price_down" {% if stock.price_down %} class="blink-sell" {% else %} {% endif %} style="border: 2px solid white;">
+                DOWN
             </td>
 
             <td  class="">

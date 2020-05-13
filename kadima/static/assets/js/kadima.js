@@ -33,11 +33,13 @@ function startTime() {
   var down = document.getElementById("down_sound"); 
   
   function playUpAudio() { 
+    up.loop = false
     up.play(); 
   } 
 
   function playDownAudio() { 
-      down.play(); 
+    down.loop = false
+    down.play(); 
   } 
 
 // Sorting table
