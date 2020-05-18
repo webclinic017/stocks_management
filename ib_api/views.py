@@ -302,7 +302,7 @@ def week_check(history_min, history_max ,realtime_price, week3=False):
 
     return relative_value, w_color 
 
-def check_email_alerts(request):
+def check_conditions_alerts(request):
     stocks = StockData.objects.all()
     email_support = EmailSupport.objects.all().first().enabled
     stock_alert = ''
@@ -355,7 +355,7 @@ def check_email_alerts(request):
 
 def stock_data_api(request, table_index=1, sort=None):
 
-    stock_alert = check_email_alerts(request)
+    stock_alert = check_conditions_alerts(request)
     request.session['stock_alert'] = stock_alert
 
     stocks_db = StockData.objects.filter(table_index=table_index)
@@ -493,6 +493,10 @@ class TestApp(EClient, EWrapper):
 
         stock_dick[reqId] = price
 
+        # print only indeces data
+        if reqId > 10000:
+            print("Ticker Price Data:  Ticket ID: ", reqId, " ","tickType: ", TickTypeEnum.to_str(tickType), "Price: ", price, end=" ")
+
         # Tick types: https://interactivebrokers.github.io/tws-api/tick_types.html
 
         if tickType == 9:
@@ -564,24 +568,31 @@ def ib_stock_api(old_stocks_list, stocks, action):
 
         print(f"*************** Loading Indeces... ****************")
 
+        # contract.symbol = "NDX"
+        # contract.secType = "IND"
+        # contract.currency = "USD"
+        # contract.exchange = "NASDAQ"
+
         contract.symbol = "NQ"
         contract.secType = "IND"
         contract.currency = "USD"
         contract.exchange = "GLOBEX"
-        # app.reqMarketDataType(3)
-        
+
         # RTVolume - contains the last trade price, last trade size, last trade time, total volume, VWAP, and single trade flag. - Gives 0
+        # Reference: https://tinyurl.com/y73tg4t8
         # app.reqMktData(55555, contract, 233, False, False, []) 
         
         # Mark Price (used in TWS P&L computations) - no change
         app.reqMktData(55555, contract, 221, False, False, []) 
 
+        # S&P
         contract.symbol = "SPX"
         contract.secType = "IND"
         contract.currency = "USD"
         contract.exchange = "CBOE"
         app.reqMktData(88888, contract, 221, False, False, [])
 
+        # DOW JONES
         contract.symbol = "INDU"
         contract.secType = "IND"
         contract.currency = "USD"

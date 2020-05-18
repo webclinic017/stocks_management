@@ -9,25 +9,16 @@
                     <div class="card-header">
                         <h1 class="card-title">Stocks Alarms</h1>
                     </div>
-                    <!-- {% if messages %}
-                        {% for message in messages %}
-                            <div class="alert alert-{{ message.tags }}">
-                                {{ message }}
-                            </div>
-                        {% endfor %}
-                    {% endif %} -->
                         <div class="row">
                             <div class="col-md-3 pr-md-1">
                                 <form method="POST" enctype="multipart/form-data">
                                     {% csrf_token %}
                                     <div class="row">
                                         <div class="col-md-4 pr-md-1">
-                                            <label style="color: aliceblue;">Select Stock</label>
+                                            <label style="color: aliceblue;">Select Stock</label><br>
                                             <select name="stock_alarm_select" id="stock_alarm_select">
-                                                    <option value="">--</option>
-                                                    {% for stock in stocks %}
-                                                    <option value="{{ stock.id }}">{{ stock.ticker }}</option>
-                                                {% endfor %}
+                                                <option value="">------</option>
+
                                             </select>
                                         </div>
                                         <div class="col-md-4 pr-md-1">
@@ -180,6 +171,17 @@
 </div>
 
 <!-- Source : https://bytutorial.com/blogs/css3/how-to-create-blinking-background-color-and-text-using-css3-animation -->
+<script type="text/javascript">
+$("#stock_alarm_select").click(function () {
+        console.log('UPDATING alarms...')
+        $.ajax({
+        url: "{% url 'alarm-stocks-selector' %}",
+        success: function(response) {
+        $('#stock_alarm_select').html(response);
+        }
+    })		
+});
+</script>
 
 {% if user.is_authenticated %}
 {%  else %}

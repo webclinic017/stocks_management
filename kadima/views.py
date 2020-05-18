@@ -51,6 +51,12 @@ MAX_PAST = TODAY - timedelta(30)
 UPADATE_STOCKS = 'update'
 STOP_API = 'stop'
 
+def alarm_stocks_selector(request):
+    context = {}
+    saved_alarms_stocks = StockData.objects.filter(stock_alarm=True)
+    context['stocks'] = saved_alarms_stocks
+    return render(request, 'kadima/partials/_alarm_stocks_selector.html', context)
+
 def stock_alarms(request):
     context = {}
     alarmed_stocks = StockData.objects.filter(stock_alarm=True)
