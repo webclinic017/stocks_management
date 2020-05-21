@@ -279,23 +279,23 @@ def reset_alarms():
     saved_alarms_stocks = StockData.objects.filter(stock_alarm=True)
     for stock in saved_alarms_stocks:
         stock.stock_alarm_trigger_set = False
-        stock.stock_alarm_1 = ''
-        stock.stock_alarm_2 = ''
-        stock.stock_alarm_3 = ''
-        stock.stock_alarm_4 = ''
-        stock.stock_alarm_5 = ''
-        stock.stock_alarm_6 = ''
-        stock.stock_alarm_7 = ''
-        stock.stock_alarm_8 = ''
+        stock.stock_alarm_1 = None
+        stock.stock_alarm_2 = None
+        stock.stock_alarm_3 = None
+        stock.stock_alarm_4 = None
+        stock.stock_alarm_5 = None
+        stock.stock_alarm_6 = None
+        stock.stock_alarm_7 = None
+        stock.stock_alarm_8 = None
 
-        stock.stock_alarm_1_color = ''
-        stock.stock_alarm_2_color = ''
-        stock.stock_alarm_3_color = ''
-        stock.stock_alarm_4_color = ''
-        stock.stock_alarm_5_color = ''
-        stock.stock_alarm_6_color = ''
-        stock.stock_alarm_7_color = ''
-        stock.stock_alarm_8_color = ''
+        stock.stock_alarm_1_color = None
+        stock.stock_alarm_2_color = None
+        stock.stock_alarm_3_color = None
+        stock.stock_alarm_4_color = None
+        stock.stock_alarm_5_color = None
+        stock.stock_alarm_6_color = None
+        stock.stock_alarm_7_color = None
+        stock.stock_alarm_8_color = None
 
         stock.save()
     
