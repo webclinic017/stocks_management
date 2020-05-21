@@ -1,6 +1,7 @@
 {% extends 'kadima/base.html' %}
+
 {% block content %}
-<div class="content" id="alarmsTable">
+<div class="content" style="padding-top: 0 !important;" id="alarmsTable">
     <div class="row">
         <div class="col-md-12">
             <form method="POST" enctype="multipart/form-data">
@@ -10,18 +11,22 @@
                         <h1 class="card-title">Stocks Alarms</h1>
                     </div>
                         <div class="row">
-                            <div class="col-md-3 pr-md-1">
+                            <div class="col-md-6 pr-md-1">
                                 <form method="POST" enctype="multipart/form-data">
                                     {% csrf_token %}
                                     <div class="row">
-                                        <div class="col-md-4 pr-md-1">
+                                        <div class="col-md-2">
                                             <label style="color: aliceblue;">Select Stock</label><br>
                                             <select name="stock_alarm_select" id="stock_alarm_select">
                                                 <option value="">------</option>
 
                                             </select>
                                         </div>
-                                        <div class="col-md-4 pr-md-1">
+                                        <div class="col-md-2">
+                                            <input class="" type="checkbox" name="select_all" id="select_all">
+                                            <label> Select all</label>
+                                        </div>
+                                        <div class="col-md-3 pr-md-1">
                                             <div class="form-group">
                                             <label style="color: aliceblue;">Select Delta</label>
                                             <select name="delta_select" id="delta_select">
@@ -38,9 +43,12 @@
                                                 </select>
                                             </div>
                                         </div>
-                                    <div class="" >
-                                        <button type="submit" name="stock_alarm_set" class="btn btn-fill btn-sm">Set</button>
-                                    </div>
+                                        <div class="" >
+                                            <button type="submit" name="stock_alarm_set" class="btn btn-default btn-sm mr-1">Set</button>
+                                        </div>
+                                        <div class="" >
+                                            <button type="submit" name="stock_alarm_reset" class="btn btn-danger btn-sm">Reset</button>
+                                        </div>
                                     </div>
                                 </form>
                             </div>
@@ -66,100 +74,91 @@
                         {% if ib_api_connected %}
 
                         <div class="table-responsive" id="stocks_alarms">
-                        <!-- STREAMING DATA -->
+                        <!-- STREAMING DATA TABLE -->
                         </div>
                         {% else %}
                         <div class="table-responsive" id="stocks_alarms" >
                             <table class="table tablesorter " id="stocks_alarms" style="table-layout: fixed; text-align: center;">
                                 <thead class=" text-primary">
                                 <tr>
-                                <th>
-                                    Date
-                                </th>
-                                <th>
-                                    Stock Symbol
-                                </th>
-                                <th class="text-center">
-                                    Init Price
-                                </th>
-                                <th class="text-center">
-                                    Current Price
-                                </th>
+                                    <!-- <th>
+                                        Date
+                                    </th> -->
+                                    <th>
+                                        Stock Symbol
+                                    </th>
+                                    <th class="text-center">
+                                        Init Price
+                                    </th>
+                                    <th class="text-center">
+                                        Current Price
+                                    </th>
 
-                                <th class="text-center">
-                                    Week 3
-                                </th>
-                                <th class="text-center">
-                                    Gap 1
-                                </th>
-                                <th>
-                                    Delta
-                                </th>
-                                <th>
-                                    Price Up
-                                </th>
-                                <th>
-                                    Price Down
-                                </th>
-                                <th>
-                                    Alarm Set
-                                </th>   
-                                <th>
-                                    Delete
-                                </th>   
+                                    <th class="text-center">
+                                        Week 3
+                                        <button name="sort_week3" class="tim-icons icon-minimal-down"></button>
+                                    </th>
+                                    <th class="text-center">
+                                        Gap 1
+                                        <button name="sort_gap" class="tim-icons icon-minimal-down"></button>
+                                    </th>
+                                    <th class="text-center">
+                                        RSI
+                                    </th>
+                                    <th class="text-center">
+                                        Dividends
+                                    </th>
+                                    <th class="text-center">
+                                        Earnings
+                                    </th>
+                                    <th>
+                                        Delta
+                                    </th>
+                                    <th>
+                                        Price Up
+                                    </th>
+                                    <th>
+                                        Price Down
+                                    </th>
+                                    <th>
+                                        Alarm Set
+                                    </th>   
+                                    <th>
+                                        1
+                                    </th>
+                                    <th>
+                                        2
+                                    </th>
+                                    <th>
+                                        3
+                                    </th>
+                                    <th>
+                                        4
+                                    </th>
+                                    <th>
+                                        5
+                                    </th>
+                                    <th>
+                                        6
+                                    </th>
+                                    <th>
+                                        7
+                                    </th>
+                                    <th>
+                                        8
+                                    </th>
+                                    <th>
+                                        Delete
+                                    </th>   
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for stock in stocks %}
-                                    <tr class="">
-                                        <td class="">
-                                            {{ stock.stock_date }}
-                                        </td>                            
-                                        <td class="">
-                                            {{ stock.ticker }}
-                                        </td>
-                                        <td>
-                                            <input type="hidden" class="" name="stock_initial_price_{{ stock.id }}" value="{{ stock.stock_initial_price }}">
-                                            {{ stock.stock_initial_price }}
-                                        </td>
-                                        <td>
-                                            <input type="hidden" class="" name="stock_price_{{ stock.id }}" value="{{ stock.stock_price }}">
-                                            {{ stock.stock_price }}
-                                        </td>
-                                        <td class="border-right" style="background-color: {{ stock.week_3_color }}; ">
-                                            {{ stock.week_3 }}%
-                                        </td>
-                                        <td class="" style="background-color: {{ stock.gap_1_color }}; ">
-                                            {{ stock.gap_1 }}%
-                                        </td>
-                                        <td >
-                                            ${{ stock.stock_alarm_delta }}
-                                        </td>
-                                        
-                                        <!-- Stock Up -->
-                                        <td  {% if stock.price_up %} class="blink-buy" {% endif %} style="border: 2px solid white;">
-                                        </td>
-
-                                        <!-- Stock Down -->
-                                        <td  {% if stock.price_down %} class="blink-sell" {% endif %} style="border: 2px solid white;">
-                                        </td>
-
-                                        <td  class="">
-                                            {% if stock.stock_alarm_trigger_set %}
-                                                <button type="submit" value="{{ stock.id }}" name="stock_alarm_cancel" class="tim-icons icon-alert-circle-exc"></button>
-                                            {% else %}
-                                                <!-- <button type="submit" value="{{ stock.id }}" name="stock_alarm_set" class="tim-icons icon-bell-55"></button> -->
-                                            {% endif %}
-                                        </td>  
-        
-                                        <td class="">
-                                            <button type="submit" value="{{ stock.id }}" name="delete_stock" class="tim-icons icon-trash-simple"></button>
-                                        </td>
-                                        
-                                    </tr>
-
-                                {% endfor %}
-                                </tbody>
+                                {% if sort_by == 'gap_1' %}  
+                                    {% include 'ib_api/_streaming_sorted_gap.html' %}
+                                {% else %}
+                                    {% include 'ib_api/_streaming_sorted_week3.html' %}
+                                {% endif %}      
+                            </tbody>
                             </table>
                         </div>
                         {% endif %}

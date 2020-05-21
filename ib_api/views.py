@@ -81,15 +81,39 @@ def alarm_trigger(request):
 def stocks_alarms_data(request):
     context = {}
     saved_alarms_stocks = StockData.objects.filter(stock_alarm=True)
-    
+
     price_up = False
     price_down = False
 
     stocks_db_alarms_dict = {}
     stocks_db_dict_list = []
 
+    stock_alarms = []
+    stock_alarms_colors = []
+
     for stock in saved_alarms_stocks:
-        
+    
+        # Extract the current alarm values:
+
+        stock_alarms.append(stock.stock_alarm_1)
+        stock_alarms.append(stock.stock_alarm_2)
+        stock_alarms.append(stock.stock_alarm_3)
+        stock_alarms.append(stock.stock_alarm_4)
+        stock_alarms.append(stock.stock_alarm_5)
+        stock_alarms.append(stock.stock_alarm_6)
+        stock_alarms.append(stock.stock_alarm_7)
+        stock_alarms.append(stock.stock_alarm_8)
+
+        # Extract the current alarm colors:
+        stock_alarms_colors.append(stock.stock_alarm_1_color)
+        stock_alarms_colors.append(stock.stock_alarm_2_color)
+        stock_alarms_colors.append(stock.stock_alarm_3_color)
+        stock_alarms_colors.append(stock.stock_alarm_4_color)
+        stock_alarms_colors.append(stock.stock_alarm_5_color)
+        stock_alarms_colors.append(stock.stock_alarm_6_color)
+        stock_alarms_colors.append(stock.stock_alarm_7_color)
+        stock_alarms_colors.append(stock.stock_alarm_8_color)
+
         try:
             week3, w3_color = week_check(stock.week_3_min, stock.week_3_max, stock_dick[stock.id], week3=True)
 
@@ -104,25 +128,54 @@ def stocks_alarms_data(request):
                 if current_stock_price > (initial_stock_price + alarm_delta):
                     
                     price_up = True
-                    stock.stock_price_up_alarm = True
-                    stock.save()
-
                     price_down = False
+                    stock.stock_price_up_alarm = True
+
+                    stock_alarms.append(current_stock_price)
+                    stock_alarms_colors.append('green')
+                    stock.stock_initial_price = current_stock_price
+                    
 
                 elif current_stock_price < (initial_stock_price - alarm_delta):
-                    price_up = False
 
+                    price_up = False
                     price_down = True
                     stock.stock_price_down_alarm = True
-                    stock.save()
+
+                    stock_alarms.append(current_stock_price)
+                    stock_alarms_colors.append('red')
+                    stock.stock_initial_price = current_stock_price
+
                 else:
                     price_up = False
                     price_down = False
-
             else:
                 price_up = False
                 price_down = False
-        
+
+            stock_alarms = stock_alarms[-8:]
+            stock.stock_alarm_1 = stock_alarms[0]
+            stock.stock_alarm_2 = stock_alarms[1]
+            stock.stock_alarm_3 = stock_alarms[2]
+            stock.stock_alarm_4 = stock_alarms[3]
+            stock.stock_alarm_5 = stock_alarms[4]
+            stock.stock_alarm_6 = stock_alarms[5]
+            stock.stock_alarm_7 = stock_alarms[6]
+            stock.stock_alarm_8 = stock_alarms[7]
+
+            stock_alarms_colors = stock_alarms_colors[-8:]
+            stock.stock_alarm_1_color = stock_alarms_colors[0]
+            stock.stock_alarm_2_color = stock_alarms_colors[1]
+            stock.stock_alarm_3_color = stock_alarms_colors[2]
+            stock.stock_alarm_4_color = stock_alarms_colors[3]
+            stock.stock_alarm_5_color = stock_alarms_colors[4]
+            stock.stock_alarm_6_color = stock_alarms_colors[5]
+            stock.stock_alarm_7_color = stock_alarms_colors[6]
+            stock.stock_alarm_8_color = stock_alarms_colors[7]
+
+            stock.save()
+
+
             stocks_db_alarms_dict[stock.id] = {
                 'stock_id': stock.id,
                 'ticker': stock.ticker,
@@ -134,10 +187,29 @@ def stocks_alarms_data(request):
                 'week_3_color': w3_color,
                 'gap_1': stock.gap_1,
                 'gap_1_color': stock.gap_1_color,
+                'rsi': stock.rsi,
+                'dividend_date': stock.dividend_date,
+                'earnings_call_displayed': stock.earnings_call_displayed,
                 'stock_alarm_trigger_set': trigger_alarm_set,
                 'stock_alarm_delta': alarm_delta,
                 'price_up': price_up,
-                'price_down': price_down
+                'price_down': price_down,
+                'stock_alarm_1': stock_alarms[0],
+                'stock_alarm_2': stock_alarms[1],
+                'stock_alarm_3': stock_alarms[2],
+                'stock_alarm_4': stock_alarms[3],
+                'stock_alarm_5': stock_alarms[4],
+                'stock_alarm_6': stock_alarms[5],
+                'stock_alarm_7': stock_alarms[6],
+                'stock_alarm_8': stock_alarms[7],
+                'stock_alarm_1_color': stock_alarms_colors[0],
+                'stock_alarm_2_color': stock_alarms_colors[1],
+                'stock_alarm_3_color': stock_alarms_colors[2],
+                'stock_alarm_4_color': stock_alarms_colors[3],
+                'stock_alarm_5_color': stock_alarms_colors[4],
+                'stock_alarm_6_color': stock_alarms_colors[5],
+                'stock_alarm_7_color': stock_alarms_colors[6],
+                'stock_alarm_8_color': stock_alarms_colors[7]
             }
 
             stocks_db_dict_list.append(stocks_db_alarms_dict[stock.id])
@@ -148,7 +220,7 @@ def stocks_alarms_data(request):
     context = {
         # 'stocks_streaming': stock_dick.items(), 
         'ib_api_connected': connection_status,
-        'stocks_processed': stocks_db_dict_list
+        'stocks': stocks_db_dict_list
     }
 
     print(f'CONNECTION STATUS: {connection_status}')
