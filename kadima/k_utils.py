@@ -287,6 +287,8 @@ def reset_alarms():
         stock.stock_alarm_6 = None
         stock.stock_alarm_7 = None
         stock.stock_alarm_8 = None
+        stock.stock_alarm_9 = None
+        stock.stock_alarm_10 = None
 
         stock.stock_alarm_1_color = None
         stock.stock_alarm_2_color = None
@@ -296,6 +298,12 @@ def reset_alarms():
         stock.stock_alarm_6_color = None
         stock.stock_alarm_7_color = None
         stock.stock_alarm_8_color = None
+        stock.stock_alarm_9_color = None
+        stock.stock_alarm_10_color = None
+
+        stock.stock_alarm_delta = 0
+        stock.stock_initial_price = None
+        stock.stock_load_price = None
 
         stock.save()
     

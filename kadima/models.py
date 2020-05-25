@@ -97,6 +97,7 @@ class StockData(models.Model):
     stock_alarm = models.BooleanField(default=False) # Flag whether the stock is in the stock_alarm page
     stock_alarm_delta = models.FloatField(null=True) # delta amount to add to the current price 
     stock_initial_price = models.FloatField(null=True) # stock price at trigger set
+    stock_load_price = models.FloatField(null=True) # stock price when adding to alarms list
     stock_price_up_alarm = models.BooleanField(default=False) # True when the current price exceeds the initial price + delta
     stock_price_down_alarm = models.BooleanField(default=False) # True when the current price goes lower the initial price + delta
     stock_alarm_trigger_set = models.BooleanField(default=False) # True when the alarm is set/trigger armed
@@ -110,6 +111,8 @@ class StockData(models.Model):
     stock_alarm_6 = models.FloatField(null=True)
     stock_alarm_7 = models.FloatField(null=True)
     stock_alarm_8 = models.FloatField(null=True)
+    stock_alarm_9 = models.FloatField(null=True)
+    stock_alarm_10 = models.FloatField(null=True)
 
     stock_alarm_1_color = models.CharField(max_length=30, null=True)
     stock_alarm_2_color = models.CharField(max_length=30, null=True)
@@ -119,6 +122,8 @@ class StockData(models.Model):
     stock_alarm_6_color = models.CharField(max_length=30, null=True)
     stock_alarm_7_color = models.CharField(max_length=30, null=True)
     stock_alarm_8_color = models.CharField(max_length=30, null=True)
+    stock_alarm_9_color = models.CharField(max_length=30, null=True)
+    stock_alarm_10_color = models.CharField(max_length=30, null=True)
 
     # Email alert flag
     stock_email_alert = models.BooleanField(default=False)

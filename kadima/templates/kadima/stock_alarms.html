@@ -15,18 +15,18 @@
                                 <form method="POST" enctype="multipart/form-data">
                                     {% csrf_token %}
                                     <div class="row">
-                                        <div class="col-md-2">
+                                        <!-- <div class="col-md-2">
                                             <label style="color: aliceblue;">Select Stock</label><br>
                                             <select name="stock_alarm_select" id="stock_alarm_select">
                                                 <option value="">------</option>
 
                                             </select>
-                                        </div>
-                                        <div class="col-md-2">
+                                        </div> -->
+                                        <!-- <div class="col-md-2 pt-1 pl-5">
                                             <input class="" type="checkbox" name="select_all" id="select_all">
                                             <label> Select all</label>
-                                        </div>
-                                        <div class="col-md-3 pr-md-1">
+                                        </div> -->
+                                        <div class="col-md-3 pt-1 pl-5 p-2">
                                             <div class="form-group">
                                             <label style="color: aliceblue;">Select Delta</label>
                                             <select name="delta_select" id="delta_select">
@@ -43,11 +43,11 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="" >
-                                            <button type="submit" name="stock_alarm_set" class="btn btn-default btn-sm mr-1">Set</button>
+                                        <div class="col-md-2 p-0" >
+                                            <button type="submit" name="all_alarms_set" value="set_all" class="btn btn-default btn-sm mr-1">Set All</button>
                                         </div>
-                                        <div class="" >
-                                            <button type="submit" name="stock_alarm_reset" class="btn btn-danger btn-sm">Reset</button>
+                                        <div class="col-md-2 p-0" >
+                                            <button type="submit" name="stock_alarm_reset" class="btn btn-danger btn-sm">Reset All</button>
                                         </div>
                                     </div>
                                 </form>
@@ -67,7 +67,11 @@
                                   </div>  
                                 {% endif %}                          
                             </div>
-                            <div class="col-7"></div>
+                            <div class="col-md-2"></div>
+                            <div class="col-md-1">
+                                <button type="submit" name="delete_all_alarms" class="btn btn-danger btn-sm">Delete All</button>
+                            </div>
+                            <div class="col-md-1"></div>
                     </div>
 
                     <div class="card-body">
@@ -86,6 +90,9 @@
                                     </th> -->
                                     <th>
                                         Stock Symbol
+                                    </th>
+                                    <th class="text-center">
+                                        Load Price
                                     </th>
                                     <th class="text-center">
                                         Init Price
@@ -114,12 +121,12 @@
                                     <th>
                                         Delta
                                     </th>
-                                    <th>
+                                    <!-- <th>
                                         Price Up
                                     </th>
                                     <th>
                                         Price Down
-                                    </th>
+                                    </th> -->
                                     <th>
                                         Alarm Set
                                     </th>   
@@ -148,6 +155,12 @@
                                         8
                                     </th>
                                     <th>
+                                        9
+                                    </th>
+                                    <th>
+                                        10
+                                    </th>
+                                    <th>
                                         Delete
                                     </th>   
                                 </tr>
@@ -170,7 +183,7 @@
 </div>
 
 <!-- Source : https://bytutorial.com/blogs/css3/how-to-create-blinking-background-color-and-text-using-css3-animation -->
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 $("#stock_alarm_select").click(function () {
         console.log('UPDATING alarms...')
         $.ajax({
@@ -180,7 +193,7 @@ $("#stock_alarm_select").click(function () {
         }
     })		
 });
-</script>
+</script> -->
 
 {% if user.is_authenticated %}
 {%  else %}

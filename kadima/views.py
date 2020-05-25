@@ -30,7 +30,7 @@ from django.utils import timezone
 # from yahoo_earnings_calendar import YahooEarningsCalendar
 import yfinance as yf
 
-from ib_api.views import stock_data_api, alarm_trigger, api_connection_status,ib_api_wrapper
+from ib_api.views import stock_data_api, alarm_trigger, api_connection_status,ib_api_wrapper, get_current_price
 from kadima.k_utils import week_values, gap_1_check,date_obj_to_date, reset_email_alerts, week_color, reset_alarms
 
 from .models import StockData, IndicesData, EmailSupport
@@ -66,6 +66,7 @@ def stock_alarms(request):
     context['ib_api_connected'] = ib_api_connected
 
     if request.method  == 'POST':
+
         if 'connect_ib_api' in request.POST:
             api_connect(request)
             # context = {}
@@ -80,9 +81,10 @@ def stock_alarms(request):
             context['ib_api_connected'] = ib_api_connected
             return render(request, 'kadima/stock_alarms.html', context)
 
-        if 'stock_alarm_set' in request.POST:
 
-            if request.POST.get('select_all'):
+        if 'all_alarms_set' in request.POST or 'stock_delta_set' in request.POST:
+
+            if request.POST.get('all_alarms_set') == 'set_all':
                 current_alarm_stocks = StockData.objects.filter(stock_alarm=True)
                 price_delta = float(request.POST.get(f'delta_select'))
 
@@ -97,9 +99,12 @@ def stock_alarms(request):
                     stock.stock_alarm_sound_on_off = False # Resetting the alarm sound
 
                     stock.save()
-            
+
             else:
-                stock_id = request.POST.get('stock_alarm_select')
+                stock_id = request.POST.get('stock_delta_set')
+                
+                # stock_id_2 = request.POST.get('stock_delta_set')
+                # print(f'2>>>> {stock_id_2} - {request.POST.get(f"delta_{stock_id_2}")}')
                 
                 try:
                     stock_data = StockData.objects.get(id=stock_id)
@@ -108,32 +113,39 @@ def stock_alarms(request):
                     print('No Ticker selected.')
                     return render(request, 'kadima/stock_alarms.html', context)
 
-                stock_trigger_status = stock_data.stock_alarm_trigger_set
+                # stock_trigger_status = stock_data.stock_alarm_trigger_set
 
-                if ib_api_connected: # Do the same but display the real time if connected 
-                    stock_data.stock_initial_price = float(request.POST.get(f'stock_price_{stock_id}'))
-                    stock_data.stock_alarm_delta = float(request.POST.get(f'delta_select'))
-                    stock_data.stock_alarm_trigger_set = True # Turn on trigger alarm
+                # if ib_api_connected: # Do the same but display the real time if connected 
+                #     stock_data.stock_initial_price = float(request.POST.get(f'stock_price_{stock_id}'))
+                #     stock_data.stock_alarm_delta = float(request.POST.get(f'delta_select'))
+                #     stock_data.stock_alarm_trigger_set = True # Turn on trigger alarm
 
-                    # Reset alarm values
-                    stock_data.stock_price_down_alarm = False # reseting the up/down alerts
-                    stock_data.stock_price_up_alarm = False
-                    stock_data.stock_alarm_sound_on_off = False # Resetting the alarm sound
+                #     # Reset alarm values
+                #     stock_data.stock_price_down_alarm = False # reseting the up/down alerts
+                #     stock_data.stock_price_up_alarm = False
+                #     stock_data.stock_alarm_sound_on_off = False # Resetting the alarm sound
 
-                else:
-                    stock_data.stock_initial_price = float(request.POST.get(f'stock_price_{stock_id}'))
-                    stock_data.stock_alarm_delta = float(request.POST.get(f'delta_select'))
-                    stock_data.stock_alarm_trigger_set = True # Turn on trigger alarm
+                # else:
+                stock_data.stock_initial_price = float(request.POST.get(f'stock_price_{stock_id}'))
+                stock_data.stock_alarm_delta = float(request.POST.get(f"delta_select"))
+                stock_data.stock_alarm_trigger_set = True # Turn on trigger alarm
 
-                    # Reset alarm values
-                    stock_data.stock_price_down_alarm = False # reseting the up/down alerts
-                    stock_data.stock_price_up_alarm = False
-                    stock_data.stock_alarm_sound_on_off = False # Resetting the alarm sound
+                # Reset alarm values
+                stock_data.stock_price_down_alarm = False # reseting the up/down alerts
+                stock_data.stock_price_up_alarm = False
+                stock_data.stock_alarm_sound_on_off = False # Resetting the alarm sound
             
                 stock_data.save()
 
         elif 'stock_alarm_reset' in request.POST:
             reset_alarms()
+
+        elif 'delete_all_alarms' in request.POST:
+            alarm_stocks = StockData.objects.filter(stock_alarm=True)
+            print(f'DELETING STOCKS: {request.POST}')
+            for stock in alarm_stocks:
+                stock.stock_alarm = False
+                stock.save()
 
         elif 'stock_alarm_cancel' in request.POST:
             
@@ -682,7 +694,8 @@ def home(request, table_index=1):
             print('>> Alarm Stock <<')
             stock_id = request.POST['alarm_stock']
             stock_data = StockData.objects.get(id=stock_id)
-            stock_data.stock_alarm = True  
+            stock_data.stock_alarm = True
+            stock_data.stock_load_price = get_current_price(stock_id)  
             stock_data.save()
             messages.info(request, f"Stock {stock_data.ticker} was added to alarm page. You can trigger value alarms on the Alarms page.")
 

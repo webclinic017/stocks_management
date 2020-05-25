@@ -43,6 +43,12 @@ def trading_status():
     else:
         return True
 
+def get_current_price(stock_id):
+    try:
+        return stock_dick[stock_id]
+    except:
+        return -1
+
 def api_connection_status():
     return connection_status
 
@@ -103,6 +109,8 @@ def stocks_alarms_data(request):
         stock_alarms.append(stock.stock_alarm_6)
         stock_alarms.append(stock.stock_alarm_7)
         stock_alarms.append(stock.stock_alarm_8)
+        stock_alarms.append(stock.stock_alarm_9)
+        stock_alarms.append(stock.stock_alarm_10)
 
         # Extract the current alarm colors:
         stock_alarms_colors.append(stock.stock_alarm_1_color)
@@ -113,6 +121,8 @@ def stocks_alarms_data(request):
         stock_alarms_colors.append(stock.stock_alarm_6_color)
         stock_alarms_colors.append(stock.stock_alarm_7_color)
         stock_alarms_colors.append(stock.stock_alarm_8_color)
+        stock_alarms_colors.append(stock.stock_alarm_9_color)
+        stock_alarms_colors.append(stock.stock_alarm_10_color)
 
         try:
             week3, w3_color = week_check(stock.week_3_min, stock.week_3_max, stock_dick[stock.id], week3=True)
@@ -153,7 +163,7 @@ def stocks_alarms_data(request):
                 price_up = False
                 price_down = False
 
-            stock_alarms = stock_alarms[-8:]
+            stock_alarms = stock_alarms[-10:]
             stock.stock_alarm_1 = stock_alarms[0]
             stock.stock_alarm_2 = stock_alarms[1]
             stock.stock_alarm_3 = stock_alarms[2]
@@ -162,8 +172,10 @@ def stocks_alarms_data(request):
             stock.stock_alarm_6 = stock_alarms[5]
             stock.stock_alarm_7 = stock_alarms[6]
             stock.stock_alarm_8 = stock_alarms[7]
+            stock.stock_alarm_9 = stock_alarms[8]
+            stock.stock_alarm_10 = stock_alarms[9]
 
-            stock_alarms_colors = stock_alarms_colors[-8:]
+            stock_alarms_colors = stock_alarms_colors[-10:]
             stock.stock_alarm_1_color = stock_alarms_colors[0]
             stock.stock_alarm_2_color = stock_alarms_colors[1]
             stock.stock_alarm_3_color = stock_alarms_colors[2]
@@ -172,13 +184,16 @@ def stocks_alarms_data(request):
             stock.stock_alarm_6_color = stock_alarms_colors[5]
             stock.stock_alarm_7_color = stock_alarms_colors[6]
             stock.stock_alarm_8_color = stock_alarms_colors[7]
+            stock.stock_alarm_9_color = stock_alarms_colors[8]
+            stock.stock_alarm_10_color = stock_alarms_colors[9]
 
             stock.save()
 
 
             stocks_db_alarms_dict[stock.id] = {
-                'stock_id': stock.id,
+                'pk': stock.id,
                 'ticker': stock.ticker,
+                'stock_load_price' : stock.stock_load_price,
                 'stock_initial_price' : stock.stock_initial_price,
                 'stock_price': stock_dick[stock.id],
                 'stock_date': stock.stock_date,
@@ -188,6 +203,7 @@ def stocks_alarms_data(request):
                 'gap_1': stock.gap_1,
                 'gap_1_color': stock.gap_1_color,
                 'rsi': stock.rsi,
+                'rsi_color': stock.rsi_color,
                 'dividend_date': stock.dividend_date,
                 'earnings_call_displayed': stock.earnings_call_displayed,
                 'stock_alarm_trigger_set': trigger_alarm_set,
@@ -202,6 +218,8 @@ def stocks_alarms_data(request):
                 'stock_alarm_6': stock_alarms[5],
                 'stock_alarm_7': stock_alarms[6],
                 'stock_alarm_8': stock_alarms[7],
+                'stock_alarm_9': stock_alarms[8],
+                'stock_alarm_10': stock_alarms[9],
                 'stock_alarm_1_color': stock_alarms_colors[0],
                 'stock_alarm_2_color': stock_alarms_colors[1],
                 'stock_alarm_3_color': stock_alarms_colors[2],
@@ -209,7 +227,9 @@ def stocks_alarms_data(request):
                 'stock_alarm_5_color': stock_alarms_colors[4],
                 'stock_alarm_6_color': stock_alarms_colors[5],
                 'stock_alarm_7_color': stock_alarms_colors[6],
-                'stock_alarm_8_color': stock_alarms_colors[7]
+                'stock_alarm_8_color': stock_alarms_colors[7],
+                'stock_alarm_9_color': stock_alarms_colors[8],
+                'stock_alarm_10_color': stock_alarms_colors[9]
             }
 
             stocks_db_dict_list.append(stocks_db_alarms_dict[stock.id])

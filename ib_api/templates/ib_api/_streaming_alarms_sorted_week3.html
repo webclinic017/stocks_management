@@ -7,11 +7,15 @@
                 {{ stock.ticker }}
             </td>
             <td>
-                <input type="hidden" class="" name="stock_initial_price_{{ stock.stock_id }}" value="{{ stock.stock_initial_price }}">
+                <input type="hidden" class="" name="stock_load_price_{{ stock.pk }}" value="{{ stock.stock_load_price }}">
+                {{ stock.stock_load_price }}
+            </td>
+            <td>
+                <input type="hidden" class="" name="stock_initial_price_{{ stock.pk }}" value="{{ stock.stock_initial_price }}">
                 {{ stock.stock_initial_price }}
             </td>
             <td>
-                <input type="hidden" class="" name="stock_price_{{ stock.stock_id }}" value="{{ stock.stock_price }}">
+                <input type="hidden" class="" name="stock_price_{{ stock.pk }}" value="{{ stock.stock_price }}">
                 {{ stock.stock_price }}
             </td>
             <td class="border-right" style="border-right: 5px solid white; background-color: {{ stock.week_3_color }}; " >
@@ -30,24 +34,45 @@
                 {{ stock.earnings_call_displayed }}
             </td>
             <td >
-                {{ stock.stock_alarm_delta }}
+                <div class="row">
+                    <!-- <div class="col">
+                        <select name="delta_{{ stock.pk }}" id="delta_{{ stock.pk }}">
+                            <option value="0.05">0.05</option>
+                            <option value="0.10">0.10</option>
+                            <option value="0.15">0.15</option>
+                            <option value="0.20">0.20</option>
+                            <option value="0.25">0.25</option>
+                            <option value="0.30">0.30</option>
+                            <option value="0.35">0.35</option>
+                            <option value="0.40">0.40</option>
+                            <option value="0.45">0.45</option>
+                            <option value="0.50">0.50</option>
+                            </select>
+                    </div> -->
+                    <div class="col">
+                        <button type="submit" class="btn btn-sm btn-success" value="{{ stock.pk }}" name="stock_delta_set">Set</button>
+                    </div>
+                    <div class="col">
+                        {{ stock.stock_alarm_delta }}                
+                    </div>
+                </div>
             </td>
             
             <!-- Stock Up -->
-            <td id="price_up" {% if stock.price_up %} class="blink-buy" {% else %} {% endif %} style="border: 2px solid white;">
+            <!-- <td id="price_up" {% if stock.price_up %} class="blink-buy" {% else %} {% endif %} style="border: 2px solid white;">
                 UP
-            </td>
+            </td> -->
 
             <!-- Stock Down -->
-            <td id="price_down" {% if stock.price_down %} class="blink-sell" {% else %} {% endif %} style="border: 2px solid white;">
+            <!-- <td id="price_down" {% if stock.price_down %} class="blink-sell" {% else %} {% endif %} style="border: 2px solid white;">
                 DOWN
-            </td>
+            </td> -->
 
             <td  class="">
                 {% if stock.stock_alarm_trigger_set %}
-                    <button type="submit" value="{{ stock.stock_id }}" name="stock_alarm_cancel" class="tim-icons icon-alert-circle-exc"></button>
+                    <button type="submit" value="{{ stock.pk }}" name="stock_alarm_cancel" class="tim-icons icon-alert-circle-exc"></button>
                 {% else %}
-                    <!-- <button type="submit" value="{{ stock.stock_id }}" name="stock_alarm_set" class="tim-icons icon-bell-55"></button> -->
+                    <!-- <button type="submit" value="{{ stock.pk }}" name="stock_alarm_set" class="tim-icons icon-bell-55"></button> -->
                 {% endif %}
             </td>  
 
@@ -75,9 +100,15 @@
             <td class="" style="border: 1px solid white; background:{{ stock.stock_alarm_8_color }} ;">
                 {{ stock.stock_alarm_8 }}
             </td>
+            <td class="" style="border: 1px solid white; background:{{ stock.stock_alarm_9_color }} ;">
+                {{ stock.stock_alarm_9 }}
+            </td>
+            <td class="" style="border: 1px solid white; background:{{ stock.stock_alarm_10_color }} ;">
+                {{ stock.stock_alarm_10 }}
+            </td>
 
             <td class="">
-                <button type="submit" value="{{ stock.stock_id }}" name="delete_stock" class="tim-icons icon-trash-simple"></button>
+                <button type="submit" value="{{ stock.pk }}" name="delete_stock" class="tim-icons icon-trash-simple"></button>
             </td>
             
         </tr>
