@@ -50,9 +50,16 @@
                     </select>
             </div> -->
             <div class="col">
-                <button type="submit" class="btn btn-sm btn-success" value="{{ stock.pk }}" name="stock_delta_set">Set</button>
+                <div class="row">
+                    <div class="col-1">
+                        <button type="submit" value="{{ stock.pk }}" name="stock_delta_set" class="btn btn-sm" style="background: green;">Set</button>
+                    </div>
+                    <!-- <div class="col-1">
+                        <button type="submit" value="{{ stock.pk }}" name="stock_delta_reset" style="background: red;">R</button>
+                    </div> -->
+                </div>
             </div>
-            <div class="col">
+    <div class="col">
                 {{ stock.stock_alarm_delta }}                
             </div>
         </div>

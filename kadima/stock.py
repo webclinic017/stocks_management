@@ -258,6 +258,8 @@ class Stock():
             if (earnings_dt - today_dt).days <= 7 and (earnings_dt - today_dt).days >= 0:
                 # earnings_alert_signal = stock.earnings_warning
                 earnings_alert_signal = "blink-bg"
+            elif (earnings_dt - today_dt).days < 0:
+                earnings_alert_signal = "PAST"
             else:
                 earnings_alert_signal = ""
         except Exception as e:

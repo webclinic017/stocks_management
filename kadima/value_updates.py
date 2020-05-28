@@ -90,7 +90,12 @@ def update_values(request):
 
         # stock.earnings_call = stock_to_update.earnings_call
         # stock.earnings_call_displayed = stock_to_update.earnings_call_displayed
-        stock.earnings_warning = stock_to_update.earnings_warning
+        if stock_to_update.earnings_warning == 'PAST':
+            stock.earnings_call = None
+            stock.earnings_call_displayed = None
+            stock.earnings_warning = ''
+        else:
+            stock.earnings_warning = stock_to_update.earnings_warning
                 
         stock.stock_trend_30 = stock_to_update.trend_30
         

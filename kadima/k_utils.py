@@ -275,36 +275,39 @@ def reset_email_alerts():
         stock.stock_email_alert = False
         stock.save()
 
-def reset_alarms():
-    saved_alarms_stocks = StockData.objects.filter(stock_alarm=True)
-    for stock in saved_alarms_stocks:
-        stock.stock_alarm_trigger_set = False
-        stock.stock_alarm_1 = None
-        stock.stock_alarm_2 = None
-        stock.stock_alarm_3 = None
-        stock.stock_alarm_4 = None
-        stock.stock_alarm_5 = None
-        stock.stock_alarm_6 = None
-        stock.stock_alarm_7 = None
-        stock.stock_alarm_8 = None
-        stock.stock_alarm_9 = None
-        stock.stock_alarm_10 = None
+def reset_alarms(stock):
+    
+    stock.stock_alarm_trigger_set = False
+    stock.stock_price_down_alarm = False # reseting the up/down alerts
+    stock.stock_price_up_alarm = False
+    stock.stock_alarm_sound_on_off = False # Resetting the alarm sound
+    stock.stock_alarm_delta = 0.0
+    stock.stock_initial_price = None
 
-        stock.stock_alarm_1_color = None
-        stock.stock_alarm_2_color = None
-        stock.stock_alarm_3_color = None
-        stock.stock_alarm_4_color = None
-        stock.stock_alarm_5_color = None
-        stock.stock_alarm_6_color = None
-        stock.stock_alarm_7_color = None
-        stock.stock_alarm_8_color = None
-        stock.stock_alarm_9_color = None
-        stock.stock_alarm_10_color = None
+    stock.stock_alarm_1 = None
+    stock.stock_alarm_2 = None
+    stock.stock_alarm_3 = None
+    stock.stock_alarm_4 = None
+    stock.stock_alarm_5 = None
+    stock.stock_alarm_6 = None
+    stock.stock_alarm_7 = None
+    stock.stock_alarm_8 = None
+    stock.stock_alarm_9 = None
+    stock.stock_alarm_10 = None
 
-        stock.stock_alarm_delta = 0
-        stock.stock_initial_price = None
-        stock.stock_load_price = None
+    stock.stock_alarm_1_color = None
+    stock.stock_alarm_2_color = None
+    stock.stock_alarm_3_color = None
+    stock.stock_alarm_4_color = None
+    stock.stock_alarm_5_color = None
+    stock.stock_alarm_6_color = None
+    stock.stock_alarm_7_color = None
+    stock.stock_alarm_8_color = None
+    stock.stock_alarm_9_color = None
+    stock.stock_alarm_10_color = None
 
-        stock.save()
+    # stock.stock_load_price = None
+
+    stock.save()
     
     return

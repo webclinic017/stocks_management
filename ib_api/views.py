@@ -43,11 +43,13 @@ def trading_status():
     else:
         return True
 
-def get_current_price(stock_id):
-    try:
-        return stock_dick[stock_id]
-    except:
-        return -1
+# async def get_current_price(stock_id):
+#     await current_price = stock_dick[stock_id]
+#         print(f'>>>>>>>>>>>CURRENT: {current_price}')
+#         return current_price
+#     except Exception as e:
+#         print(f'ERROR LOAD PRICE: {e}')
+#         return -1
 
 def api_connection_status():
     return connection_status
@@ -473,6 +475,8 @@ def stock_data_api(request, table_index=1, sort=None):
                 if week5 == 0:
                     stock.week_5_min = stock_dick[stock.id]
 
+                stock.stock_current_price = stock_dick[stock.id]
+
                 stock.save()
 
             else:
@@ -605,6 +609,10 @@ class TestApp(EClient, EWrapper):
                 stock.save()
 
 
+    @iswrapper
+    def fundamentalData(self, reqId, data):
+            super().fundamentalData(reqId, data)
+            print("&&&&&&&&& FundamentalData. ReqId:", reqId, "Data:", data)
 
     # @iswrapper
     # def tickSize(self, reqId, tickType, size):
@@ -720,6 +728,8 @@ def ib_stock_api(old_stocks_list, stocks, action):
             app.reqStatus[rStatus] = 'Sent'
             app.reqMarketDataType(4)
             app.reqMktData(stock_id, contract, "", False, False, [])
+
+            app.fundamentalData(stock_id, contract)
 
 
         # for i in range(len(stocks)):

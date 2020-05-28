@@ -97,6 +97,7 @@ class StockData(models.Model):
     stock_alarm = models.BooleanField(default=False) # Flag whether the stock is in the stock_alarm page
     stock_alarm_delta = models.FloatField(null=True) # delta amount to add to the current price 
     stock_initial_price = models.FloatField(null=True) # stock price at trigger set
+    stock_current_price = models.FloatField(null=True) # stock price when adding to alarms list
     stock_load_price = models.FloatField(null=True) # stock price when adding to alarms list
     stock_price_up_alarm = models.BooleanField(default=False) # True when the current price exceeds the initial price + delta
     stock_price_down_alarm = models.BooleanField(default=False) # True when the current price goes lower the initial price + delta
