@@ -745,7 +745,9 @@ def api_disconnect(request):
     reset_email_alerts()
 
     # Resetting the alarms
-    reset_alarms()
+    saved_alarms_stocks = StockData.objects.filter(stock_alarm=True)
+    for stock in saved_alarms_stocks:
+        reset_alarms(stock)
 
     print('Stopping the IB API...')
     ib_api_wrapper(request,action=STOP_API )
