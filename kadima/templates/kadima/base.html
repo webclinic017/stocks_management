@@ -66,22 +66,35 @@
           <!-- <button type="submit" name="update_now" class="btn btn-info" > Update </button> -->
         </form>  
       </div>
-      <div class="col-sm-4 text-center" style="height: 5em;">
+      <div class="col-sm-2 text-center" style="height: 5em;">
         <a href='/'><img src="{% static 'assets/img/kadima-logo.png' %}" alt="Kadima Group logo";" style="height: 100%; width: auto"></a>
       </div>
-      <div class="col-sm-4 text-center" style="height: 5em;">
+      <div class="col-sm-6 text-center" style="height: 5em;">
         <div class="row">
-          <div class="col-sm-3"></div>
-          <div class="col-sm-3"></div>
+          <div class="col-sm-1"></div>
+          <div class="col-sm-5">
+            <div class="row pt-4" style="color: white; font-size:1rem">
+              <div class="col-4">
+                <a href="{% url 'home' %}" style="color: white;">Table 1</a>
+              </div>
+              <div class="col-4" >
+                <a href="{% url 'table-2' table_index=2 %}" style="color: white;">Table 2</a>
+              </div>
+              <div class="col-4" >
+                <a href="{% url 'stock-alarms' %}" style="color: white;">Stock Alarms</a>
+              </div>
+            </div>
+
+          </div>
           {% if stock_alert == 'condition_3' %}
             <div class="col-sm-3 fast-blink-row-buy">
-              <img class="pt-3 pb-3" src="{% static 'assets/img/attention.png' %}" alt="Stock alert";" style="max-width:30%">
+              <img class="pt-3 pb-3" src="{% static 'assets/img/attention.png' %}" alt="Stock alert";" style="max-width:20%">
           {% elif stock_alert == 'condition_4' %}
             <div class="col-sm-3 fast-blink-row-sell">
-              <img class="pt-3 pb-3" src="{% static 'assets/img/attention.png' %}" alt="Stock alert";" style="max-width:30%">
+              <img class="pt-3 pb-3" src="{% static 'assets/img/attention.png' %}" alt="Stock alert";" style="max-width:20%">
           {% else %}
               <div class="col-sm-3 ">
-                <img class="pt-3 pb-3" src="{% static 'assets/img/attention.png' %}" alt="Stock alert";" style="max-width:30%">
+                <img class="pt-3 pb-3" src="{% static 'assets/img/attention.png' %}" alt="Stock alert";" style="max-width:20%">
           {% endif %}
           </div>
           <div class="col-sm-3 pt-2">
@@ -94,7 +107,9 @@
 
   <div class="wrapper">
     <!-- Sidebar -->
-    <div class="sidebar">
+    {% if no_sidebar %}
+    {% else %}
+      <div class="sidebar">
       <div class="sidebar-wrapper text-primary" style="background-color: #dabdbd;">
         <div class="logo">
           <a href="{% url 'home' %}" class="simple-text logo-normal" style="color: black;">
@@ -161,8 +176,8 @@
         </div> 
 
       </div> 
-    </div><!-- End sidebar -->
-
+      </div><!-- End sidebar -->
+    {% endif %}
     <div class="main-panel">
       {% block content %}
 

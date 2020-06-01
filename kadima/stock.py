@@ -109,12 +109,12 @@ class Stock():
         self.date = self.stock_df.index[-1]
         self.displayed_date = date_obj_to_date(pd.Timestamp("today"), date_format='slash')
 
-        self.week_1, self.week_1_min, self.week_1_max = week_values(self.stock_df, 5)
+        self.week_1, self.week_1_min, self.week_1_max = week_values(self.stock_df, 90)
         self.week_2, self.week_2_min, self.week_2_max = week_values(self.stock_df, 10)
         self.week_3, self.week_3_min, self.week_3_max = week_values(self.stock_df, 15)
         self.week_5, self.week_5_min, self.week_5_max = week_values(self.stock_df, 25)
 
-        self.week_1_color = week_color(self.week_1)
+        self.week_1_color = week_color(self.week_1, week3=True)
         self.week_2_color = week_color(self.week_2)
         self.week_3_color = week_color(self.week_3, week3=True)
         self.week_5_color = week_color(self.week_5)

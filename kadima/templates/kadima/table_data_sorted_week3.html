@@ -13,19 +13,19 @@
     <!-- <td  class="">
           {{ stock.stock_displayed_date }}
       </td> -->
-      <td  class="">
+      <td  class="text-center">
           <b>{{ stock.ticker }}</b>
       </td>
-      <td  class="">
+      <td  class="text-center">
           {{ stock.stock_price }}
       </td>
-      <td  class="" style="background-color: {{ stock.week_1_color }}; ">
-          {{ stock.week_1 }}%
+      <td  class="text-center" style="background-color: {{ stock.week_1_color }}; font-size: 1rem;">
+          <b>{{ stock.week_1 }}%</b>
       </td>
-      <td  class="" style="background-color: {{ stock.week_2_color }};">
+      <td  class="text-center" style="background-color: {{ stock.week_2_color }};">
           {{ stock.week_2 }}%
       </td >
-      <td  class="" style="border-right: 5px solid white; background-color: {{ stock.week_5_color }}; ">
+      <td  class="text-center" style="border-right: 5px solid white; background-color: {{ stock.week_5_color }}; ">
           {{ stock.week_5 }}%
       </td>
       <td  class="text-center" style="border-right: 5px solid white; background-color: {{ stock.week_3_color }}; font-size: 1rem;">

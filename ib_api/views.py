@@ -459,7 +459,7 @@ def stock_data_api(request, table_index=1, sort=None):
     for stock in stocks_db:
 
         try:
-            week1, w1_color = week_check(stock.week_1_min, stock.week_1_max, stock_dick[stock.id])
+            week1, w1_color = week_check(stock.week_1_min, stock.week_1_max, stock_dick[stock.id], week3=True)
             week2, w2_color = week_check(stock.week_2_min, stock.week_2_max, stock_dick[stock.id])
             week3, w3_color = week_check(stock.week_3_min, stock.week_3_max, stock_dick[stock.id], week3=True)
             week5, w5_color = week_check(stock.week_5_min, stock.week_5_max, stock_dick[stock.id])

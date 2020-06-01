@@ -61,6 +61,7 @@ def stock_alarms(request):
     context = {}
     alarmed_stocks = StockData.objects.filter(stock_alarm=True)
     context['stocks'] = alarmed_stocks
+    context['no_sidebar'] = True
 
     ib_api_connected = api_connection_status()
     context['ib_api_connected'] = ib_api_connected
@@ -382,6 +383,11 @@ def home(request, table_index=1):
             request.session['sort_by'] = 'gap_1'
             context['sort_by'] = request.session['sort_by']
 
+        elif 'sort_week1' in request.POST:
+            print('>> Week1 Sorting <<')
+            request.session['sort_by'] = 'week_1'
+            context['sort_by'] = request.session['sort_by']
+
         elif 'sort_week3' in request.POST:
             print('>> Week3 Sorting <<')
             request.session['sort_by'] = 'week_3'
@@ -420,12 +426,12 @@ def home(request, table_index=1):
                 stock_data.ticker = stock.upper()
                 stock_data.stock_price = float("%0.2f"%stock_df['Close'].iloc[-1])
 
-                stock_data.week_1, stock_data.week_1_min, stock_data.week_1_max = week_values(stock_df, 5)
+                stock_data.week_1, stock_data.week_1_min, stock_data.week_1_max = week_values(stock_df, 90)
                 stock_data.week_2, stock_data.week_2_min, stock_data.week_2_max = week_values(stock_df, 10)
                 stock_data.week_3, stock_data.week_3_min, stock_data.week_3_max = week_values(stock_df, 15)
                 stock_data.week_5, stock_data.week_5_min, stock_data.week_5_max = week_values(stock_df, 25)
 
-                stock_data.week_1_color = week_color(stock_data.week_1)
+                stock_data.week_1_color = week_color(stock_data.week_1, week3=True)
                 stock_data.week_2_color = week_color(stock_data.week_2)
                 stock_data.week_3_color = week_color(stock_data.week_3, week3=True)
                 stock_data.week_5_color = week_color(stock_data.week_5)

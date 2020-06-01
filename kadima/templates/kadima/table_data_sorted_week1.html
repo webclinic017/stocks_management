@@ -1,8 +1,8 @@
-{% for stock in stocks|dictsort:'gap_1' %}
+{% for stock in stocks|dictsort:'week_1' %}
   {% if stock_alert == 'condition_3'%}
-    <tr class="fast-blink-row-buy">
+      <tr class="fast-blink-row-buy">
   {% elif stock_alert == 'condition_4'%}
-    <tr class="fast-blink-row-sell">
+      <tr class="fast-blink-row-sell">
   {% elif stock.week_3_color == 'green' and stock.gap_1_color == 'red' %}
     <tr class="blink-row-buy">
   {% elif stock.week_3_color == '#FF1000' and stock.gap_1_color == 'green' %}

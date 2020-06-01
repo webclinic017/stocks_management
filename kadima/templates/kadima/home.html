@@ -197,6 +197,7 @@
                           </th>
                           <th class="text-center">
                               Week 1
+                              <button name="sort_week1" class="tim-icons icon-minimal-down"></button>
                           </th>
                           <th class="text-center">
                               Week 2
@@ -205,13 +206,10 @@
                               Week 5
                           </th>
                           <th class="text-center" style="font-size: 1rem;">
-                            <!-- <button type="submit" name="sort_by_week3" class=" text-primary"></button>   -->
                               Week 3
-                              <!-- <input type="button" class="tim-icons icon-minimal-down"> <i></i> -->
                               <button name="sort_week3" class="tim-icons icon-minimal-down"></button>
                             </th>
                           <th class="text-center" style="font-size: 1rem;">
-                            <!-- <button type="submit" name="sort_by_gap1" class=" text-primary"></button>   -->
                               Gap 1
                               <button name="sort_gap" class="tim-icons icon-minimal-down"></button>
                           </th>
@@ -248,6 +246,8 @@
                       <tbody>
                         {% if sort_by == 'gap_1' %}  
                           {% include 'kadima/table_data_sorted_gap.html' %}
+                        {% elif sort_by == 'week_1' %} 
+                          {% include 'kadima/table_data_sorted_week1.html' %}
                         {% else %}
                           {% include 'kadima/table_data_sorted_week3.html' %}
                         {% endif %}

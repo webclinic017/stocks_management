@@ -121,11 +121,11 @@ def trends(stock,period, draw=False):
     week2 = dict()
     week3 = dict()
 
-    week1['relative_value'], week1['last_min'], week1['last_max'] = week_values(stock_df, 5)
+    week1['relative_value'], week1['last_min'], week1['last_max'] = week_values(stock_df, 90)
     week2['relative_value'], week2['last_min'], week2['last_max'] = week_values(stock_df, 10)
     week3['relative_value'], week3['last_min'], week3['last_max'] = week_values(stock_df, 15)
 
-    week1['week_1_color'] = week_color(week1['relative_value'])
+    week1['week_1_color'] = week_color(week1['relative_value'], week3=True)
     week2['week_2_color'] = week_color(week2['relative_value'])
     week3['week_3_color'] = week_color(week3['relative_value'], week3=True)
 
