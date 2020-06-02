@@ -100,7 +100,10 @@
                                     <th class="text-center">
                                         Current Price
                                     </th>
-
+                                    <th class="text-center">
+                                        90 Days
+                                        <button name="sort_week1" class="tim-icons icon-minimal-down"></button>
+                                    </th>
                                     <th class="text-center">
                                         Week 3
                                         <button name="sort_week3" class="tim-icons icon-minimal-down"></button>
@@ -168,6 +171,8 @@
                             <tbody>
                                 {% if sort_by == 'gap_1' %}  
                                     {% include 'ib_api/_streaming_alarms_sorted_gap.html' %}
+                                {% elif sort_by == 'week_1' %}  
+                                    {% include 'ib_api/_streaming_alarms_sorted_week1.html' %}
                                 {% else %}
                                     {% include 'ib_api/_streaming_alarms_sorted_week3.html' %}
                                 {% endif %}      
