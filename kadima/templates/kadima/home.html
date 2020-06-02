@@ -83,18 +83,37 @@
                   </div>
                 </div>
               </div>
+ 
               <div class="col">
                 <div class="index">
                   <div class="row">
                     <div class="card card-chart" style="background-color:{{ nas_color }};">
                       <div class="card-header">
                         <h2 class="card-title" style="color: aliceblue;">NASDAQ</h2>
-                        <h4 class="card-title"><i class="text-success"></i> {{ nas_value }} / {{ nas_change }}%</h4>
+                        <h4 class="card-title"><i class="text-info"></i> {{ nas_value }} / {{ nas_change }}%</h4>
                       </div>
                     </div>  
+                  </div>  
+                </div>
+                <div class="row">
+                  <div class="col-6 text-center">
+                    <div class="card card-chart" style="background-color:{{ nas_macd_color }};">
+                      <div class="card-header">
+                        MACD
+                      </div>
+                    </div>
                   </div>
-                </div>  
+                  <div class="col-6 text-center">
+                    <div class="card card-chart" style="background-color:{{ nas_mfi_color }};">
+                      <div class="card-header">
+                        MFI
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
+ 
+ 
               <div class="col">
                 <div class="index">
                   <div class="row">
@@ -196,7 +215,7 @@
                             Price
                           </th>
                           <th class="text-center" style="font-size: 1rem;">
-                              Week 1
+                              90 Days
                               <button name="sort_week1" class="tim-icons icon-minimal-down"></button>
                           </th>
                           <th class="text-center">

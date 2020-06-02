@@ -1,4 +1,3 @@
-<script>console.log('HERERER')</script>
 {% for stock in stocks|dictsort:'week_1' %}
         <tr class="">
             <!-- <td class="">
@@ -18,6 +17,9 @@
             <td>
                 <input type="hidden" class="" name="stock_price_{{ stock.pk }}" value="{{ stock.stock_price }}">
                 {{ stock.stock_price }}
+            </td>
+            <td class="border-right" style="border-right: 5px solid white; background-color: {{ stock.week_1_color }}; " >
+                {{ stock.week_1 }}%
             </td>
             <td class="border-right" style="border-right: 5px solid white; background-color: {{ stock.week_3_color }}; " >
                 {{ stock.week_3 }}%

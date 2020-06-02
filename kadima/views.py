@@ -172,7 +172,12 @@ def stock_alarms(request):
             print('>> Week3 Sorting <<')
             request.session['sort_by'] = 'week_3'
             context['sort_by'] = request.session['sort_by']
-       
+
+        elif 'sort_week1' in request.POST:
+            print('>> Week1 (90 Days) Sorting <<')
+            request.session['sort_by'] = 'week_1'
+            context['sort_by'] = request.session['sort_by']
+
         else:
             alarmed_stocks = StockData.objects.filter(stock_alarm=True)
             context['stocks'] = alarmed_stocks

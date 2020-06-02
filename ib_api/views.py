@@ -129,6 +129,9 @@ def stocks_alarms_data(request):
         try:
             week3, w3_color = week_check(stock.week_3_min, stock.week_3_max, stock_dick[stock.id], week3=True)
 
+            # Week1 <=> 90 days
+            week1, w1_color = week_check(stock.week_1_min, stock.week_1_max, stock_dick[stock.id], week3=True)
+
             # Checking alarm trigger
             trigger_alarm_set = stock.stock_alarm_trigger_set
             alarm_delta = stock.stock_alarm_delta
@@ -200,6 +203,8 @@ def stocks_alarms_data(request):
                 'stock_price': stock_dick[stock.id],
                 'stock_date': stock.stock_date,
                 'stock_displayed_date': stock.stock_displayed_date,
+                'week_1': week1,
+                'week_1_color': w1_color,
                 'week_3': week3,
                 'week_3_color': w3_color,
                 'gap_1': stock.gap_1,
@@ -272,6 +277,8 @@ def indeces_data(request):
         pass
 
     nas_close = IndicesData.objects.get(index_api_id=55555).index_prev_close
+    nas_macd_color = IndicesData.objects.get(index_api_id=55555).index_macd_color
+    nas_mfi_color = IndicesData.objects.get(index_api_id=55555).index_mfi_color
 
     dow_close = IndicesData.objects.get(index_api_id=77777).index_prev_close
     dow_macd_color = IndicesData.objects.get(index_api_id=77777).index_macd_color
@@ -366,6 +373,8 @@ def indeces_data(request):
 
         'dow_macd_color': dow_macd_color,
         'dow_mfi_color': dow_mfi_color,
+        'nas_macd_color': nas_macd_color,
+        'nas_mfi_color': nas_mfi_color,
         'snp_macd_color': snp_macd_color,
         'snp_mfi_color': snp_mfi_color,
         'r2k_macd_color': r2k_macd_color,
@@ -595,6 +604,7 @@ class TestApp(EClient, EWrapper):
 
         # Tick types: https://interactivebrokers.github.io/tws-api/tick_types.html
 
+        # Extracting Close price
         if tickType == 9:
             # stock_close[reqId] = price
             if reqId < 10000:
@@ -602,17 +612,23 @@ class TestApp(EClient, EWrapper):
                 stock.prev_close = price
                 stock.save()
 
+        # Extracting Open price
         if tickType == 14:
             if reqId < 10000:
                 stock = StockData.objects.get(id=reqId)
                 stock.todays_open = price
                 stock.save()
 
-
-    @iswrapper
-    def fundamentalData(self, reqId, data):
-            super().fundamentalData(reqId, data)
-            print("&&&&&&&&& FundamentalData. ReqId:", reqId, "Data:", data)
+    # @iswrapper
+    # def tickString(self, reqId, tickType, value):
+    #     return super().tickString(reqId, tickType, value)
+    #     # Extracting IB_DIVIDENDS
+    #     if tickType == 59:
+    #         if reqId < 10000:
+    #             stock = StockData.objects.get(id=reqId)
+    #             print(f'Stock: {stock.ticker} Dividend: {price}')
+    #             # stock.todays_open = price
+    #             # stock.save()
 
     # @iswrapper
     # def tickSize(self, reqId, tickType, size):
@@ -668,15 +684,11 @@ def ib_stock_api(old_stocks_list, stocks, action):
 
         print(f"*************** Loading Indeces... ****************")
 
-        # contract.symbol = "NDX"
-        # contract.secType = "IND"
-        # contract.currency = "USD"
-        # contract.exchange = "NASDAQ"
-
-        contract.symbol = "NQ"
+        # NASDAQ
+        contract.symbol = "NDX"
         contract.secType = "IND"
         contract.currency = "USD"
-        contract.exchange = "GLOBEX"
+        contract.exchange = "NASDAQ"
 
         # RTVolume - contains the last trade price, last trade size, last trade time, total volume, VWAP, and single trade flag. - Gives 0
         # Reference: https://tinyurl.com/y73tg4t8

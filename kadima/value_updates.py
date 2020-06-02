@@ -152,16 +152,57 @@ def indexes_updates(request):
 
     # Setting the previsous day close value for the indices.
     try:
-        nasdaq_data = IndicesData()
-        nasdaq_data.index_symbol = 'Nasdaq'
+        # NASDAQ 
+        ####################################
+        nas_data = IndicesData()
+        nas_data.index_symbol = 'Nasdaq'
         # nasdaq_data.index_prev_close = round(float(nasdaq_df['Close'].iloc[-2]),2)
         if index_df.index[-1].day == TODAY.day:
-            nasdaq_data.index_prev_close = round(index_df['Close']['^IXIC'][-2],2)
+            nas_data.index_prev_close = round(index_df['Close']['^IXIC'][-2],2)
         else:
-            nasdaq_data.index_prev_close = round(index_df['Close']['^IXIC'][-1],2)
+            nas_data.index_prev_close = round(index_df['Close']['^IXIC'][-1],2)
 
-        nasdaq_data.index_api_id = 55555
-        nasdaq_data.save()
+        nas_data.index_api_id = 55555
+
+        # NASDAQ Indicators:
+        nas_index_trend, nas_index_macd, nas_index_mfi, nas_rsi, week1, week2, week3 = trends('^IXIC', 30) # rsi and week# are not used. Just for unpacking
+        
+        nas_data.index_trend = nas_index_trend
+        nas_data.index_macd = nas_index_macd
+        nas_data.index_mfi = nas_index_mfi
+
+        if np.abs(nas_index_macd) > tan_deviation_angle:                    
+        
+            if (nas_index_trend > 0 and nas_index_macd < 0) or (nas_index_trend < 0 and nas_index_macd > 0):
+                nas_data.index_macd_clash = True
+                nas_data.index_macd_color= 'red'
+            elif (nas_index_trend < 0 and nas_index_macd < 0) or (nas_index_trend > 0 and nas_index_macd > 0):
+                nas_data.index_macd_clash = False
+                nas_data.index_macd_color= 'green'
+
+        else:
+            nas_data.index_macd_clash = False
+            nas_data.index_macd_color= 'green'
+
+        if np.abs(nas_index_mfi) > tan_deviation_angle:                    
+        
+            if (nas_index_trend > 0 and nas_index_mfi < 0) or (nas_index_trend < 0 and nas_index_mfi > 0):
+                nas_data.index_mfi_clash = True
+                nas_data.index_mfi_color= 'red'
+            elif (nas_index_trend < 0 and nas_index_mfi < 0) or (nas_index_trend > 0 and nas_index_mfi > 0):
+                nas_data.index_mfi_clash = False
+                nas_data.index_mfi_color= 'green'
+
+        else:
+            nas_data.index_mfi_clash = False
+            nas_data.index_mfi_color= 'green'
+
+        indexes_context['nas_macd'] =  nas_index_macd   
+        indexes_context['nas_macd_color'] =  nas_data.index_macd_color   
+        indexes_context['nas_mfi'] =  nas_index_mfi   
+        indexes_context['nas_mfi_color'] =  nas_data.index_mfi_color   
+
+        nas_data.save()
 
         # S&P 
         ####################################
