@@ -466,7 +466,6 @@ def home(request, table_index=1):
                     month = earnings.month
                     day = earnings.day
                     earnings_date = str(f'{day}/{month}/{year}')
-                    stock_data.earnings_call_displayed = earnings_date
                     
                     earnings_ts = time.mktime(datetime.datetime.strptime(earnings_date, "%d/%m/%Y").timetuple())
                     today_ts = datetime.datetime.timestamp(TODAY)
@@ -475,10 +474,13 @@ def home(request, table_index=1):
 
                     if (earnings_dt - today_dt).days <= 7 and (earnings_dt - today_dt).days >= 0:
                         stock_data.earnings_warning = "blink-bg"
+                        stock_data.earnings_call_displayed = earnings_date
                     elif (earnings_dt - today_dt).days < 0:
                         stock_data.earnings_warning = "PAST"
+                        stock_data.earnings_call_displayed = None
                     else:
                         stock_data.earnings_warning = ""
+                        stock_data.earnings_call_displayed = earnings_date
 
                 except Exception as e:
                     messages.error(request, 'Stock does not have an earnings call date defined.')

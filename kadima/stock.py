@@ -285,7 +285,6 @@ class Stock():
             month = earnings.month
             day = earnings.day
             earnings_date = str(f'{day}/{month}/{year}')
-            self.earnings_call = earnings_date
             
             earnings_ts = time.mktime(datetime.datetime.strptime(earnings_date, "%d/%m/%Y").timetuple())
             today_ts = datetime.datetime.timestamp(today)
@@ -294,10 +293,13 @@ class Stock():
 
             if (earnings_dt - today_dt).days <= 7 and (earnings_dt - today_dt).days >= 0:
                 self.earnings_warning = "blink-bg"
+                self.earnings_call = earnings_date
             elif (earnings_dt - today_dt).days < 0:
                 self.earnings_warning = "PAST"
+                self.earnings_call = None
             else:
                 self.earnings_warning = ""
+                self.earnings_call = earnings_date
 
         except Exception as e:
             earnings = None    
