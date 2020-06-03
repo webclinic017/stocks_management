@@ -1,3 +1,4 @@
+import time
 import random
 import json
 import pandas as pd
@@ -453,19 +454,31 @@ def home(request, table_index=1):
 
                 # Earning dates
                 try:
-                    earnings = yf.Ticker(stock).calendar['Value'][0]
-                    arrow_object = arrow.get(earnings, 'US/Eastern')
-                    stock_data.earnings_call = arrow_object.datetime
-                    year = arrow_object.datetime.year
-                    month = arrow_object.datetime.month
-                    day = arrow_object.datetime.day
-                    stock_data.earnings_call_displayed = str(f'{day}/{month}/{year}')
+                    try:
+                        earnings = yf.Ticker(stock).calendar[0][0]
+                    except:
+                        try:
+                            earnings = yf.Ticker(stock).calendar['Value'][0]
+                        except:
+                            print(f'No earnings found for {stock}')
+
+                    year = earnings.year
+                    month = earnings.month
+                    day = earnings.day
+                    earnings_date = str(f'{day}/{month}/{year}')
+                    stock_data.earnings_call_displayed = earnings_date
                     
-                    # print(f'DELTA {stock}: {earnings - today}')
-                    if (earnings - TODAY).days <= 7 and (earnings - TODAY).days >= 0:
-                        stock_data.earnings_warning = 'blink-bg'
+                    earnings_ts = time.mktime(datetime.datetime.strptime(earnings_date, "%d/%m/%Y").timetuple())
+                    today_ts = datetime.datetime.timestamp(TODAY)
+                    earnings_dt = datetime.datetime.fromtimestamp(earnings_ts)
+                    today_dt = datetime.datetime.fromtimestamp(today_ts)
+
+                    if (earnings_dt - today_dt).days <= 7 and (earnings_dt - today_dt).days >= 0:
+                        stock_data.earnings_warning = "blink-bg"
+                    elif (earnings_dt - today_dt).days < 0:
+                        stock_data.earnings_warning = "PAST"
                     else:
-                        stock_data.earnings_warning = ''
+                        stock_data.earnings_warning = ""
 
                 except Exception as e:
                     messages.error(request, 'Stock does not have an earnings call date defined.')

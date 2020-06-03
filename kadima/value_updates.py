@@ -89,13 +89,8 @@ def update_values(request):
         stock.gap_1_color = stock_to_update.gap_1_color
 
         # stock.earnings_call = stock_to_update.earnings_call
-        # stock.earnings_call_displayed = stock_to_update.earnings_call_displayed
-        if stock_to_update.earnings_warning == 'PAST':
-            stock.earnings_call = None
-            stock.earnings_call_displayed = None
-            stock.earnings_warning = ''
-        else:
-            stock.earnings_warning = stock_to_update.earnings_warning
+        stock.earnings_call_displayed = stock_to_update.earnings_call
+        stock.earnings_warning = stock_to_update.earnings_warning
 
         if stock_to_update.dividend_warning == 'PAST':
             stock.dividend_warning = ''

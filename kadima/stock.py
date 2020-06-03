@@ -194,7 +194,8 @@ class Stock():
         else:
             self.rsi_color = ''
 
-        self.earnings_warning = self.check_earnings_alert()
+        self.check_earnings()
+        
         self.dividend_warning = self.check_dividend_alert()
 
 
@@ -270,42 +271,33 @@ class Stock():
         return dividend_alert_signal
 
 
-    def check_earnings_alert(self):
-        stock = StockData.objects.filter(ticker=self.ticker).first() # the "first" is because there might be same ticker two tables.
-        # Removing the earnings alert for earnings date passed
+    def check_earnings(self):
         try:
-            earnings_ts = datetime.datetime.timestamp(stock.earnings_call)
-            today_ts = datetime.datetime.timestamp(self.today)
+            try:
+                earnings = yf.Ticker(self.ticker).calendar[0][0]
+            except:
+                try:
+                    earnings = yf.Ticker(self.ticker).calendar['Value'][0]
+                except:
+                    print(f'No Earnings found for {self.ticker}')
+
+            year = earnings.year
+            month = earnings.month
+            day = earnings.day
+            earnings_date = str(f'{day}/{month}/{year}')
+            self.earnings_call = earnings_date
+            
+            earnings_ts = time.mktime(datetime.datetime.strptime(earnings_date, "%d/%m/%Y").timetuple())
+            today_ts = datetime.datetime.timestamp(today)
             earnings_dt = datetime.datetime.fromtimestamp(earnings_ts)
             today_dt = datetime.datetime.fromtimestamp(today_ts)
-            
+
             if (earnings_dt - today_dt).days <= 7 and (earnings_dt - today_dt).days >= 0:
-                earnings_alert_signal = "blink-bg"
+                self.earnings_warning = "blink-bg"
             elif (earnings_dt - today_dt).days < 0:
-                earnings_alert_signal = "PAST"
+                self.earnings_warning = "PAST"
             else:
-                earnings_alert_signal = ""
+                self.earnings_warning = ""
+
         except Exception as e:
-            print(f'Failed to find earnings for {self.ticker}. Reason: {e}')
-            earnings_alert_signal = ""
-            # There is no earnings date registered, so checking if there is. 
-            # Should run only when there is no earnings date in DB for that stock
-            # TODO
-            # Add check of stocks that have no earnings call in DB
-            # stock_earnings_update(ticker)
-
-        return earnings_alert_signal
-
-
-    # def get_dividened(self):
-    #     try:
-    #         st = yf.Ticker(self.ticker).dividends.tail(1)
-    #         stock_data.dividend = float(st.values)
-    #         date_arr = str(st.index[0]).split(' ')[0].split('-')
-    #         year = date_arr[0]
-    #         month = date_arr[1]
-    #         day = date_arr[2]
-    #         self.dividend_date = day + '/' + month + '/' + year
-    #     except:
-    #         stock_data.dividend = None
-    #         stock_data.dividend_date = None
+            earnings = None    
