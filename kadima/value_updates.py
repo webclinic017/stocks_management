@@ -92,6 +92,13 @@ def update_values(request):
         stock.earnings_call_displayed = stock_to_update.earnings_call
         stock.earnings_warning = stock_to_update.earnings_warning
 
+        if stock_to_update.earnings_warning == 'PAST':
+            stock.earnings_warning = ''
+            stock.earnings_call_displayed = None
+        else:
+            stock.earnings_warning = stock_to_update.earnings_warning
+            stock.earnings_call_displayed = stock_to_update.earnings_call
+
         if stock_to_update.dividend_warning == 'PAST':
             stock.dividend_warning = ''
         else:
