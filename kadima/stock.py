@@ -194,7 +194,7 @@ class Stock():
         else:
             self.rsi_color = ''
 
-        self.check_earnings()
+        self.earnings_warning, self.earnings_call = self.check_earnings()
         
         self.dividend_warning = self.check_dividend_alert()
 
@@ -285,19 +285,24 @@ class Stock():
             month = earnings.month
             day = earnings.day
             earnings_date = str(f'{day}/{month}/{year}')
-            self.earnings_call = earnings_date
+            earnings_call = earnings_date
             
             earnings_ts = time.mktime(datetime.datetime.strptime(earnings_date, "%d/%m/%Y").timetuple())
-            today_ts = datetime.datetime.timestamp(today)
+            today_ts = datetime.datetime.timestamp(self.today)
             earnings_dt = datetime.datetime.fromtimestamp(earnings_ts)
             today_dt = datetime.datetime.fromtimestamp(today_ts)
 
             if (earnings_dt - today_dt).days <= 7 and (earnings_dt - today_dt).days >= 0:
-                self.earnings_warning = "blink-bg"
+                earnings_warning = "blink-bg"
             elif (earnings_dt - today_dt).days < 0:
-                self.earnings_warning = "PAST"
+                earnings_warning = "PAST"
             else:
-                self.earnings_warning = ""
+                earnings_warning = ""
 
         except Exception as e:
+            print(f'ERROR in earnings check: {e}')
             earnings = None    
+            earnings_warning = ""
+            earnings_call = None
+        
+        return earnings_warning, earnings_call
