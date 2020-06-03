@@ -212,7 +212,9 @@ def stocks_alarms_data(request):
                 'rsi': stock.rsi,
                 'rsi_color': stock.rsi_color,
                 'dividend_date': stock.dividend_date,
+                'dividend_warning': stock.dividend_warning,
                 'earnings_call_displayed': stock.earnings_call_displayed,
+                'earnings_warning': stock.earnings_warning,
                 'stock_alarm_trigger_set': trigger_alarm_set,
                 'stock_alarm_delta': alarm_delta,
                 'price_up': price_up,
@@ -534,6 +536,7 @@ def stock_data_api(request, table_index=1, sort=None):
                 'rsi': stock.rsi,
                 'rsi_color': stock.rsi_color,
                 'dividend_date':stock.dividend_date,
+                'dividend_warning': stock.dividend_warning,
                 'dividend': stock.dividend,
                 'updading_gap_1_flag': stock.updading_gap_1_flag
             }
@@ -599,8 +602,8 @@ class TestApp(EClient, EWrapper):
         stock_dick[reqId] = price
 
         # print only indeces data
-        if reqId > 10000:
-            print("Ticker Price Data:  Ticket ID: ", reqId, " ","tickType: ", TickTypeEnum.to_str(tickType), "Price: ", price, end=" ")
+        # if reqId > 10000:
+            # print("Ticker Price Data:  Ticket ID: ", reqId, " ","tickType: ", TickTypeEnum.to_str(tickType), "Price: ", price, end=" ")
 
         # Tick types: https://interactivebrokers.github.io/tws-api/tick_types.html
 
@@ -619,16 +622,26 @@ class TestApp(EClient, EWrapper):
                 stock.todays_open = price
                 stock.save()
 
-    # @iswrapper
-    # def tickString(self, reqId, tickType, value):
-    #     return super().tickString(reqId, tickType, value)
-    #     # Extracting IB_DIVIDENDS
-    #     if tickType == 59:
-    #         if reqId < 10000:
-    #             stock = StockData.objects.get(id=reqId)
-    #             print(f'Stock: {stock.ticker} Dividend: {price}')
-    #             # stock.todays_open = price
-    #             # stock.save()
+    @iswrapper
+    def tickString(self, reqId, tickType, value):
+        # Extracting IB_DIVIDENDS
+        if tickType == 59:
+            stock = StockData.objects.get(id=reqId)
+            current_dividend_date = stock.dividend_date
+            
+            # Calculating new dividend date
+            # divindend_date_obj = datetime.datetime.fromtimestamp(int(value))
+            dividend_date_string = str(value).split(',')[2]
+
+            year = dividend_date_string[0:4]
+            month = dividend_date_string[4:6]
+            day = dividend_date_string[6:8]
+            divindend_date = day + '/' + month + '/' + year
+            # print(f'>>>>>>>>>>>>>> Stock: {reqId} TickType: {tickType} Dividend: {value}  DATE: {divindend_date} LEN: {len(value)}')
+            if len(value) > 5:
+                stock.dividend_date = divindend_date
+                stock.save()
+
 
     # @iswrapper
     # def tickSize(self, reqId, tickType, size):
@@ -739,9 +752,9 @@ def ib_stock_api(old_stocks_list, stocks, action):
 
             app.reqStatus[rStatus] = 'Sent'
             app.reqMarketDataType(4)
-            app.reqMktData(stock_id, contract, "", False, False, [])
+            app.reqMktData(stock_id, contract, "456", False, False, [])
 
-            app.fundamentalData(stock_id, contract)
+            # app.fundamentalData(stock_id, contract)
 
 
         # for i in range(len(stocks)):

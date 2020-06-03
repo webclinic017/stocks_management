@@ -92,6 +92,7 @@ class StockData(models.Model):
 
     dividend_date = models.CharField(max_length=100,null=True)
     dividend = models.FloatField(null=True)
+    dividend_warning = models.CharField(max_length=100, null=True)
     
     # Trigger & alarm page
     stock_alarm = models.BooleanField(default=False) # Flag whether the stock is in the stock_alarm page

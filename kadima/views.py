@@ -568,17 +568,17 @@ def home(request, table_index=1):
                     stock_data.rsi_color = ''
 
                 # Getting the dividend
-                try:
-                    st = yf.Ticker(stock).dividends.tail(1)
-                    stock_data.dividend = float(st.values)
-                    date_arr = str(st.index[0]).split(' ')[0].split('-')
-                    year = date_arr[0]
-                    month = date_arr[1]
-                    day = date_arr[2]
-                    stock_data.dividend_date = day + '/' + month + '/' + year
-                except:
-                    stock_data.dividend = None
-                    stock_data.dividend_date = None
+                # try:
+                #     st = yf.Ticker(stock).dividends.tail(1)
+                #     stock_data.dividend = float(st.values)
+                #     date_arr = str(st.index[0]).split(' ')[0].split('-')
+                #     year = date_arr[0]
+                #     month = date_arr[1]
+                #     day = date_arr[2]
+                #     stock_data.dividend_date = day + '/' + month + '/' + year
+                # except:
+                #     stock_data.dividend = None
+                #     stock_data.dividend_date = None
 
                 ## Adding the stock saving to DB
                 try:

@@ -1,0 +1,979 @@
+ERROR 2020-06-03 11:23:31,213 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:23:36,216 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:23:41,220 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:23:46,226 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:23:51,226 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:23:56,231 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:24:01,234 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:24:06,252 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:24:11,236 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:24:16,241 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:24:21,247 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:24:26,246 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:24:31,246 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:24:36,255 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:24:41,259 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:24:46,268 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:24:51,269 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:24:56,269 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:25:01,277 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:25:06,282 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:25:11,289 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:25:16,290 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:25:21,301 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:25:26,380 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:25:31,298 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:25:36,301 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:25:41,309 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:25:46,307 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:25:51,318 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:25:56,318 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:26:01,332 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:26:06,324 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:26:11,321 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:26:16,326 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:26:21,330 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:26:26,339 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:26:31,407 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:26:36,344 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:26:41,352 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:26:46,348 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:26:51,354 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:26:56,353 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:27:01,385 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:27:06,353 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:27:11,365 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:27:16,368 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:27:21,375 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:27:26,379 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:27:31,382 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:27:36,388 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:27:41,390 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:27:46,400 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:27:51,417 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:27:56,414 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:28:01,412 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:28:06,409 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:28:11,413 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:28:16,413 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:28:21,420 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:28:26,423 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:28:31,425 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:28:36,428 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:28:41,429 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:28:46,437 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:28:51,443 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:28:56,444 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:29:01,448 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:29:06,453 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:29:11,487 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:29:16,455 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:29:21,458 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:29:26,470 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:29:31,468 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:29:36,469 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:29:41,478 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:29:46,482 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:29:51,485 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:29:56,487 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:30:01,491 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:30:06,492 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:30:11,498 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:30:16,499 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:30:21,500 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:30:26,504 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:30:31,510 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:30:36,505 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:30:41,512 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:30:46,523 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111
+ERROR 2020-06-03 11:30:51,566 - Internal Server Error: /indeces-data/
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/exception.py", line 34, in inner
+    response = get_response(request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 115, in _get_response
+    response = self.process_exception_by_middleware(e, request)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/django/core/handlers/base.py", line 113, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/kadima_project/ib_api/views.py", line 300, in indeces_data
+    vix_week1, vix_w1_color = week_check(vix_index.index_week1_min, vix_index.index_week1_max, stock_dick[11111])
+KeyError: 11111

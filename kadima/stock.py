@@ -89,6 +89,7 @@ class Stock():
 
         self.dividend_date = ''
         self.dividend = None
+        self.dividend_warning = ''
     
     def update_stock(self):
     
@@ -194,9 +195,7 @@ class Stock():
             self.rsi_color = ''
 
         self.earnings_warning = self.check_earnings_alert()
-
-        # TODO: Upddae earnings dates with task (Celery), not during runs
-        # self.earnings_call, self.earnings_call_displayed, self.earnings_warning = self.get_earnings()
+        self.dividend_warning = self.check_dividend_alert()
 
 
     def stock_regression(self, period):
@@ -246,8 +245,31 @@ class Stock():
         df_rsi = TA.RSI(df_ohlc,14)
         return round(df_rsi.tail(1).values[0],2)
 
+    def check_dividend_alert(self):
+        stock = StockData.objects.filter(ticker=self.ticker).first() # the "first" is because there might be same ticker two tables.
+        dividend_date = stock.dividend_date
+
+        try:
+            dividend_ts = time.mktime(datetime.datetime.strptime(dividend_date, "%d/%m/%Y").timetuple())
+            today_ts = datetime.datetime.timestamp(self.today)
+            dividend_dt = datetime.datetime.fromtimestamp(dividend_ts)
+            today_dt = datetime.datetime.fromtimestamp(today_ts)
+
+            if (dividend_dt - today_dt).days <= 7 and (dividend_dt - today_dt).days >= 0:
+                dividend_alert_signal = "blink-bg"
+            elif (dividend_dt - today_dt).days < 0:
+                dividend_alert_signal = "PAST"
+            else:
+                dividend_alert_signal = ""
+        except Exception as e:
+            print(f'Failed to find dividend for {self.ticker}. Reason: {e}')
+            dividend_alert_signal = ""
+
+        return dividend_alert_signal
+
+
     def check_earnings_alert(self):
-        stock = StockData.objects.filter(ticker=self.ticker).first()
+        stock = StockData.objects.filter(ticker=self.ticker).first() # the "first" is because there might be same ticker two tables.
         # Removing the earnings alert for earnings date passed
         try:
             earnings_ts = datetime.datetime.timestamp(stock.earnings_call)
@@ -256,7 +278,6 @@ class Stock():
             today_dt = datetime.datetime.fromtimestamp(today_ts)
             
             if (earnings_dt - today_dt).days <= 7 and (earnings_dt - today_dt).days >= 0:
-                # earnings_alert_signal = stock.earnings_warning
                 earnings_alert_signal = "blink-bg"
             elif (earnings_dt - today_dt).days < 0:
                 earnings_alert_signal = "PAST"
@@ -273,18 +294,16 @@ class Stock():
 
         return earnings_alert_signal
 
-        
-        return earnings_call, earnings_call_displayed, earnings_warning
 
-    def get_dividened(self):
-        try:
-            st = yf.Ticker(self.ticker).dividends.tail(1)
-            stock_data.dividend = float(st.values)
-            date_arr = str(st.index[0]).split(' ')[0].split('-')
-            year = date_arr[0]
-            month = date_arr[1]
-            day = date_arr[2]
-            self.dividend_date = day + '/' + month + '/' + year
-        except:
-            stock_data.dividend = None
-            stock_data.dividend_date = None
+    # def get_dividened(self):
+    #     try:
+    #         st = yf.Ticker(self.ticker).dividends.tail(1)
+    #         stock_data.dividend = float(st.values)
+    #         date_arr = str(st.index[0]).split(' ')[0].split('-')
+    #         year = date_arr[0]
+    #         month = date_arr[1]
+    #         day = date_arr[2]
+    #         self.dividend_date = day + '/' + month + '/' + year
+    #     except:
+    #         stock_data.dividend = None
+    #         stock_data.dividend_date = None
