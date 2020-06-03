@@ -250,7 +250,9 @@ class Stock():
         dividend_date = stock.dividend_date
 
         try:
+            # Convert from text date to timestamp
             dividend_ts = time.mktime(datetime.datetime.strptime(dividend_date, "%d/%m/%Y").timetuple())
+            
             today_ts = datetime.datetime.timestamp(self.today)
             dividend_dt = datetime.datetime.fromtimestamp(dividend_ts)
             today_dt = datetime.datetime.fromtimestamp(today_ts)

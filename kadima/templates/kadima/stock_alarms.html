@@ -252,6 +252,15 @@ $("#stock_alarm_select").click(function () {
     .tab_cell {
         text-align: center;
     }
+
+    .blink-bg{
+        color: #fff;
+        animation: blinkingBackground 2s infinite;
+    }
+    @keyframes blinkingBackground{
+        100%	{ background-color: #04a1d5;}
+    }
+
 </style>
 
 {% endblock content %}
