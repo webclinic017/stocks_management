@@ -30,10 +30,10 @@
             <td class="" style="background-color: {{ stock.rsi_color }}; ">
                 {{ stock.rsi }}
             </td>
-            <td class="" style="background-color: {{ stock.dividend_warning }}; ">
+            <td class="{{ stock.dividend_warning }}" style="background-color: {{ stock.dividend_warning }}; ">
                 {{ stock.dividend_date }}
             </td>
-            <td class="" style="background-color: {{ stock.earnings_warning }}; ">
+            <td class="{{ stock.earnings_warning }}" style="background-color: {{ stock.earnings_warning }}; ">
                 {{ stock.earnings_call_displayed }}
             </td>
             <td >
