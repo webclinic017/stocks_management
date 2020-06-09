@@ -31,6 +31,11 @@ logger = logging.getLogger()
 
 TODAY = datetime.datetime.today()
 
+NAS = 55555
+DOW = 77777
+SNP = 88888
+VIX = 11111
+R2K = 22222
 
 stock_dick = dict()
 stock_open = dict()
@@ -261,22 +266,26 @@ def stocks_alarms_data(request):
 
 def indeces_data(request):
 
-    snp = IndicesData.objects.get(index_api_id=88888)
+    snp = IndicesData.objects.get(index_api_id=SNP)
+    dow = IndicesData.objects.get(index_api_id=DOW)
+    nas = IndicesData.objects.get(index_api_id=NAS)
+    vix = IndicesData.objects.get(index_api_id=VIX)
+    r2k = IndicesData.objects.get(index_api_id=R2K)
 
-    try:
-        if stock_dick[88888] > 0:
-            snp.index_current_value = stock_dick[88888]
-            snp.save()
-            snp_current_value = stock_dick[88888]
-        elif snp.index_current_value:
-            snp_current_value = snp.index_current_value
-        else:
-            snp.index_current_value = snp.index_prev_close
-            snp_current_value = snp.index_prev_close
-            snp.save()
-    except Exception as e:
-        snp_current_value = -1.0
-        pass
+    # try:
+    #     if stock_dick[SNP] > 0:
+    #         snp.index_current_value = stock_dick[SNP]
+    #         snp.save()
+    #         snp_current_value = stock_dick[SNP]
+    #     elif snp.index_current_value:
+    #         snp_current_value = snp.index_current_value
+    #     else:
+    #         snp.index_current_value = snp.index_prev_close
+    #         snp_current_value = snp.index_prev_close
+    #         snp.save()
+    # except Exception as e:
+    #     snp_current_value = -1.0
+    #     pass
 
     nas_close = IndicesData.objects.get(index_api_id=55555).index_prev_close
     nas_macd_color = IndicesData.objects.get(index_api_id=55555).index_macd_color
@@ -314,8 +323,8 @@ def indeces_data(request):
 
 
     try:
-        dow_value = stock_dick[77777]
-        dow_change = round(100 * (stock_dick[77777] - dow_close) / dow_close,2)
+        dow_value = dow.index_current_value
+        dow_change = round(100 * (dow_value - dow_close) / dow_close,2)
     except Exception as e:
         # logger.error(f'Failed calculating dow_change. Reason: {e}')
         print(f'Failed calculating dow_change. Reason: {e}')
@@ -323,31 +332,32 @@ def indeces_data(request):
         dow_change = -1.0
 
     try:
-        snp_change = round(100 * (snp_current_value - snp_close) / snp_close,2)
+        snp_value = snp.index_current_value
+        snp_change = round(100 * (snp.index_current_value - snp_close) / snp_close,2)
     except Exception as e:
         # logger.error(f'Failed calculating snp_change. Reason: {e}')
-        print(f'Failed calculating snp_change. Value: {snp_current_value}  snp_close: {snp_close}. Reason: {e}')
+        print(f'Failed calculating snp_change. Reason: {e}')
         snp_change = -1.0
 
     try:
-        nas_value = stock_dick[55555]
-        nas_change = round(100 * (stock_dick[55555] - nas_close) / nas_close,2)
+        nas_value = nas.index_current_value
+        nas_change = round(100 * (nas_value - nas_close) / nas_close,2)
     except Exception as e:
         print(f'Failed calculating nas_change. Reason: {e}')
         nas_value = -1.0
         nas_change = -1.0
 
     try:
-        vix_value = stock_dick[11111]
-        vix_change = round(100 * (stock_dick[11111] - vix_close) / vix_close,2)
+        vix_value = vix.index_current_value
+        vix_change = round(100 * (vix_value - vix_close) / vix_close,2)
     except Exception as e:
         print(f'Failed calculating vix_change. Reason: {e}')
         vix_value = -1.0
         vix_change = -1.0
 
     try:
-        r2k_value = stock_dick[22222]
-        r2k_change = round(100 * (stock_dick[22222] - r2k_close) / r2k_close,2)
+        r2k_value = r2k.index_current_value
+        r2k_change = round(100 * (r2k_value - r2k_close) / r2k_close,2)
     except Exception as e:
         print(f'Failed calculating r2k_change. Reason: {e}')
         r2k_value = -1.0
@@ -356,7 +366,7 @@ def indeces_data(request):
 
     context = {
         'dow_value': round(dow_value,2), 
-        'snp_value': round(snp_current_value,2),
+        'snp_value': round(snp_value,2),
         'nas_value': round(nas_value,2),
         'vix_value': round(vix_value,2),
         'r2k_value': round(r2k_value,2),
@@ -597,23 +607,43 @@ class TestApp(EClient, EWrapper):
 
     @iswrapper
     def tickPrice(self, reqId, tickType, price, attrib):
-        # print("Ticker Price Data:  Ticket ID: ", reqId, " ","tickType: ", TickTypeEnum.to_str(tickType), "Price: ", price, end=" ")
+        # print(f"Ticket ID: {reqId} tickType: {TickTypeEnum.to_str(tickType)} Price: {price}", end="\n")
 
         stock_dick[reqId] = price
 
         # print only indeces data
-        # if reqId > 10000:
-            # print("Ticker Price Data:  Ticket ID: ", reqId, " ","tickType: ", TickTypeEnum.to_str(tickType), "Price: ", price, end=" ")
+        '''
+        NASDAQ = 55555
+        DOW = 77777
+        SNP = 88888
+        VIX = 11111
+        R2K = 22222
+        '''
+        if reqId > 10000:
+            if tickType == 9 or tickType == 37 or tickType == 4: # 37 = MARK_PRICE, 4 = LAST_PRICE, 9 = CLOSE
+                print("Ticker Price Data:  Ticket ID: ", reqId, " ","tickType: ", TickTypeEnum.to_str(tickType), "Price: ", price, end="\n")
 
         # Tick types: https://interactivebrokers.github.io/tws-api/tick_types.html
 
-        # Extracting Close price
+        # Extracting Previous Close price
         if tickType == 9:
             # stock_close[reqId] = price
             if reqId < 10000:
                 stock = StockData.objects.get(id=reqId)
                 stock.prev_close = price
                 stock.save()
+
+            # Updating Indices DB
+            else:
+                index = IndicesData.objects.get(index_api_id=reqId)
+                index.index_prev_close = price
+                index.save()
+        
+        # Setting last value to index
+        if tickType == 37 and reqId > 10000:
+            index = IndicesData.objects.get(index_api_id=reqId)
+            index.index_current_value = price
+            index.save()
 
         # Extracting Open price
         if tickType == 14:
