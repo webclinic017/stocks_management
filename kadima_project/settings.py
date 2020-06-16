@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'kadima',
     'dashboard',
     'rest_framework',
+    'scraper',
     'background_task',
     'corsheaders',
     'crispy_forms',

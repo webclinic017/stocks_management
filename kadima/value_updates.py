@@ -140,38 +140,11 @@ def indexes_updates(request):
     indexes_context = {}
     indeces = ['^IXIC', '^GSPC', '^DJI', '^RUT', '^VIX'] 
     tan_deviation_angle = math.tan(math.radians(settings.DEVIATION_ANGLE))
-    
-    # try:
-    #     index_df = fin_data.get_data_yahoo(indeces , start=TODAY - timedelta(5), end=TODAY)
-    #     historical = False
- 
-    # except:
-    #     try:
-    #         historical = True
-    #         historical_index_data = []
-    #         indeces_history_data = IndicesData.objects.all()
-    #         for idx in indeces_history_data:
-    #             historical_index_data.append(idx.index_prev_close) 
-            
-    #     except Exception as e:
-    #         logger.error(f'Failed getting data from Yahoo.')
-    #         print(f'Failed getting data from Yahoo. Reason: {e}')
-    #         return False, e
 
-    # Setting the previsous day close value for the indices.
     try:
         # NASDAQ 
         ####################################
         nas_data = IndicesData.objects.get(index_api_id=55555)
-        # nas_data.index_symbol = 'Nasdaq'
-        # nas_data.index_api_id = 55555
-
-
-        # if index_df.index[-1].day == TODAY.day:
-        #     nas_data.index_prev_close = round(index_df['Close']['^IXIC'][-2],2)
-        # else:
-        #     nas_data.index_prev_close = round(index_df['Close']['^IXIC'][-1],2)
-
 
         # NASDAQ Indicators:
         nas_index_trend, nas_index_macd, nas_index_mfi, nas_rsi, week1, week2, week3 = trends('^IXIC', 30) # rsi and week# are not used. Just for unpacking
@@ -215,15 +188,7 @@ def indexes_updates(request):
 
         # S&P 
         ####################################
-        snp_data = IndicesData.objects.get(index_api_id=88888)
-        # snp_data.index_symbol = 'S&P'
-        # snp_data.index_api_id = 88888
-
-        # if index_df.index[-1].day == TODAY.day:
-        #     snp_data.index_prev_close = round(index_df['Close']['^GSPC'][-2],2)
-        # else:
-        #     snp_data.index_prev_close = round(index_df['Close']['^GSPC'][-1],2)
-        
+        snp_data = IndicesData.objects.get(index_api_id=88888)        
 
         # SNP Indicators:
         snp_index_trend, snp_index_macd, snp_index_mfi, snp_rsi, week1, week2, week3 = trends('^GSPC', 30) # rsi and week# are not used. Just for unpacking
@@ -268,14 +233,6 @@ def indexes_updates(request):
         # DOW Jones
         ####################################
         dow_data = IndicesData.objects.get(index_api_id=77777)
-        # dow_data.index_symbol = 'Dow-Jones'
-        # dow_data.index_api_id = 77777
-
-        # if index_df.index[-1].day == TODAY.day:
-        #     dow_data.index_prev_close = round(index_df['Close']['^DJI'][-2],2)
-        # else:
-        #     dow_data.index_prev_close = round(index_df['Close']['^DJI'][-1],2)
-        
 
         # DOW Jones Indicators:
         dow_index_trend, dow_index_macd, dow_index_mfi, dow_rsi, week1, week2, week3 = trends('^DJI', 30)
@@ -317,14 +274,6 @@ def indexes_updates(request):
         # VIX
         ####################################
         vix_data = IndicesData.objects.get(index_api_id=11111)
-        # vix_data.index_symbol = 'VIX'
-        # vix_data.index_api_id = 11111
-
-        # if index_df.index[-1].day == TODAY.day:
-        #     vix_data.index_prev_close = round(index_df['Close']['^VIX'][-2],2)
-        # else:
-        #     vix_data.index_prev_close = round(index_df['Close']['^VIX'][-1],2)
-        
 
         # VIX Weeks data
         vix_index_trend, vix_index_macd, vix_index_mfi, vix_rsi, week1, week2, week3 = trends('^VIX', 30)
@@ -356,18 +305,9 @@ def indexes_updates(request):
 
         # Russell 2K
         ####################################
-        r2k_data = IndicesData.objects.get(index_api_id=22222)
-        # r2k_data.index_symbol = 'Russell-2k'
-        # r2k_data.index_api_id = 22222
-
-        # if index_df.index[-1].day == TODAY.day:
-        #     r2k_data.index_prev_close = round(index_df['Close']['^RUT'][-2],2)
-        # else:
-        #     r2k_data.index_prev_close = round(index_df['Close']['^RUT'][-1],2)
-        
+        r2k_data = IndicesData.objects.get(index_api_id=22222)        
         
         # Russell 2K Indicators:
-
         r2k_index_trend, r2k_index_macd, r2k_index_mfi, r2k_rsi, week1, week2, week3 = trends('^RUT', 30)
 
         r2k_data.index_trend = r2k_index_trend
@@ -413,30 +353,5 @@ def indexes_updates(request):
         messages.error(request,'Failed to update DB with Indeces data.')
         # return False, e
     
-
-
-    # nasdaq_change = 0 if historical else round(index_df['Close']['^IXIC'].pct_change()[1],2)
-    # snp_change = 0 if historical else round(index_df['Close']['^GSPC'].pct_change()[1],2)
-    # dow_change = 0 if historical else round(index_df['Close']['^DJI'].pct_change()[1],2)
-    # vix_change = 0 if historical else round(index_df['Close']['^VIX'].pct_change()[1],2)
-    # r2k_change = 0 if historical else round(index_df['Close']['^RUT'].pct_change()[1],2)
-
-    # indexes_context['nas_value'] = historical_index_data[0] if historical else round(index_df['Close']['^IXIC'][1],2)
-    # indexes_context['snp_value'] = historical_index_data[1] if historical else round(index_df['Close']['^GSPC'][1],2)
-    # indexes_context['dow_value'] = historical_index_data[2] if historical else round(index_df['Close']['^DJI'][1],2)
-    # indexes_context['vix_value'] = historical_index_data[2] if historical else round(index_df['Close']['^VIX'][1],2)
-    # indexes_context['r2k_value'] = historical_index_data[2] if historical else round(index_df['Close']['^RUT'][1],2)
-
-    # indexes_context['nas_color'] = change_check(nasdaq_change)
-    # indexes_context['snp_color'] = change_check(snp_change)
-    # indexes_context['dow_color'] = change_check(dow_change)
-    # indexes_context['vix_color'] = change_check(vix_change)
-    # indexes_context['r2k_color'] = change_check(r2k_change)
-
-    # indexes_context['nas_change'] = float("%0.2f"%(nasdaq_change * 100))
-    # indexes_context['snp_change'] = float("%0.2f"%(snp_change * 100))
-    # indexes_context['dow_change'] = float("%0.2f"%(dow_change * 100))
-    # indexes_context['vix_change'] = float("%0.2f"%(vix_change * 100))
-    # indexes_context['r2k_change'] = float("%0.2f"%(r2k_change * 100))
 
     return True, indexes_context

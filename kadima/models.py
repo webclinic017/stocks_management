@@ -168,6 +168,7 @@ class IndicesData(models.Model):
     index_prev_close = models.FloatField(null=True)
     index_current_value = models.FloatField(null=True)
     index_api_id = models.IntegerField(null=True)
+    index_change = models.FloatField(null=True)
 
     index_week1 = models.FloatField(null=True)
     index_week1_min = models.FloatField(null=True)

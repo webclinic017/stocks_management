@@ -32,13 +32,14 @@ from django.utils import timezone
 import yfinance as yf
 
 from ib_api.views import stock_data_api, alarm_trigger, api_connection_status,ib_api_wrapper
-from kadima.k_utils import week_values, gap_1_check,date_obj_to_date, reset_email_alerts, week_color, reset_alarms
+from kadima.k_utils import week_values, gap_1_check,date_obj_to_date, reset_email_alerts, week_color, reset_alarms, indices_scrapers
 
 from .models import StockData, IndicesData, EmailSupport
 from .forms import DateForm
 from .ml_models import trends
 from .value_updates import indexes_updates, update_values
 from kadima.stock import Stock
+from scraper.views import YahooScraper
 
 # Create and configure logger
 import logging
@@ -70,10 +71,15 @@ def stock_alarms(request):
     if request.method  == 'POST':
 
         if 'connect_ib_api' in request.POST:
+            
+            # Connect the IB API 
             api_connect(request)
-            # context = {}
             ib_api_connected = api_connection_status()
             context['ib_api_connected'] = ib_api_connected
+
+            # Start scraping for indices data
+            indices_scrapers()
+
             return render(request, 'kadima/stock_alarms.html', context)
 
         elif 'disconnect_ib_api' in request.POST:
@@ -206,9 +212,12 @@ def history(request, table_index=1):
     if request.method == 'POST':
         if 'connect_ib_api' in request.POST:
             api_connect(request)
-            # context = {}
             ib_api_connected = api_connection_status()
             context['ib_api_connected'] = ib_api_connected
+
+            # Start scraping for indices data
+            indices_scrapers()
+
             return render(request, 'kadima/history.html', context)
  
         elif 'disconnect_ib_api' in request.POST:
@@ -371,6 +380,10 @@ def home(request, table_index=1):
             ib_api_connected = api_connection_status()
             context['ib_api_connected'] = ib_api_connected
             
+            # Start scraping for indices data
+            indices_scrapers()
+
+
             return render(request, 'kadima/home.html', context)
 
         elif 'update_now' in request.POST:
@@ -778,4 +791,8 @@ def api_disconnect(request):
     print('Stopping the IB API...')
     ib_api_wrapper(request,action=STOP_API )
     sleep(2)
+
+    print('Stopping Yahoo scrapers...')
+    indices_scrapers(stop=True)
+
     return 

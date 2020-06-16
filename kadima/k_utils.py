@@ -14,6 +14,7 @@ import datetime
 from datetime import timedelta
 from time import sleep
 from threading import Thread
+from scraper.views import YahooScraper
 
 from ib_api.views import *
 
@@ -262,12 +263,6 @@ def send_mail(subject, email_template_name,
             print(f'ERROR: email not sent (utilities.py). Reason: {e}')
             print(sys.exc_info())
 
-# def send_email_alert(request, email_body, send_to_list):
-#     email_subject = 'Kadima - Alert'
-#     email_body = email_body
-#     send_mail(email_subject, email_body, settings.EMAIL_HOST_USER, send_to_list)
-#     return
-
 def reset_email_alerts():
     # Resetting all email alerts to False
     stocks = StockData.objects.all()
@@ -311,3 +306,59 @@ def reset_alarms(stock):
     stock.save()
     
     return
+
+def indices_scrapers(stop=False):
+    NAS = 55555
+    DOW = 77777
+    SNP = 88888
+    VIX = 11111
+    R2K = 22222
+
+    dow = {
+        'url': 'https://finance.yahoo.com/quote/YM=F?p=YM=F',
+        'index_api_id': DOW
+    }
+    vix = {
+        'url':'https://finance.yahoo.com/quote/%5EVIX?p=^VIX&.tsrc=fin-srch',
+        'index_api_id': VIX
+    }
+
+    snp = {
+        'url':'https://finance.yahoo.com/quote/ES=F?p=ES=F',
+        'index_api_id': SNP
+    }
+
+    nas = {
+        'url':'https://finance.yahoo.com/quote/NQ=F?p=NQ=F',
+        'index_api_id': NAS
+    }
+    r2k = {
+        'url':'https://finance.yahoo.com/quote/RTY=F?p=RTY=F',
+        'index_api_id': R2K
+    }
+
+    dow_scraper = YahooScraper(dow)
+    nas_scraper = YahooScraper(nas)
+    snp_scraper = YahooScraper(snp)
+    vix_scraper = YahooScraper(vix)
+    r2k_scraper = YahooScraper(r2k)
+
+    t_dow = Thread(target=dow_scraper.run)
+    t_nas = Thread(target=nas_scraper.run)
+    t_snp = Thread(target=snp_scraper.run)
+    t_vix = Thread(target=vix_scraper.run)
+    t_r2k = Thread(target=r2k_scraper.run)
+
+    if stop:
+        print('#### Stopping scrapers....')
+        current_running_threads = threading.active_count()
+        print(f"ACTIVE THREADS AFTER STOPPING: ***{current_running_threads}**")
+    else:
+        t_dow.start()
+        t_nas.start()
+        t_snp.start()
+        t_vix.start()
+        t_r2k.start()
+        current_running_threads = threading.active_count()
+        print(f"ACTIVE THREADS WITH SCRAPERS: ***************{current_running_threads}****************")
+        print('SCRAPERS RUNNING...')
