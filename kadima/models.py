@@ -165,36 +165,36 @@ class StockData(models.Model):
 class IndicesData(models.Model):
     index_symbol = models.CharField(max_length=10, primary_key=True)
     sample_date = models.DateTimeField(auto_now=True)
-    index_prev_close = models.FloatField(null=True)
-    index_current_value = models.FloatField(null=True)
+    index_prev_close = models.FloatField(null=True, blank=True)
+    index_current_value = models.FloatField(null=True, blank=True)
     index_api_id = models.IntegerField(null=True)
-    index_change = models.FloatField(null=True)
+    index_change = models.FloatField(null=True, blank=True)
 
-    index_week1 = models.FloatField(null=True)
-    index_week1_min = models.FloatField(null=True)
-    index_week1_max = models.FloatField(null=True)
+    index_week1 = models.FloatField(null=True, blank=True)
+    index_week1_min = models.FloatField(null=True, blank=True)
+    index_week1_max = models.FloatField(null=True, blank=True)
 
-    index_week2 = models.FloatField(null=True)
-    index_week2_min = models.FloatField(null=True)
-    index_week2_max = models.FloatField(null=True)
+    index_week2 = models.FloatField(null=True, blank=True)
+    index_week2_min = models.FloatField(null=True, blank=True)
+    index_week2_max = models.FloatField(null=True, blank=True)
     
-    index_week3 = models.FloatField(null=True)
-    index_week3_min = models.FloatField(null=True)
-    index_week3_max = models.FloatField(null=True)
+    index_week3 = models.FloatField(null=True, blank=True)
+    index_week3_min = models.FloatField(null=True, blank=True)
+    index_week3_max = models.FloatField(null=True, blank=True)
 
-    index_week_1_color = models.CharField(max_length=100)
-    index_week_2_color = models.CharField(max_length=100)
-    index_week_3_color = models.CharField(max_length=100)
+    index_week_1_color = models.CharField(max_length=100, blank=True)
+    index_week_2_color = models.CharField(max_length=100, blank=True)
+    index_week_3_color = models.CharField(max_length=100, blank=True)
 
-    index_trend = models.FloatField(null=True)
+    index_trend = models.FloatField(null=True, blank=True)
 
-    index_macd = models.FloatField(null=True)
-    index_macd_clash = models.BooleanField(null=True, default=False)
-    index_macd_color = models.CharField(max_length=50, null=True)
+    index_macd = models.FloatField(null=True, blank=True)
+    index_macd_clash = models.BooleanField(null=True, default=False, blank=True)
+    index_macd_color = models.CharField(max_length=50, null=True, blank=True)
 
-    index_mfi = models.FloatField(null=True)
-    index_mfi_clash = models.BooleanField(null=True, default=False)
-    index_mfi_color = models.CharField(max_length=50, null=True)
+    index_mfi = models.FloatField(null=True, blank=True)
+    index_mfi_clash = models.BooleanField(null=True, default=False, blank=True)
+    index_mfi_color = models.CharField(max_length=50, null=True, blank=True)
 
     def __str__(self):
             return self.index_symbol
