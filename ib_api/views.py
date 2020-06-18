@@ -309,8 +309,8 @@ def indeces_data(request):
 
     try:
         dow_value = dow.index_current_value
-        dow_change = dow.index_change
-        # dow_change = round(100 * (dow_value - dow_close) / dow_close,2)
+        # dow_change = dow.index_change
+        dow_change = round(100 * (dow_value - dow_close) / dow_close,2)
     except Exception as e:
         # logger.error(f'Failed calculating dow_change. Reason: {e}')
         print(f'Failed calculating dow_change. Reason: {e}')
@@ -319,17 +319,16 @@ def indeces_data(request):
 
     try:
         snp_value = snp.index_current_value
-        snp_change = snp.index_change
-        # snp_change = round(100 * (snp.index_current_value - snp_close) / snp_close,2)
+        # snp_change = snp.index_change
+        snp_change = round(100 * (snp_value - snp_close) / snp_close,2)
     except Exception as e:
-        # logger.error(f'Failed calculating snp_change. Reason: {e}')
         print(f'Failed calculating snp_change. Reason: {e}')
         snp_change = -1.0
 
     try:
         nas_value = nas.index_current_value
-        nas_change = nas.index_change
-        # nas_change = round(100 * (nas_value - nas_close) / nas_close,2)
+        # nas_change = nas.index_change
+        nas_change = round(100 * (nas_value - nas_close) / nas_close,2)
     except Exception as e:
         print(f'Failed calculating nas_change. Reason: {e}')
         nas_value = -1.0
@@ -337,8 +336,8 @@ def indeces_data(request):
 
     try:
         vix_value = vix.index_current_value
-        vix_change = vix.index_change
-        # vix_change = round(100 * (vix_value - vix_close) / vix_close,2)
+        # vix_change = vix.index_change
+        vix_change = round(100 * (vix_value - vix_close) / vix_close,2)
     except Exception as e:
         print(f'Failed calculating vix_change. Reason: {e}')
         vix_value = -1.0
@@ -346,8 +345,8 @@ def indeces_data(request):
 
     try:
         r2k_value = r2k.index_current_value
-        r2k_change = r2k.index_change
-        # r2k_change = round(100 * (r2k_value - r2k_close) / r2k_close,2)
+        # r2k_change = r2k.index_change
+        r2k_change = round(100 * (r2k_value - r2k_close) / r2k_close,2)
     except Exception as e:
         print(f'Failed calculating r2k_change. Reason: {e}')
         r2k_value = -1.0
@@ -622,19 +621,20 @@ class TestApp(EClient, EWrapper):
                 stock = StockData.objects.get(id=reqId)
                 stock.prev_close = price
                 stock.save()
-
             # Updating Indices DB
             else:
                 index = IndicesData.objects.get(index_api_id=reqId)
+                # print(f'INDEX: {reqId} PREV_PRICE: {price}')
                 index.index_prev_close = price
                 index.save()
         
         # REPLACED WITH SCRAPER --
         # Setting last value to index 
-        # if tickType == 37 and reqId > 10000:
-        #     index = IndicesData.objects.get(index_api_id=reqId)
-        #     index.index_current_value = price
-        #     index.save()
+        if tickType == 37 and reqId > 10000:
+            index = IndicesData.objects.get(index_api_id=reqId)
+            # print(f'INDEX: {reqId} CURRENT_PRICE: {price}')
+            index.index_current_value = price
+            index.save()
 
         # Extracting Open price
         if tickType == 14:

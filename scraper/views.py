@@ -40,10 +40,10 @@ class YahooScraper():
         while ib_api_views.api_connection_status():
             current_price, change = self.get_index_price(index_['url'])
             index_model = IndicesData.objects.get(index_api_id=index_['index_api_id'])
-            index_model.index_current_value = current_price
-            index_model.index_change = change
-            index_model.save()
-            print(f'>>> INDEX {index_["index_api_id"]} Price: {current_price}  CHANGE: {change}')
+            # index_model.index_current_value = current_price
+            # index_model.index_change = change
+            # index_model.save()
+            # print(f'>>> INDEX {index_["index_api_id"]} Price: {current_price}  CHANGE: {change}')
             sleep(5)
 
 

@@ -308,57 +308,58 @@ def reset_alarms(stock):
     return
 
 def indices_scrapers(stop=False):
-    NAS = 55555
-    DOW = 77777
-    SNP = 88888
-    VIX = 11111
-    R2K = 22222
+    pass
+    # NAS = 55555
+    # DOW = 77777
+    # SNP = 88888
+    # VIX = 11111
+    # R2K = 22222
 
-    dow = {
-        'url': 'https://finance.yahoo.com/quote/YM=F?p=YM=F',
-        'index_api_id': DOW
-    }
-    vix = {
-        'url':'https://finance.yahoo.com/quote/%5EVIX?p=^VIX&.tsrc=fin-srch',
-        'index_api_id': VIX
-    }
+    # dow = {
+    #     'url': 'https://finance.yahoo.com/quote/YM=F?p=YM=F',
+    #     'index_api_id': DOW
+    # }
+    # vix = {
+    #     'url':'https://finance.yahoo.com/quote/%5EVIX?p=^VIX&.tsrc=fin-srch',
+    #     'index_api_id': VIX
+    # }
 
-    snp = {
-        'url':'https://finance.yahoo.com/quote/ES=F?p=ES=F',
-        'index_api_id': SNP
-    }
+    # snp = {
+    #     'url':'https://finance.yahoo.com/quote/ES=F?p=ES=F',
+    #     'index_api_id': SNP
+    # }
 
-    nas = {
-        'url':'https://finance.yahoo.com/quote/NQ=F?p=NQ=F',
-        'index_api_id': NAS
-    }
-    r2k = {
-        'url':'https://finance.yahoo.com/quote/RTY=F?p=RTY=F',
-        'index_api_id': R2K
-    }
+    # nas = {
+    #     'url':'https://finance.yahoo.com/quote/NQ=F?p=NQ=F',
+    #     'index_api_id': NAS
+    # }
+    # r2k = {
+    #     'url':'https://finance.yahoo.com/quote/RTY=F?p=RTY=F',
+    #     'index_api_id': R2K
+    # }
 
-    dow_scraper = YahooScraper(dow)
-    nas_scraper = YahooScraper(nas)
-    snp_scraper = YahooScraper(snp)
-    vix_scraper = YahooScraper(vix)
-    r2k_scraper = YahooScraper(r2k)
+    # dow_scraper = YahooScraper(dow)
+    # nas_scraper = YahooScraper(nas)
+    # snp_scraper = YahooScraper(snp)
+    # vix_scraper = YahooScraper(vix)
+    # r2k_scraper = YahooScraper(r2k)
 
-    t_dow = Thread(target=dow_scraper.run)
-    t_nas = Thread(target=nas_scraper.run)
-    t_snp = Thread(target=snp_scraper.run)
-    t_vix = Thread(target=vix_scraper.run)
-    t_r2k = Thread(target=r2k_scraper.run)
+    # t_dow = Thread(target=dow_scraper.run)
+    # t_nas = Thread(target=nas_scraper.run)
+    # t_snp = Thread(target=snp_scraper.run)
+    # t_vix = Thread(target=vix_scraper.run)
+    # t_r2k = Thread(target=r2k_scraper.run)
 
-    if stop:
-        print('#### Stopping scrapers....')
-        current_running_threads = threading.active_count()
-        print(f"ACTIVE THREADS AFTER STOPPING: ***{current_running_threads}**")
-    else:
-        t_dow.start()
-        t_nas.start()
-        t_snp.start()
-        t_vix.start()
-        t_r2k.start()
-        current_running_threads = threading.active_count()
-        print(f"ACTIVE THREADS WITH SCRAPERS: ***************{current_running_threads}****************")
-        print('SCRAPERS RUNNING...')
+    # if stop:
+    #     print('#### Stopping scrapers....')
+    #     current_running_threads = threading.active_count()
+    #     print(f"ACTIVE THREADS AFTER STOPPING: ***{current_running_threads}**")
+    # else:
+    #     t_dow.start()
+    #     t_nas.start()
+    #     t_snp.start()
+    #     t_vix.start()
+    #     t_r2k.start()
+    #     current_running_threads = threading.active_count()
+    #     print(f"ACTIVE THREADS WITH SCRAPERS: ***************{current_running_threads}****************")
+    #     print('SCRAPERS RUNNING...')
