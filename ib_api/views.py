@@ -608,9 +608,9 @@ class TestApp(EClient, EWrapper):
         VIX = 11111
         R2K = 22222
         '''
-        # if reqId > 10000:
-        #     if tickType == 9 or tickType == 37 or tickType == 4: # 37 = MARK_PRICE, 4 = LAST_PRICE, 9 = CLOSE
-        #         print("Ticker Price Data:  Ticket ID: ", reqId, " ","tickType: ", TickTypeEnum.to_str(tickType), "Price: ", price, end="\n")
+        if reqId > 10000:
+            if tickType == 9 or tickType == 37 or tickType == 4: # 37 = MARK_PRICE, 4 = LAST_PRICE, 9 = CLOSE
+                print("Ticker Price Data:  Ticket ID: ", reqId, " ","tickType: ", TickTypeEnum.to_str(tickType), "Price: ", price, end="\n")
 
         # Tick types: https://interactivebrokers.github.io/tws-api/tick_types.html
 
