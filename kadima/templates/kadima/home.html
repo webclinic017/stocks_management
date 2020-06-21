@@ -6,7 +6,17 @@
     padding: 0% !important;
     margin: 0em !important;
     max-height: 7rem;
-    
+  }
+
+  .index .col.indicator {
+    padding: 0px;
+    margin-bottom: 10%;
+    padding: 5%;
+    border-radius: 10%;
+    text-align: center;
+    font-size: 0.6vw;;
+    /*background-color: #04a1d5;*/
+
   }
 
   .week {
@@ -16,38 +26,80 @@
     width:auto;
     color: white;
   }
+ 
+  td {
+    padding: 0.2% !important;
+  }
+  
 </style>
   <div class="content" style="padding-top: 1rem !important;">
         <!-- <div class="loader hidden">
           <img src="{% static 'assets/img/loader.gif' %}" alt="Loading...">
         </div> -->
       
+        <!-- INDICES data -->
         {% if ib_api_connected %}
             <div class="row sticky-top" id="indeces" style="background-color: #1e1d2e;" indeces_url="{% url 'indeces-data' %}">
             </div>
         {% else %}
           <div class="row sticky-top" id="indeces_delayed" style="background-color: #1e1d2e; top: 0 !important">
-              <div class="col">
-                <div class="index">
-                  <div class="row">
-                    <div class="card card-chart" style="background-color:{{ snp_color }};">
+
+            <!-- Start S&P -->
+            <div class="col">
+              <div class="index">
+                <div class="row">
+                  <div class="col-md-8" style="padding: 0px !important;">
+                    <div class="card" style="background-color:{{ snp_color }};">
                       <div class="card-header">
                         <h2 class="card-title" style="color: aliceblue;">S&P</h2>
                         <h4 class="card-title"><i class="text-info"></i> {{ snp_value }} / {{ snp_change }}%</h4>
                       </div>
-                    </div>  
+                    </div>                          
                   </div>
-                  <div class="row">
-                    <div class="col-6 text-center" >
-                      <div class="card card-chart" style="background-color:{{ snp_macd_color }}; color: white">
-                        <div class="card-header">
+                  <div class="col-md-4">
+                    <div class="row">
+                      <div class="col indicator">
+                        <div class="" style="background-color:{{ snp_macd_color }}; color: white">
                           MACD
                         </div>
                       </div>
+                    </div>    
+                    <div class="row">
+                      <div class="col indicator">
+                        <div class="" style="background-color:{{ snp_mfi_color }}; color:white">
+                        MFI
+                        </div>
+                      </div>
                     </div>
-                    <div class="col-6 text-center" >
-                      <div class="card card-chart" style="background-color:{{ snp_mfi_color }}; color:white">
-                        <div class="card-header">
+                  </div>
+                </div>
+              </div>  
+            </div>
+            <!-- END -->
+
+            <!-- Start Dow Jones -->
+            <div class="col">
+              <div class="index">
+                <div class="row">
+                  <div class="col-md-8" style="padding: 0px !important;">
+                    <div class="card" style="background-color:{{ dow_color }};">
+                      <div class="card-header">
+                        <h2 class="card-title" style="color: aliceblue;">DOW</h2>
+                        <h4 class="card-title"><i class="text-info"></i> {{ dow_value }} / {{ dow_change }}%</h4>
+                      </div>
+                    </div>  
+                  </div>
+                  <div class="col-md-4">
+                    <div class="row">
+                      <div class="col indicator">
+                        <div class="" style="background-color:{{ dow_macd_color }}; color: white">
+                          MACD
+                        </div>
+                      </div>
+                    </div>    
+                    <div class="row">
+                      <div class="col indicator">
+                        <div class="" style="background-color:{{ dow_mfi_color }}; color:white">
                         MFI
                         </div>
                       </div>
@@ -55,132 +107,121 @@
                   </div>
                 </div>  
               </div>
-              <div class="col">
+            </div>
+            <!-- END -->
+
+ 
+            <!-- Start NASDAQ -->
+            <div class="col">
                 <div class="index">
                   <div class="row">
-                    <div class="card card-chart" style="background-color:{{ dow_color }};">
-                      <div class="card-header">
-                        <h2 class="card-title" style="color: aliceblue;">DOW</h2>
-                        <h4 class="card-title"><i class="text-info"></i> {{ dow_value }} / {{ dow_change }}%</h4>
+                    <div class="col-md-8" style="padding: 0px !important;">
+                      <div class="card" style="background-color:{{ nas_color }};">
+                        <div class="card-header">
+                          <h2 class="card-title" style="color: aliceblue;">NASDAQ</h2>
+                          <h4 class="card-title"><i class="text-info"></i> {{ nas_value }} / {{ nas_change }}%</h4>
+                        </div>
+                      </div>    
+                    </div>
+                    <div class="col-md-4">
+                      <div class="row">
+                        <div class="col indicator">
+                          <div class="" style="background-color:{{ nas_macd_color }}; color: white">
+                            MACD
+                          </div>
+                        </div>
+                      </div>    
+                      <div class="row">
+                        <div class="col indicator">
+                          <div class="" style="background-color:{{ nas_mfi_color }}; color:white">
+                          MFI
+                          </div>
+                        </div>
                       </div>
-                    </div>  
+                    </div>
                   </div>  
                 </div>
-                <div class="row">
-                  <div class="col-6 text-center">
-                    <div class="card card-chart" style="background-color:{{ dow_macd_color }};">
-                      <div class="card-header">
-                        MACD
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-6 text-center">
-                    <div class="card card-chart" style="background-color:{{ dow_mfi_color }};">
-                      <div class="card-header">
-                        MFI
-                      </div>
-                    </div>
-                  </div>
-                </div>
               </div>
+            <!-- END -->
  
+ 
+            <!-- Start Russel2K -->
               <div class="col">
                 <div class="index">
                   <div class="row">
-                    <div class="card card-chart" style="background-color:{{ nas_color }};">
-                      <div class="card-header">
-                        <h2 class="card-title" style="color: aliceblue;">NASDAQ</h2>
-                        <h4 class="card-title"><i class="text-info"></i> {{ nas_value }} / {{ nas_change }}%</h4>
+                    <div class="col-md-8" style="padding: 0px !important;">
+                      <div class="card" style="background-color:{{ r2k_color }};">
+                        <div class="card-header">
+                          <h2 class="card-title" style="color: aliceblue;">Russ-2K</h2>
+                          <h4 class="card-title"><i class="text-info"></i> {{ r2k_value }} / {{ r2k_change }}%</h4>
+                        </div>
+                      </div>    
+                    </div>
+                    <div class="col-md-4">
+                      <div class="row">
+                        <div class="col indicator">
+                          <div class="" style="background-color:{{ r2k_macd_color }}; color: white">
+                            MACD
+                          </div>
+                        </div>
+                      </div>    
+                      <div class="row">
+                        <div class="col indicator">
+                          <div class="" style="background-color:{{ r2k_mfi_color }}; color:white">
+                          MFI
+                          </div>
+                        </div>
                       </div>
-                    </div>  
+                    </div>
                   </div>  
                 </div>
-                <div class="row">
-                  <div class="col-6 text-center">
-                    <div class="card card-chart" style="background-color:{{ nas_macd_color }};">
-                      <div class="card-header">
-                        MACD
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-6 text-center">
-                    <div class="card card-chart" style="background-color:{{ nas_mfi_color }};">
-                      <div class="card-header">
-                        MFI
-                      </div>
-                    </div>
-                  </div>
-                </div>
               </div>
- 
- 
+            <!-- END -->
+
+
+            <!-- Start VIX -->
               <div class="col">
                 <div class="index">
                   <div class="row">
-                    <div class="card card-chart" style="background-color:{{ r2k_color }};">
-                      <div class="card-header">
-                        <h2 class="card-title" style="color: aliceblue;">Russ-2K</h2>
-                        <h4 class="card-title"><i class="text-info"></i> {{ r2k_value }} / {{ r2k_change }}%</h4>
-                      </div>
-                    </div>  
-                  </div>  
-                </div>
-                <div class="row">
-                  <div class="col-6 text-center">
-                    <div class="card card-chart" style="background-color:{{ r2k_macd_color }};color:white">
-                      <div class="card-header">
-                        MACD
-                      </div>
+                    <div class="col-md-8" style="padding: 0px !important;">
+                      <div class="card" style="background-color:{{ vix_color }};">
+                        <div class="card-header">
+                          <h2 class="card-title" style="color: aliceblue;">VIX</h2>
+                          <h4 class="card-title"><i class="text-info"></i> {{ vix_value }} / {{ vix_change }}%</h4>
+                        </div>
+                      </div>    
                     </div>
-                  </div>
-                  <div class="col-6 text-center">
-                    <div class="card card-chart" style="background-color:{{ r2k_mfi_color }};color:white">
-                      <div class="card-header">
-                        MFI
+                    <div class="col-md-4">
+                      <div class="row">
+                        <div class="col indicator">
+                          <div class="" style="background-color:{{ vix_w1_color }}; color: black">
+                            W1: {{ vix_week1 }}%
+                          </div>
+                        </div>
+                      </div>    
+                      <div class="row">
+                        <div class="col indicator">
+                          <div class="" style="background-color:{{ vix_w2_color }}; color:black">
+                            W2: {{ vix_week2 }}%
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col">
-                <div class="index">
-                  <div class="row">
-                    <div class="card card-chart" style="background-color:{{ vix_color }};">
-                      <div class="card-header">
-                        <h2 class="card-title" style="color: aliceblue;">VIX</h2>
-                        <h4 class="card-title"><i class="text-info"></i> {{ vix_value }} / {{ vix_change }}%</h4>
+                      <div class="row">
+                        <div class="col indicator">
+                          <div class="" style="background-color:{{ vix_w3_color }}; color:black">
+                            W3: {{ vix_week3 }}%
+                          </div>
+                        </div>
                       </div>
-                    </div>  
+                    </div>    
                   </div>                    
                 </div>
-                <div class="row text-center">
-                    <div class="col-4 text-center" >
-                      <div class="week">W1</div>
-                      <div class="card card-chart" style="background-color:{{ vix_week1_color }};">
-                        <div class="card-header">
-                          <div class="week">{{ vix_week1 }}%</div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-4 text-center"  >
-                      <div class="week">W2</div>
-                      <div class="card card-chart" style="background-color:{{ vix_week2_color }};">
-                        <div class="card-header">
-                          <div class="week">{{ vix_week2 }}%</div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-4 text-center">
-                      <div class="week">W3</div>
-                      <div class="card card-chart" style="background-color:{{ vix_week3_color }};">
-                        <div class="card-header">
-                          <div class="week">{{ vix_week3 }}%</div>
-                        </div>
-                      </div>
-                    </div>
-                </div>
               </div>
+            <!-- END -->
+
             </div>
+            <!-- END INDICES -->
+
         {% endif %}
         {% if messages %}
         {% for message in messages %}
