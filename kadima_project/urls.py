@@ -15,24 +15,39 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from kadima import views as views_kadima
-from ib_api import views as views_ib_api
+from django.contrib.auth import views as auth_views
 
 from rest_framework import routers
+
+from kadima import views as views_kadima
+from ib_api import views as views_ib_api
+from dashboard import views as views_dashboard
+
+
+# Admin Header
+admin.site.site_header = 'KADIMA'
 
 urlpatterns = [
     
     path('', views_kadima.home, name='home'),
+    # path('login/', views_kadima.login, name='login'),
+    path('accounts/login/', auth_views.LoginView.as_view(template_name='kadima/login.html')),
+    path('accounts/', include('django.contrib.auth.urls')),
+
+
     path('table_index=<table_index>/', views_kadima.home, name='table-2'),
     path('history/<int:table_index>', views_kadima.history, name='history'),
 
     # IB API URLS
     path('indeces-data/', views_ib_api.indeces_data, name='indeces-data'), 
-    path('stocks-alarms-data/', views_ib_api.stock_alarms_data, name='stocks-alarms-data'), 
-    path('stock-data-api/<int:table_index>', views_ib_api.stock_data_api, name='stock-data-api'),
+    path('stocks-alarms-data/', views_ib_api.stocks_alarms_data, name='stocks-alarms-data'), 
+    path('stock-data-api/<int:table_index>/', views_ib_api.stock_data_api, name='stock-data-api'),
     
     path('stock-alarms/', views_kadima.stock_alarms, name='stock-alarms'),
+    path('alarm-stocks-selector/', views_kadima.alarm_stocks_selector, name='alarm-stocks-selector'),
     path('alarm-trigger/', views_kadima.alarm_trigger, name='alarm-trigger'),
+    
+    path('dashboard/', views_dashboard.dashboard, name='dashboard'),
     
 
     path('admin/', admin.site.urls),

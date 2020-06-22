@@ -1,13 +1,26 @@
 from django.db import models
 from datetime import datetime
 
+from django.contrib.auth.models import User
+
+# class KadimaUser(User):
+#     email_active = models.BooleanField(default=False)
+
+#     def __str__(self):
+#         return self.username
+
+class EmailSupport(models.Model):
+    enabled = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.enabled
 
 class StockData(models.Model):
 
     table_index = models.IntegerField(default=0)
 
 
-    stock_date = models.DateTimeField(default=datetime.now)
+    stock_date = models.DateTimeField(auto_now=True)
     stock_displayed_date = models.CharField(max_length=100)
     ticker = models.CharField(max_length=100)
     stock_price = models.FloatField()
@@ -15,9 +28,16 @@ class StockData(models.Model):
     prev_close = models.FloatField(null=True)
     todays_open = models.FloatField(null=True)
 
-    stock_trend = models.FloatField(null=True)
-    macd_trend = models.FloatField(null=True)
-    money_flow_trend = models.FloatField(null=True)
+    sample_period_14 = models.BooleanField(default=False)
+
+    stock_trend_30 = models.FloatField(null=True)
+    stock_trend_14 = models.FloatField(null=True)
+
+    macd_trend_30 = models.FloatField(null=True)
+    macd_trend_14 = models.FloatField(null=True)
+
+    money_flow_trend_30 = models.FloatField(null=True)
+    money_flow_trend_14 = models.FloatField(null=True)
 
     week_1 = models.FloatField(null=True)
     week_1_min = models.FloatField(null=True)
@@ -50,27 +70,65 @@ class StockData(models.Model):
     gap_2_color = models.CharField(max_length=100)
     gap_3_color = models.CharField(max_length=100)
 
+
+    # Technical Indicators 
+    macd_30_clash = models.BooleanField(null=True, default=False)
+    macd_14_clash = models.BooleanField(null=True, default=False)
+    macd_30_color = models.CharField(max_length=100)
+    macd_14_color = models.CharField(max_length=100)
+    
+    mfi_30_clash = models.BooleanField(null=True, default=False)
+    mfi_14_clash = models.BooleanField(null=True, default=False)
+    mfi_30_color = models.CharField(max_length=100)
+    mfi_14_color = models.CharField(max_length=100)
+
+    rsi = models.FloatField()
+    rsi_color = models.CharField(max_length=10, blank=True, null=True)
+
+    # Company information
     earnings_call = models.DateTimeField(null=True)
     earnings_call_displayed = models.CharField(max_length=100, null=True)
     earnings_warning = models.CharField(max_length=100, null=True)
 
-    macd_clash = models.BooleanField(null=True, default=False)
-    mfi_clash = models.BooleanField(null=True, default=False)
-    macd_color = models.CharField(max_length=100)
-    mfi_color = models.CharField(max_length=100)
-
     dividend_date = models.CharField(max_length=100,null=True)
     dividend = models.FloatField(null=True)
+    dividend_warning = models.CharField(max_length=100, null=True)
     
-    # Trigger alarm page
+    # Trigger & alarm page
     stock_alarm = models.BooleanField(default=False) # Flag whether the stock is in the stock_alarm page
     stock_alarm_delta = models.FloatField(null=True) # delta amount to add to the current price 
     stock_initial_price = models.FloatField(null=True) # stock price at trigger set
+    stock_current_price = models.FloatField(null=True) # stock price when adding to alarms list
+    stock_load_price = models.FloatField(null=True) # stock price when adding to alarms list
     stock_price_up_alarm = models.BooleanField(default=False) # True when the current price exceeds the initial price + delta
     stock_price_down_alarm = models.BooleanField(default=False) # True when the current price goes lower the initial price + delta
     stock_alarm_trigger_set = models.BooleanField(default=False) # True when the alarm is set/trigger armed
     stock_alarm_sound_on_off = models.BooleanField(default=False) # Flag to control the sound (play only once)
 
+    stock_alarm_1 = models.FloatField(null=True)
+    stock_alarm_2 = models.FloatField(null=True)
+    stock_alarm_3 = models.FloatField(null=True)
+    stock_alarm_4 = models.FloatField(null=True)
+    stock_alarm_5 = models.FloatField(null=True)
+    stock_alarm_6 = models.FloatField(null=True)
+    stock_alarm_7 = models.FloatField(null=True)
+    stock_alarm_8 = models.FloatField(null=True)
+    stock_alarm_9 = models.FloatField(null=True)
+    stock_alarm_10 = models.FloatField(null=True)
+
+    stock_alarm_1_color = models.CharField(max_length=30, null=True)
+    stock_alarm_2_color = models.CharField(max_length=30, null=True)
+    stock_alarm_3_color = models.CharField(max_length=30, null=True)
+    stock_alarm_4_color = models.CharField(max_length=30, null=True)
+    stock_alarm_5_color = models.CharField(max_length=30, null=True)
+    stock_alarm_6_color = models.CharField(max_length=30, null=True)
+    stock_alarm_7_color = models.CharField(max_length=30, null=True)
+    stock_alarm_8_color = models.CharField(max_length=30, null=True)
+    stock_alarm_9_color = models.CharField(max_length=30, null=True)
+    stock_alarm_10_color = models.CharField(max_length=30, null=True)
+
+    # Email alert flag
+    stock_email_alert = models.BooleanField(default=False)
 
     # History Page Section
     saved_to_history = models.BooleanField(default=False)
@@ -107,10 +165,36 @@ class StockData(models.Model):
 class IndicesData(models.Model):
     index_symbol = models.CharField(max_length=10, primary_key=True)
     sample_date = models.DateTimeField(auto_now=True)
-    index_prev_close = models.FloatField(null=True)
-    index_current_value = models.FloatField(null=True)
+    index_prev_close = models.FloatField(null=True, blank=True)
+    index_current_value = models.FloatField(null=True, blank=True)
     index_api_id = models.IntegerField(null=True)
+    index_change = models.FloatField(null=True, blank=True)
 
+    index_week1 = models.FloatField(null=True, blank=True)
+    index_week1_min = models.FloatField(null=True, blank=True)
+    index_week1_max = models.FloatField(null=True, blank=True)
+
+    index_week2 = models.FloatField(null=True, blank=True)
+    index_week2_min = models.FloatField(null=True, blank=True)
+    index_week2_max = models.FloatField(null=True, blank=True)
+    
+    index_week3 = models.FloatField(null=True, blank=True)
+    index_week3_min = models.FloatField(null=True, blank=True)
+    index_week3_max = models.FloatField(null=True, blank=True)
+
+    index_week_1_color = models.CharField(max_length=100, blank=True)
+    index_week_2_color = models.CharField(max_length=100, blank=True)
+    index_week_3_color = models.CharField(max_length=100, blank=True)
+
+    index_trend = models.FloatField(null=True, blank=True)
+
+    index_macd = models.FloatField(null=True, blank=True)
+    index_macd_clash = models.BooleanField(null=True, default=False, blank=True)
+    index_macd_color = models.CharField(max_length=50, null=True, blank=True)
+
+    index_mfi = models.FloatField(null=True, blank=True)
+    index_mfi_clash = models.BooleanField(null=True, default=False, blank=True)
+    index_mfi_color = models.CharField(max_length=50, null=True, blank=True)
 
     def __str__(self):
             return self.index_symbol

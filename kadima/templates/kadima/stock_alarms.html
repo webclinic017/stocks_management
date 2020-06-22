@@ -1,6 +1,7 @@
 {% extends 'kadima/base.html' %}
+
 {% block content %}
-<div class="content">
+<div class="" style="padding-top: 0 !important;" id="alarmsTable">
     <div class="row">
         <div class="col-md-12">
             <form method="POST" enctype="multipart/form-data">
@@ -9,30 +10,23 @@
                     <div class="card-header">
                         <h1 class="card-title">Stocks Alarms</h1>
                     </div>
-                    {% if messages %}
-                        {% for message in messages %}
-                            <div class="alert alert-{{ message.tags }}">
-                                {{ message }}
-                            </div>
-                        {% endfor %}
-                    {% endif %}
-          
-                        <h3 class="card-title">Set Alarm Trigger</h3>
                         <div class="row">
-                            <div class="col-md-3 pr-md-1">
+                            <div class="col-md-6 pr-md-1">
                                 <form method="POST" enctype="multipart/form-data">
                                     {% csrf_token %}
                                     <div class="row">
-                                        <div class="col-md-4 pr-md-1">
-                                            <label style="color: aliceblue;">Select Stock</label>
+                                        <!-- <div class="col-md-2">
+                                            <label style="color: aliceblue;">Select Stock</label><br>
                                             <select name="stock_alarm_select" id="stock_alarm_select">
-                                                    <option value="">--</option>
-                                                    {% for stock in stocks %}
-                                                    <option value="{{ stock.id }}">{{ stock.ticker }}</option>
-                                                {% endfor %}
+                                                <option value="">------</option>
+
                                             </select>
-                                        </div>
-                                        <div class="col-md-4 pr-md-1">
+                                        </div> -->
+                                        <!-- <div class="col-md-2 pt-1 pl-5">
+                                            <input class="" type="checkbox" name="select_all" id="select_all">
+                                            <label> Select all</label>
+                                        </div> -->
+                                        <div class="col-md-3 pt-1 pl-5 p-2">
                                             <div class="form-group">
                                             <label style="color: aliceblue;">Select Delta</label>
                                             <select name="delta_select" id="delta_select">
@@ -49,9 +43,12 @@
                                                 </select>
                                             </div>
                                         </div>
-                                    <div class="" >
-                                        <button type="submit" name="stock_alarm_set" class="btn btn-fill btn-sm">Set</button>
-                                    </div>
+                                        <div class="col-md-2 p-0" >
+                                            <button type="submit" name="all_alarms_set" value="set_all" class="btn btn-default btn-sm mr-1">Set All</button>
+                                        </div>
+                                        <div class="col-md-2 p-0" >
+                                            <button type="submit" name="stock_alarm_reset" class="btn btn-danger btn-sm">Reset All</button>
+                                        </div>
                                     </div>
                                 </form>
                             </div>
@@ -70,105 +67,116 @@
                                   </div>  
                                 {% endif %}                          
                             </div>
+                            <div class="col-md-2"></div>
+                            <div class="col-md-1">
+                                <button type="submit" name="delete_all_alarms" class="btn btn-danger btn-sm">Delete All</button>
+                            </div>
+                            <div class="col-md-1"></div>
                     </div>
 
                     <div class="card-body">
                         {% if ib_api_connected %}
+
                         <div class="table-responsive" id="stocks_alarms">
-                        <!-- STREAMING DATA -->
+                        <!-- STREAMING DATA TABLE -->
                         </div>
                         {% else %}
                         <div class="table-responsive" id="stocks_alarms" >
                             <table class="table tablesorter " id="stocks_alarms" style="table-layout: fixed; text-align: center;">
                                 <thead class=" text-primary">
                                 <tr>
-                                <th>
-                                    Date
-                                </th>
-                                <th>
-                                    Stock Symbol
-                                </th>
-                                <th class="text-center">
-                                    Init Price
-                                </th>
-                                <th class="text-center">
-                                    Current Price
-                                </th>
-
-                                <th class="text-center">
-                                    Week 3
-                                </th>
-                                <th class="text-center">
-                                    Gap 1
-                                </th>
-                                <th>
-                                    Delta
-                                </th>
-                                <th>
-                                    Price Up
-                                </th>
-                                <th>
-                                    Price Down
-                                </th>
-                                <th>
-                                    Alarm Set
-                                </th>   
-                                <th>
-                                    Delete
-                                </th>   
+                                    <!-- <th>
+                                        Date
+                                    </th> -->
+                                    <th>
+                                        Stock Symbol
+                                    </th>
+                                    <th class="text-center">
+                                        Load Price
+                                    </th>
+                                    <th class="text-center">
+                                        Init Price
+                                    </th>
+                                    <th class="text-center">
+                                        Current Price
+                                    </th>
+                                    <th class="text-center">
+                                        90 Days
+                                        <button name="sort_week1" class="tim-icons icon-minimal-down"></button>
+                                    </th>
+                                    <th class="text-center">
+                                        Week 3
+                                        <button name="sort_week3" class="tim-icons icon-minimal-down"></button>
+                                    </th>
+                                    <th class="text-center">
+                                        Gap 1
+                                        <button name="sort_gap" class="tim-icons icon-minimal-down"></button>
+                                    </th>
+                                    <th class="text-center">
+                                        RSI
+                                    </th>
+                                    <th class="text-center">
+                                        Dividends
+                                    </th>
+                                    <th class="text-center">
+                                        Earnings
+                                    </th>
+                                    <th>
+                                        Delta
+                                    </th>
+                                    <!-- <th>
+                                        Price Up
+                                    </th>
+                                    <th>
+                                        Price Down
+                                    </th> -->
+                                    <th>
+                                        Alarm Set
+                                    </th>   
+                                    <th>
+                                        1
+                                    </th>
+                                    <th>
+                                        2
+                                    </th>
+                                    <th>
+                                        3
+                                    </th>
+                                    <th>
+                                        4
+                                    </th>
+                                    <th>
+                                        5
+                                    </th>
+                                    <th>
+                                        6
+                                    </th>
+                                    <th>
+                                        7
+                                    </th>
+                                    <th>
+                                        8
+                                    </th>
+                                    <th>
+                                        9
+                                    </th>
+                                    <th>
+                                        10
+                                    </th>
+                                    <th>
+                                        Delete
+                                    </th>   
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for stock in stocks %}
-                                    <tr class="">
-                                        <td class="">
-                                            {{ stock.stock_date }}
-                                        </td>                            
-                                        <td class="">
-                                            {{ stock.ticker }}
-                                        </td>
-                                        <td>
-                                            <input type="hidden" class="" name="stock_initial_price_{{ stock.id }}" value="{{ stock.stock_initial_price }}">
-                                            {{ stock.stock_initial_price }}
-                                        </td>
-                                        <td>
-                                            <input type="hidden" class="" name="stock_price_{{ stock.id }}" value="{{ stock.stock_price }}">
-                                            {{ stock.stock_price }}
-                                        </td>
-                                        <td class="border-right" style="background-color: {{ stock.week_3_color }}; ">
-                                            {{ stock.week_3 }}%
-                                        </td>
-                                        <td class="" style="background-color: {{ stock.gap_1_color }}; ">
-                                            {{ stock.gap_1 }}%
-                                        </td>
-                                        <td >
-                                            ${{ stock.stock_alarm_delta }}
-                                        </td>
-                                        
-                                        <!-- Stock Up -->
-                                        <td  {% if stock.price_up %} class="blink-buy" {% endif %} style="border: 2px solid white;">
-                                        </td>
-
-                                        <!-- Stock Down -->
-                                        <td  {% if stock.price_down %} class="blink-sell" {% endif %} style="border: 2px solid white;">
-                                        </td>
-
-                                        <td  class="">
-                                            {% if stock.stock_alarm_trigger_set %}
-                                                <button type="submit" value="{{ stock.id }}" name="stock_alarm_cancel" class="tim-icons icon-alert-circle-exc"></button>
-                                            {% else %}
-                                                <!-- <button type="submit" value="{{ stock.id }}" name="stock_alarm_set" class="tim-icons icon-bell-55"></button> -->
-                                            {% endif %}
-                                        </td>  
-        
-                                        <td class="">
-                                            <button type="submit" value="{{ stock.id }}" name="delete_stock" class="tim-icons icon-trash-simple"></button>
-                                        </td>
-                                        
-                                    </tr>
-
-                                {% endfor %}
-                                </tbody>
+                                {% if sort_by == 'gap_1' %}  
+                                    {% include 'ib_api/_streaming_alarms_sorted_gap.html' %}
+                                {% elif sort_by == 'week_1' %}  
+                                    {% include 'ib_api/_streaming_alarms_sorted_week1.html' %}
+                                {% else %}
+                                    {% include 'ib_api/_streaming_alarms_sorted_week3.html' %}
+                                {% endif %}      
+                            </tbody>
                             </table>
                         </div>
                         {% endif %}
@@ -180,20 +188,42 @@
 </div>
 
 <!-- Source : https://bytutorial.com/blogs/css3/how-to-create-blinking-background-color-and-text-using-css3-animation -->
+<!-- <script type="text/javascript">
+$("#stock_alarm_select").click(function () {
+        console.log('UPDATING alarms...')
+        $.ajax({
+        url: "{% url 'alarm-stocks-selector' %}",
+        success: function(response) {
+        $('#stock_alarm_select').html(response);
+        }
+    })		
+});
+</script> -->
+
+{% if user.is_authenticated %}
+{%  else %}
+<script>
+    var childNodes = document.getElementById("alarmsTable").getElementsByTagName('*');
+    for (var node of childNodes) {
+        node.disabled = true;
+}
+</script>
+{% endif %}
 
 {% if ib_api_connected %}
-
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script> -->
     <script type="text/javascript">
         (function worker() {
             $.ajax({
-            url: {% url 'stocks-alarms-data' %},
+            url: '/stocks-alarms-data/',
             success: function(response) {
+                //console.log(`RESP: ${response}`)
                 //console.log($('#price_up').html(response));
                 //console.log($('#price_down').html(response));
                 $('#stocks_alarms').html(response);
             }
         });		
-        // Polling the API page every second
+        // Polling the API page every second for the Stock ALARMS
         setTimeout(worker, 2000);
         })();
     </script>
@@ -222,6 +252,15 @@
     .tab_cell {
         text-align: center;
     }
+
+    .blink-bg{
+        color: #fff;
+        animation: blinkingBackground 2s infinite;
+    }
+    @keyframes blinkingBackground{
+        100%	{ background-color: #04a1d5;}
+    }
+
 </style>
 
 {% endblock content %}

@@ -49,9 +49,12 @@ CORS_ORIGIN_WHITELIST = [
 
 INSTALLED_APPS = [
     'kadima',
+    'dashboard',
     'rest_framework',
+    'scraper',
     'background_task',
     'corsheaders',
+    'crispy_forms',
     'ib_api.apps.IbApiConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -90,6 +93,9 @@ TEMPLATES = [
                 'kadima.context_processors.apiConnectionStatus',
                 'kadima.context_processors.updaingGaps',
                 'kadima.context_processors.isTrading',
+                'kadima.context_processors.tableIndex',
+                'kadima.context_processors.stockAlert',
+                'kadima.context_processors.tableSort',
             ],
         },
     },
@@ -149,6 +155,17 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 STATIC_ROOT = STATIC_URL
 
+# Email Setup
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'kadimagrouppanama@gmail.com'
+EMAIL_HOST_PASSWORD = 'Kadima2020!'
+
+EMAIL_DEFAULT_TO = 'interkoby@gmail.com'
+
+
 # This is the path to the index file
 INDEX_FILE_PATH = os.path.join(BASE_DIR, 'ib_api')
 
@@ -160,4 +177,12 @@ IB_CLIENT_ID = config['IB_CLIENT_ID']
 # Demo:
 # IB_PORT = 7497
 # IB_CLIENT_ID = 17
+
+# Clash angle threshhold
+DEVIATION_ANGLE = 15
+
+CRISPY_TEMPLATE_PACK='bootstrap4'
+
+LOGIN_REDIRECT_URL='/'
+LOGOUT_REDIRECT_URL='/'
 

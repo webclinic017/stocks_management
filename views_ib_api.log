@@ -1,0 +1,11 @@
+WARNING 2020-06-18 19:16:30,499 - Not Found: /favicon.ico
+WARNING 2020-06-18 19:16:33,498 - Not Found: /favicon.ico
+ERROR 2020-06-18 19:19:58,140 - unhandled exception in EReader thread
+Traceback (most recent call last):
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/ibapi/reader.py", line 34, in run
+    data = self.conn.recvMsg()
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/ibapi/connection.py", line 99, in recvMsg
+    buf = self._recvAllMsg()
+  File "/Users/alfredshaffir/Documents/Freelancer/Apps/Panama/venv_panama/lib/python3.7/site-packages/ibapi/connection.py", line 119, in _recvAllMsg
+    buf = self.socket.recv(4096)
+OSError: [Errno 9] Bad file descriptor

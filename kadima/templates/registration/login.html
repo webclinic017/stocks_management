@@ -1,0 +1,22 @@
+{% extends 'kadima/base.html' %}
+
+{% block title %}
+Login
+{% endblock title %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="main">
+    <div class="container">
+        <form action="" method="POST" class="form-group">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <p>Don't have an account? Create an account <a href="/register">here</a></p>
+            <button type="submit" class="btn btn-success" >Login</button>
+        </form>
+        
+    </div>
+</div>
+
+{% endblock content %}

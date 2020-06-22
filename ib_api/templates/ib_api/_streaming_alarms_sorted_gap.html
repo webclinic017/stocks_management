@@ -1,0 +1,142 @@
+{% for stock in stocks|dictsort:'gap_1' %}
+<tr class="">
+    <!-- <td class="">
+        {{ stock.stock_date }}
+    </td>                             -->
+    <td class="">
+        {{ stock.ticker }}
+    </td>
+    <td class="gtext">
+        <input type="hidden" class="" name="stock_load_price_{{ stock.pk }}" value="{{ stock.stock_load_price }}">
+      <p>{{ stock.stock_load_price }}</p>
+    </td>
+    <td>
+        <input type="hidden" class="" name="stock_initial_price_{{ stock.pk }}" value="{{ stock.stock_initial_price }}">
+        {{ stock.stock_initial_price }}
+    </td>
+    <td>
+        <input type="hidden" class="" name="stock_price_{{ stock.pk }}" value="{{ stock.stock_price }}">
+        {{ stock.stock_price }}
+    </td>
+    <td class="border-right" style="border-right: 5px solid white; background-color: {{ stock.week_1_color }}; " >
+        {{ stock.week_1 }}%
+    </td>
+    <td class="border-right" style="border-right: 5px solid white; background-color: {{ stock.week_3_color }}; " >
+        {{ stock.week_3 }}%
+    </td>
+    <td class="" style="background-color: {{ stock.gap_1_color }}; ">
+        {{ stock.gap_1 }}%
+    </td>
+    <td class="" style="background-color: {{ stock.rsi_color }}; ">
+        {{ stock.rsi }}
+    </td>
+    <td class="{{ stock.dividend_warning }}" style="background-color: {{ stock.dividend_warning }}; ">
+        {{ stock.dividend_date }}
+    </td>
+    <td class="{{ stock.earnings_warning }}" style="background-color: {{ stock.earnings_warning }}; ">
+        {{ stock.earnings_call_displayed }}
+    </td>
+    <td >
+        <div class="row">
+            <!-- <div class="col">
+                <select name="delta_{{ stock.pk }}" id="delta_{{ stock.pk }}">
+                    <option value="0.05">0.05</option>
+                    <option value="0.10">0.10</option>
+                    <option value="0.15">0.15</option>
+                    <option value="0.20">0.20</option>
+                    <option value="0.25">0.25</option>
+                    <option value="0.30">0.30</option>
+                    <option value="0.35">0.35</option>
+                    <option value="0.40">0.40</option>
+                    <option value="0.45">0.45</option>
+                    <option value="0.50">0.50</option>
+                    </select>
+            </div> -->
+            <div class="col">
+                <div class="row">
+                    <div class="col-1">
+                        <button type="submit" value="{{ stock.pk }}" name="stock_delta_set" class="btn btn-sm" style="background: green;">Set</button>
+                    </div>
+                    <!-- <div class="col-1">
+                        <button type="submit" value="{{ stock.pk }}" name="stock_delta_reset" style="background: red;">R</button>
+                    </div> -->
+                </div>
+            </div>
+    <div class="col">
+                {{ stock.stock_alarm_delta }}                
+            </div>
+        </div>
+    </td>
+    
+    <!-- Stock Up -->
+    <!-- <td id="price_up" {% if stock.price_up %} class="blink-buy" {% else %} {% endif %} style="border: 2px solid white;">
+        UP
+    </td> -->
+
+    <!-- Stock Down -->
+    <!-- <td id="price_down" {% if stock.price_down %} class="blink-sell" {% else %} {% endif %} style="border: 2px solid white;">
+        DOWN
+    </td> -->
+
+    <td  class="">
+        {% if stock.stock_alarm_trigger_set %}
+            <button type="submit" value="{{ stock.pk }}" name="stock_alarm_cancel" class="tim-icons icon-alert-circle-exc"></button>
+        {% else %}
+            <!-- <button type="submit" value="{{ stock.pk }}" name="stock_alarm_set" class="tim-icons icon-bell-55"></button> -->
+        {% endif %}
+    </td>  
+
+    <td class="gtext" style="border: 1px solid white; background:{{ stock.stock_alarm_1_color }} ;">
+        <p><b>{{ stock.stock_alarm_1 }}</b></p>
+    </td>
+    <td class="gtext" style="border: 1px solid white; background:{{ stock.stock_alarm_2_color }} ;">
+        <p> <b>{{ stock.stock_alarm_2 }}</b></p>
+    </td>
+    <td class="gtext" style="border: 1px solid white; background:{{ stock.stock_alarm_3_color }} ;">
+        <p> <b>{{ stock.stock_alarm_3 }}</b></p>
+    </td>
+    <td class="gtext" style="border: 1px solid white; background:{{ stock.stock_alarm_4_color }} ;">
+        <p>  <b>{{ stock.stock_alarm_4 }}</b></p>
+    </td>
+    <td class="gtext" style="border: 1px solid white; background:{{ stock.stock_alarm_5_color }} ;">
+        <p>  <b>{{ stock.stock_alarm_5 }}</b></p>
+    </td>
+    <td class="gtext" style="border: 1px solid white; background:{{ stock.stock_alarm_6_color }} ;">
+        <p> <b>{{ stock.stock_alarm_6 }}</b></p>
+    </td>
+    <td class="gtext" style="border: 1px solid white; background:{{ stock.stock_alarm_7_color }} ;">
+        <p> <b> {{ stock.stock_alarm_7 }}</b></p>
+    </td>
+    <td class="gtext" style="border: 1px solid white; background:{{ stock.stock_alarm_8_color }} ;">
+        <p> <b> {{ stock.stock_alarm_8 }}</b></p>
+    </td>
+    <td class="gtext" style="border: 1px solid white; background:{{ stock.stock_alarm_9_color }} ;">
+        <p>  <b> {{ stock.stock_alarm_9 }}</b></p>
+    </td>
+    <td class="gtext" style="border: 1px solid white; background:{{ stock.stock_alarm_10_color }} ;">
+        <p>  <b>{{ stock.stock_alarm_10 }}</b></p>
+    </td>
+
+    <td class="">
+        <button type="submit" value="{{ stock.pk }}" name="delete_stock" class="tim-icons icon-trash-simple"></button>
+    </td>
+    
+</tr>
+
+{% endfor %}
+
+<style>
+    .blink-bg{
+        color: #fff;
+        animation: blinkingBackground 2s infinite;
+    }
+    @keyframes blinkingBackground{
+        100%	{ background-color: #04a1d5;}
+    }
+
+    .gtext p {
+        color: white;
+        font-size: 140%;
+        font-weight: bold;
+    }
+</style>

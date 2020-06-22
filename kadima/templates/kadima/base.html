@@ -1,8 +1,9 @@
 <!-- Theme template demo: https://demos.creative-tim.com/black-dashboard/examples/dashboard.html -->
 <!DOCTYPE html>
-{% load static %}
 
 <html lang="en">
+{% load static %}
+{% block head %} {% endblock head %}
 
 <head>
   <meta charset="utf-8" />
@@ -12,32 +13,23 @@
   <title>
     Kadima Portfolio Advisor
   </title>
-  <!--     Fonts and icons     -->
-  <!-- <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,600,700,800" rel="stylesheet" /> -->
-  <!-- <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet"> -->
   <!-- Nucleo Icons -->
   <link href="{% static 'assets/css/nucleo-icons.css' %}" rel="stylesheet" />
   
   <!-- CSS Files -->
-  <link href="{% static 'assets/css/black-dashboard.css' %}" rel="stylesheet" />
-  
-  <!-- CSS Just for demo purpose, don't include it in your project -->
-  <!-- <link href="{% static 'assets/demo/demo.css' %}" rel="stylesheet" /> -->
-  
-  <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css" rel="stylesheet"> -->
+  <link href="{% static 'assets/css/black-dashboard.css' %}" rel="stylesheet" /> 
   <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet">
-  
-  <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
-  <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
-  <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
-
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css" integrity="sha256-DOS9W6NR+NFe1fUhEE0PGKY/fubbUCnOfTje2JMDw3Y=" crossorigin="anonymous" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js" integrity="sha256-FEqEelWI3WouFOo2VWP/uJfs1y8KJ++FLh2Lbqc8SJk=" crossorigin="anonymous"></script>
+  
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>  
+  <script src="{% static 'assets/js/kadima.js' %}" ></script>
 
 </head>
 
-<body class="" onload="startTime()">
+<body class="" onload="startTime()" id="main">
 
+  <!-- Stocks alarms trigger sounds -->
+  <div id="trigger_alerts" hidden></div>
   <audio id="up_sound">
     <source src="{% static 'audio/up.mp3' %}" type="audio/mpeg">
   </audio>
@@ -46,93 +38,166 @@
     <source src="{% static 'audio/down.mp3' %}" type="audio/mpeg">
   </audio>
 
-  <div class="container-fluid">
-      <form method="POST" action="" enctype="multipart/form-data">{% csrf_token %}
-      {% if ib_api_connected %}
-        <button type="submit" name="connect_ib_api" class="btn btn-success" disabled> IB API Connected </button>
-        <button type="submit" name="disconnect_ib_api" class="btn btn-danger"> Disconnect </button>
-        {% else %}
-        <button type="submit" name="connect_ib_api" class="btn btn-success" > Connect API </button>
-      {% endif %}
-      <!-- <button type="submit" name="update_now" class="btn btn-info" > Update </button> -->
-    </form>
+  <div class="container-fluid" >
+    <div class="row" >
+      <div class="col-sm-4">
+        <form method="POST" action="" enctype="multipart/form-data">{% csrf_token %}
+          {% if ib_api_connected %}
+            <button type="submit" name="connect_ib_api" class="btn btn-success" disabled> IB API Connected </button>
+              {% if user.is_authenticated %}
+                <button type="submit" name="disconnect_ib_api" class="btn btn-danger"> Disconnect </button>
+              {% else %}
+                <button type="submit" name="disconnect_ib_api" class="btn btn-danger" disabled> Disconnect </button>
+              {% endif %}
+              {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}">Logout</a>
+              {% else %}
+                <a href="{% url 'login' %}">Login</a>
+              {% endif %}
+            {% else %}
+              {% if user.is_authenticated %}
+                <button type="submit" name="connect_ib_api" class="btn btn-success" > Connect API </button>
+                <a href="{% url 'logout' %}">Logout</a>
+                {% else %}
+                <button type="submit" name="connect_ib_api" class="btn btn-success" disabled > Connect API </button>
+                <a href="{% url 'login' %}">Login</a>
+              {% endif %}
+          {% endif %}
+          <!-- <button type="submit" name="update_now" class="btn btn-info" > Update </button> -->
+        </form>  
+      </div>
+      <div class="col-sm-2 text-center" style="height: 5em;">
+        <a href='/'><img src="{% static 'assets/img/kadima-logo.png' %}" alt="Kadima Group logo";" style="height: 100%; width: auto"></a>
+      </div>
+      <div class="col-sm-6 text-center" style="height: 5em;">
+        <div class="row">
+          <div class="col-sm-1"></div>
+          <div class="col-sm-5">
+            <div class="row pt-4" style="color: white; font-size:1rem">
+              <div class="col-4">
+                <a href="{% url 'home' %}" style="color: white;">Table 1</a>
+              </div>
+              <div class="col-4" >
+                <a href="{% url 'table-2' table_index=2 %}" style="color: white;">Table 2</a>
+              </div>
+              <div class="col-4" >
+                <a href="{% url 'stock-alarms' %}" style="color: white;">Stock Alarms</a>
+              </div>
+            </div>
+
+          </div>
+          {% if stock_alert == 'condition_3' %}
+            <div class="col-sm-3 fast-blink-row-buy">
+              <img class="pt-3 pb-3" src="{% static 'assets/img/attention.png' %}" alt="Stock alert";" style="max-width:20%">
+          {% elif stock_alert == 'condition_4' %}
+            <div class="col-sm-3 fast-blink-row-sell">
+              <img class="pt-3 pb-3" src="{% static 'assets/img/attention.png' %}" alt="Stock alert";" style="max-width:20%">
+          {% else %}
+              <div class="col-sm-3 ">
+                <img class="pt-3 pb-3" src="{% static 'assets/img/attention.png' %}" alt="Stock alert";" style="max-width:20%">
+          {% endif %}
+          </div>
+          <div class="col-sm-3 pt-2">
+            <h1>בס״ד</h1>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="wrapper">
-    <div class="sidebar">
-      <!--
-        Tip 1: You can change the color of the sidebar using: data-color="blue | green | orange | red"
-    -->
+    <!-- Sidebar -->
+    {% if no_sidebar %}
+    {% else %}
+      <div class="sidebar">
       <div class="sidebar-wrapper text-primary" style="background-color: #dabdbd;">
         <div class="logo">
           <a href="{% url 'home' %}" class="simple-text logo-normal" style="color: black;">
             Kadima Portfolio Advisor
           </a>
         </div>
-        <ul class="nav">
-          <li> 
+        <div class="row mt-3">
+          <div class="col-6 text-right">
             <a href="{% url 'home' %}">
               <i class="tim-icons icon-coins" style="color: black;"></i>
-              <p style="color: black;">Table 1</p>
+              <span style="color: black;">Table 1</span>
             </a>
-          </li>
-
-          <li>
+          </div>
+          <div class="col-6">
             <a href="{% url 'history' table_index=1 %}">
               <i class="tim-icons icon-bullet-list-67" style="color: black;"></i>
-              <p style="color: black;">History 1</p>
+              <span style="color: black;">History 1</span>
             </a>
-          </li>
-
-
-          <li class="border-top">
+          </div>
+        </div>
+        <div class="row border-top mt-3">
+          <div class="col-6 text-right mt-2">
             <a href="{% url 'table-2' table_index=2 %}">
               <i class="tim-icons icon-coins" style="color: black;"></i>
-              <p style="color: black;">Table 2</p>
+              <span style="color: black;">Table 2</span>
             </a>
-          </li>
-
-          <li class="border-bottom">
+          </div>
+          <div class="col-6 mt-2">
             <a href="{% url 'history' table_index=2 %}">
               <i class="tim-icons icon-bullet-list-67" style="color: black;"></i>
-              <p style="color: black;">History 2</p>
+              <span style="color: black;">History 2</span>
             </a>
-          </li>
-
-          <div class="mt-5 h1" id="clock" style="text-align: center;"></div>
-
-          <li class="">
-            <a href="{% url 'stock-alarms'%}">
-              <i class="tim-icons icon-bell-55" style="color: black;"></i>
-              <p style="color: black;">Stock Alarms</p>
-            </a>
-          </li>
-
-
-          <!-- Trigger Alerts -->
-          <div class="" id="trigger_alerts">
           </div>
-          <!-- END Trigger Alerts -->
-          
-        </ul>
-      </div>
-    </div>
+        </div>
+
+        <!-- Table Control section -->
+        <div class="row mt-3">
+          <div class="col-12 text-center">
+            {% include 'kadima/stock_control.html' with table_index=table_index %}
+          </div>
+        </div>
+
+        <!-- Alarms section -->
+        <div class="row mt-2 border-top">
+          <div class="col-12 text-center mt-2">
+              <a href="{% url 'stock-alarms'%}">
+                <i class="tim-icons icon-bell-55" style="color: black;"></i>
+                <span style="color: black;">Stock Alarms</span>
+              </a>
+          </div>
+        </div>
+
+        <!-- Time Section -->
+        <div class="row mt-2 border-top">
+          <div class="col-12 text-center">
+            <div class="mt-2 h3" id="date" style="text-align: center;"></div>
+          </div>
+        </div> 
+
+        <div class="row">
+          <div class="col-12 text-center">
+            <div class="h1" id="clock" style="text-align: center;"></div>
+          </div>
+        </div> 
+
+      </div> 
+      </div><!-- End sidebar -->
+    {% endif %}
     <div class="main-panel">
-      {% block content %}{% endblock content %}
+      {% block content %}
+
+      <!-- CONTENT -->
+
+      {% endblock content %}
       <footer class="footer">
         <div class="container-fluid">
           <ul class="nav">
             <li class="nav-item">
               <a href="http://grupokadima.com" class="nav-link">
-                Kadima Group
+                &copy; Copyright 2018. Kadima Group. All rights reserved
               </a>
             </li>
           </ul>
           <div class="copyright">
-            ©
-            <script>
+            <!-- <script>
               document.write(new Date().getFullYear())
-            </script> made with <i class="tim-icons icon-heart-2"></i> by
+            </script>  -->
+            made with <i class="tim-icons icon-heart-2"></i> by
             <a href="https://actappon.com" target="_blank">Actappon</a>.
           </div>
         </div>
@@ -140,31 +205,14 @@
     </div>
   </div>
 
+
 </body>
-<script>
-  function startTime() {
-    var today = new Date();
-    var h = today.getHours();
-    var m = today.getMinutes();
-    var s = today.getSeconds();
-    m = checkTime(m);
-    s = checkTime(s);
-    document.getElementById('clock').innerHTML =
-    h + ":" + m + ":" + s;
-    var t = setTimeout(startTime, 500);
-  }
-  function checkTime(i) {
-    if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
-    return i;
-  }
-  </script>
 
 {% if ib_api_connected %}
-
   <script type="text/javascript">
       (function worker() {
           $.ajax({
-          url: {% url 'stocks-alarms-data' %}
+          url: "{% url 'stocks-alarms-data' %}"
       });		
       // Polling the API page every second so the alerts can come while on every page.
       setTimeout(worker, 2000);
@@ -174,43 +222,18 @@
   <script type="text/javascript">
     (function worker() {
         $.ajax({
-        url: {% url 'alarm-trigger' %},
+        url: "{% url 'alarm-trigger' %}",
         success: function(response) {
             console.log('Checking Trigger...');
             $('#trigger_alerts').html(response);
         }
     });		
-    // Polling the API page every second
+    // Polling the API page every second for the TRIGGER
     setTimeout(worker, 2000);
     })();
 
   </script>
 {% endif %}
-<script>
-  $(document).ready(function(){
-      setTimeout(function() {
-              // $(".display-message").hide('blind', {}, 300)
-        $(".display-message").hide();
-      }, 5000);
-  });
-</script>
-
-<script>
-  var up = document.getElementById("up_sound"); 
-  var down = document.getElementById("down_sound"); 
-  
-  function playUpAudio() { 
-    up.play(); 
-  } 
-
-  function playDownAudio() { 
-      down.play(); 
-  } 
-
-//    function pauseAudio() { 
-//      x.pause(); 
-//    } 
-</script>
 
 
 

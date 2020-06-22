@@ -7,13 +7,12 @@
         <h2>Updating gaps data. Stand by...</h2>
     </div>
 {% endif %}
-<table id="example" class="table table-striped table-bordered" style="width:100%">
+<table id="stocksTable" class="table table-striped table-bordered table-sm" style="width:100%">
     <thead class=" text-primary">
       <tr>
-        <th>
-          <!-- <button type="submit" name="sort_by_date" class="tim-icons icon-minimal-down text-primary"></button>   -->
+        <!-- <th>
           Date
-        </th>
+        </th> -->
         <th>
           <!-- <button type="submit" name="sort_by_stock" class="tim-icons icon-minimal-down text-primary"></button>   -->
            Symbol
@@ -22,35 +21,39 @@
           <!-- <button type="submit" name="sort_by_price" class="tim-icons icon-minimal-down text-primary"></button>   -->
            Price
         </th>
-        <th class="text-center">
-            Week 1
-        </th>
+        <th class="text-center" style="font-size: 1rem;">
+            90 Days
+            <button name="sort_week1" class="tim-icons icon-minimal-down"></button>
+          </th>
         <th class="text-center">
             Week 2
         </th>
         <th class="text-center">
-          <!-- <button type="submit" name="sort_by_week3" class="tim-icons icon-minimal-down text-primary"></button>   -->
-          Week 3
-        </th>
-        <th class="text-center">
             Week 5
         </th>
-        <th class="text-center">
-          <!-- <button type="submit" name="sort_by_gap1" class="tim-icons icon-minimal-down text-primary"></button>   -->
+        <th class="text-center" style="font-size: 1rem;">
+          Week 3
+          <button name="sort_week3" class="tim-icons icon-minimal-down"></button>
+        </th>
+        <th class="text-center" style="font-size: 1rem;">
           Gap 1
+          <button name="sort_gap" class="tim-icons icon-minimal-down"></button>
         </th>
         <th>
-           Earning  
+          RSI  
         </th>
-        <th>
+         <th>
             MACD  
          </th>
-         <th>
+          <th>
             MFI &nbsp;&nbsp;
          </th>
          <th>
+            Earning  
+         </th>
+          <th>
             Dividend Date
-        </th>
+          </th>
         <th>
             Dividend
         </th>
@@ -66,74 +69,22 @@
         </tr>
     </thead>
     <tbody>
-        {% for stock in stocks_processed %}
-            {% if stock.week_3_color == 'green' and stock.gap_1_color == 'red' %}
-                <tr class="blink-row-buy">
-            {% elif stock.week_3_color == '#FF1000' and stock.gap_1_color == 'green' %}
-                <tr class="blink-row-sell">
-            {% else %}
-                <tr>
-            {% endif %}
-                <td  class="">
-                    {{ stock.stock_displayed_date }}
-                </td>
-                <td  class="">
-                    {{ stock.ticker }} 
-                </td>
-                <td  class="">
-                    {{ stock.stock_price }}
-                </td>
-                <td  class="" style="background-color: {{ stock.week_1_color }}; ">
-                    {{ stock.week_1 }}%
-                </td>
-                <td  class="" style="border-right: 5px solid white; background-color: {{ stock.week_2_color }}; ">
-                    {{ stock.week_2 }}%
-                </td >
-                <td  class="" style="border-right: 5px solid white; background-color: {{ stock.week_3_color }}; ">
-                    {{ stock.week_3 }}%
-                </td>
-                <td  class="" style="border-right: 5px solid white; background-color: {{ stock.week_5_color }}; ">
-                    {{ stock.week_5 }}%
-                </td>
-                <td  class="" style="border-right: 5px solid white; background-color: {{ stock.gap_1_color }}; ">
-                    {{ stock.gap_1 }}%
-                </td>
-                <td class="{{ stock.earnings_warning }} " style="height: 100%;">
-                    {{ stock.earnings_call_displayed }}
-                </td>
-                <td  class="" style="background-color: {{ stock.macd_color }}; text-align: center;">
-                    {% if stock.macd_clash %}
-                      <span>><</span>
-                    {% else %}
-                      <span>=</span>
-                    {% endif %}
-                </td>
-                <td  class="" style="background-color: {{ stock.mfi_color }}; text-align: center;">
-                  {% if stock.mfi_clash %}
-                    <span>><</span>
-                  {% else %}
-                    <span>=</span>
-                  {% endif %}
-                </td>
-                <td class="" style="height: 100%;">
-                    {{ stock.dividend_date }}
-                </td>
-                <td class="" style="height: 100%;">
-                    ${{ stock.dividend }}
-                </td>
-                <td  class="">
-                    <button type="submit" value="{{ stock.stock_id }}" name="alarm_stock" class="tim-icons icon-bell-55"></button>
-                </td>     
-                <td  class="">
-                    <button type="submit" value="{{ stock.stock_id }}" name="save_stock" class="tim-icons icon-bullet-list-67"></button>
-                </td>
-                <td  class="">
-                    <button type="submit" value="{{ stock.stock_id }}" name="delete_stock" class="tim-icons icon-trash-simple"></button>
-                </td>
+      {% if sort_by == 'gap_1' %}  
+        {% include 'kadima/table_data_sorted_gap.html' %}
+      {% elif sort_by == 'week_1' %} 
+        {% include 'kadima/table_data_sorted_week1.html' %}
+      {% else %}
+        {% include 'kadima/table_data_sorted_week3.html' %}
+    {% endif %}
+</tbody>
+</table>
 
-            </tr>
-
-        {% endfor %}
-      </tbody>
-  </table>
-  
+{% if user.is_authenticated %}
+{%  else %}
+<script>
+  var childNodes = document.getElementById("stocksTable").getElementsByTagName('*');
+  for (var node of childNodes) {
+      node.disabled = true;
+}
+</script>
+{% endif %}

@@ -4248,7 +4248,8 @@ input[type="button"].btn-block {
 }
 
 .custom-control-input:focus:not(:checked)~.custom-control-label::before {
-  border-color: rgba(50, 151, 211, 0.25);
+  /* ALF */
+  border-color: black;
 }
 
 .custom-control-input:not(:disabled):active~.custom-control-label::before {
@@ -4351,7 +4352,8 @@ input[type="button"].btn-block {
   left: calc(-3.9375rem + 2px);
   width: calc(1.25rem - 4px);
   height: calc(1.25rem - 4px);
-  background-color: #cad1d7;
+  /* ALF */
+  background-color: #5c8bb4;
   border-radius: 0.625rem;
   transition: transform 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
@@ -4368,7 +4370,8 @@ input[type="button"].btn-block {
 }
 
 .custom-switch .custom-control-input:disabled:checked~.custom-control-label::before {
-  background-color: rgba(225, 78, 202, 0.5);
+  /* ALF */
+  background-color: #5c8bb4;
 }
 
 .custom-select {

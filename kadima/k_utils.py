@@ -1,14 +1,75 @@
+import sys
+import requests
+import json
+
+from django.core.mail import EmailMultiAlternatives
+from django.template import RequestContext, TemplateDoesNotExist
+from django.template.loader import render_to_string
+from django.conf import settings
+from django.core.mail import send_mail
+
 from .models import StockData
 from pandas_datareader import data as fin_data
 import datetime
 from datetime import timedelta
 from time import sleep
 from threading import Thread
+from scraper.views import YahooScraper
 
 from ib_api.views import *
 
 TODAY = datetime.datetime.today()
 MAX_PAST = TODAY - timedelta(30)
+
+def send_email_alert(subject, email_template_name,
+              context, to_email, html_email_template_name=None, request=None, from_email=None):
+    """
+    Sends a django.core.mail.EmailMultiAlternatives to `to_email`.
+    """
+
+    print(f'''
+    subject: {subject}
+    html email template name: {html_email_template_name}
+    context: {context}
+    to email: {to_email}
+    request: {request}
+    from email: {from_email}
+    ''')
+    ctx_dict = {}
+    if request is not None:
+        ctx_dict = RequestContext(request, ctx_dict)
+    # update ctx_dict after RequestContext is created
+    # because template context processors
+    # can overwrite some of the values like user
+    # if django.contrib.auth.context_processors.auth is used
+    if context:
+        ctx_dict.update(context)
+
+    # Email subject *must not* contain newlines
+    from_email = from_email or getattr(settings, 'DEFAULT_FROM_EMAIL')
+    if email_template_name:
+        message_txt = render_to_string(email_template_name,
+                                       ctx_dict)
+
+        email_message = EmailMultiAlternatives(subject, message_txt,
+                                               from_email, to_email)
+    else:
+        try:
+            message_html = render_to_string(
+                html_email_template_name, ctx_dict)
+            email_message = EmailMultiAlternatives(subject, message_html,
+                                                   from_email, to_email)
+            email_message.content_subtype = 'html'
+        except TemplateDoesNotExist:
+            pass
+
+
+    try:
+        email_message.send()
+    except Exception as e:
+        if settings.DEBUG:
+            print(f'ERROR: email not sent (utils/utils.py). Reason: {e}')
+            print(sys.exc_info())
 
 
 def date_obj_to_date(date_obj, date_format):
@@ -151,3 +212,154 @@ def week_values(stock_df, week_index):
     relative_value = 100 if relative_value_tmp > 100 else relative_value_tmp
 
     return relative_value, last_min, last_max
+
+def send_mail(subject, email_template_name,
+              context, to_email, html_email_template_name=None, request=None, from_email=None):
+    """
+    Sends a django.core.mail.EmailMultiAlternatives to `to_email`.
+    """
+
+    print(f'''
+    subject: {subject}
+    html email template name: {html_email_template_name}
+    context: {context}
+    to email: {to_email}
+    request: {request}
+    from email: {from_email}
+    ''')
+    ctx_dict = {}
+    if request is not None:
+        ctx_dict = RequestContext(request, ctx_dict)
+    # update ctx_dict after RequestContext is created
+    # because template context processors
+    # can overwrite some of the values like user
+    # if django.contrib.auth.context_processors.auth is used
+    if context:
+        ctx_dict.update(context)
+
+    # Email subject *must not* contain newlines
+    from_email = from_email or getattr(settings, 'DEFAULT_FROM_EMAIL')
+    if email_template_name:
+        message_txt = render_to_string(email_template_name,
+                                       ctx_dict)
+
+        email_message = EmailMultiAlternatives(subject, message_txt,
+                                               from_email, to_email)
+    else:
+        try:
+            message_html = render_to_string(
+                html_email_template_name, ctx_dict)
+            email_message = EmailMultiAlternatives(subject, message_html,
+                                                   from_email, to_email)
+            email_message.content_subtype = 'html'
+        except TemplateDoesNotExist:
+            pass
+
+
+    try:
+        email_message.send()
+    except Exception as e:
+        if settings.DEBUG:
+            print(f'ERROR: email not sent (utilities.py). Reason: {e}')
+            print(sys.exc_info())
+
+def reset_email_alerts():
+    # Resetting all email alerts to False
+    stocks = StockData.objects.all()
+    for stock in stocks:
+        stock.stock_email_alert = False
+        stock.save()
+
+def reset_alarms(stock):
+    
+    stock.stock_alarm_trigger_set = False
+    stock.stock_price_down_alarm = False # reseting the up/down alerts
+    stock.stock_price_up_alarm = False
+    stock.stock_alarm_sound_on_off = False # Resetting the alarm sound
+    stock.stock_alarm_delta = 0.0
+    stock.stock_initial_price = None
+
+    stock.stock_alarm_1 = None
+    stock.stock_alarm_2 = None
+    stock.stock_alarm_3 = None
+    stock.stock_alarm_4 = None
+    stock.stock_alarm_5 = None
+    stock.stock_alarm_6 = None
+    stock.stock_alarm_7 = None
+    stock.stock_alarm_8 = None
+    stock.stock_alarm_9 = None
+    stock.stock_alarm_10 = None
+
+    stock.stock_alarm_1_color = None
+    stock.stock_alarm_2_color = None
+    stock.stock_alarm_3_color = None
+    stock.stock_alarm_4_color = None
+    stock.stock_alarm_5_color = None
+    stock.stock_alarm_6_color = None
+    stock.stock_alarm_7_color = None
+    stock.stock_alarm_8_color = None
+    stock.stock_alarm_9_color = None
+    stock.stock_alarm_10_color = None
+
+    # stock.stock_load_price = None
+
+    stock.save()
+    
+    return
+
+def indices_scrapers(stop=False):
+    pass
+    # NAS = 55555
+    # DOW = 77777
+    # SNP = 88888
+    # VIX = 11111
+    # R2K = 22222
+
+    # dow = {
+    #     'url': 'https://finance.yahoo.com/quote/YM=F?p=YM=F',
+    #     'index_api_id': DOW
+    # }
+    # vix = {
+    #     'url':'https://finance.yahoo.com/quote/%5EVIX?p=^VIX&.tsrc=fin-srch',
+    #     'index_api_id': VIX
+    # }
+
+    # snp = {
+    #     'url':'https://finance.yahoo.com/quote/ES=F?p=ES=F',
+    #     'index_api_id': SNP
+    # }
+
+    # nas = {
+    #     'url':'https://finance.yahoo.com/quote/NQ=F?p=NQ=F',
+    #     'index_api_id': NAS
+    # }
+    # r2k = {
+    #     'url':'https://finance.yahoo.com/quote/RTY=F?p=RTY=F',
+    #     'index_api_id': R2K
+    # }
+
+    # dow_scraper = YahooScraper(dow)
+    # nas_scraper = YahooScraper(nas)
+    # snp_scraper = YahooScraper(snp)
+    # vix_scraper = YahooScraper(vix)
+    # r2k_scraper = YahooScraper(r2k)
+
+    # t_dow = Thread(target=dow_scraper.run)
+    # t_nas = Thread(target=nas_scraper.run)
+    # t_snp = Thread(target=snp_scraper.run)
+    # t_vix = Thread(target=vix_scraper.run)
+    # t_r2k = Thread(target=r2k_scraper.run)
+
+    # if stop:
+    #     print('#### Stopping scrapers....')
+    #     current_running_threads = threading.active_count()
+    #     print(f"ACTIVE THREADS AFTER STOPPING: ***{current_running_threads}**")
+    # else:
+    #     t_dow.start()
+    #     t_nas.start()
+    #     t_snp.start()
+    #     t_vix.start()
+    #     t_r2k.start()
+    #     current_running_threads = threading.active_count()
+    #     print(f"ACTIVE THREADS WITH SCRAPERS: ***************{current_running_threads}****************")
+    #     print('SCRAPERS RUNNING...')

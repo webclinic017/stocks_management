@@ -1,3 +1,4 @@
+import time
 import random
 import json
 import pandas as pd
@@ -7,8 +8,9 @@ import matplotlib.pyplot as plt
 import numpy as np 
 import datetime
 import re
-from threading import Thread
-
+import arrow
+import threading
+from time import sleep
 from math import *
 from numpy import round
 
@@ -26,16 +28,19 @@ from django.urls import reverse_lazy, reverse
 from django.contrib import messages
 from django.utils import timezone
 
-from yahoo_earnings_calendar import YahooEarningsCalendar
+# from yahoo_earnings_calendar import YahooEarningsCalendar
 import yfinance as yf
 
-from ib_api.views import *
-from kadima.k_utils import week_values, gap_1_check,date_obj_to_date
+from ib_api.views import stock_data_api, alarm_trigger, api_connection_status,ib_api_wrapper
+from kadima.k_utils import week_values, gap_1_check,date_obj_to_date, reset_email_alerts, week_color, reset_alarms, indices_scrapers
 
-from .models import StockData, IndicesData
+from .models import StockData, IndicesData, EmailSupport
 from .forms import DateForm
-from .ml_models import *
-from .value_updates import indexes_updates, earnings_update, update_values
+from .ml_models import trends
+from .value_updates import indexes_updates, update_values
+from kadima.stock import Stock
+from scraper.views import YahooScraper
+
 # Create and configure logger
 import logging
 
@@ -48,77 +53,105 @@ MAX_PAST = TODAY - timedelta(30)
 UPADATE_STOCKS = 'update'
 STOP_API = 'stop'
 
+def alarm_stocks_selector(request):
+    context = {}
+    saved_alarms_stocks = StockData.objects.filter(stock_alarm=True)
+    context['stocks'] = saved_alarms_stocks
+    return render(request, 'kadima/partials/_alarm_stocks_selector.html', context)
+
 def stock_alarms(request):
     context = {}
     alarmed_stocks = StockData.objects.filter(stock_alarm=True)
     context['stocks'] = alarmed_stocks
+    context['no_sidebar'] = True
 
     ib_api_connected = api_connection_status()
     context['ib_api_connected'] = ib_api_connected
 
     if request.method  == 'POST':
+
         if 'connect_ib_api' in request.POST:
+            
+            # Connect the IB API 
             api_connect(request)
-            context = {}
             ib_api_connected = api_connection_status()
             context['ib_api_connected'] = ib_api_connected
+
+            # Start scraping for indices data
+            indices_scrapers()
+
             return render(request, 'kadima/stock_alarms.html', context)
 
         elif 'disconnect_ib_api' in request.POST:
             api_disconnect(request)
-            context = {}
+            # context = {}
             ib_api_connected = api_connection_status()
             context['ib_api_connected'] = ib_api_connected
             return render(request, 'kadima/stock_alarms.html', context)
 
-        if 'stock_alarm_set' in request.POST:
-            stock_id = request.POST.get('stock_alarm_select')
-            
-            try:
-                stock_data = StockData.objects.get(id=stock_id)
-            except Exception as e:
-                messages.warning(request, 'Please select a stock ticker.')
-                print('No Ticker selected.')
-                return render(request, 'kadima/stock_alarms.html', context)
 
-            stock_trigger_status = stock_data.stock_alarm_trigger_set
+        if 'all_alarms_set' in request.POST or 'stock_delta_set' in request.POST:
 
-            if ib_api_connected: # Do the same but display the real time if connected 
-                stock_data.stock_initial_price = float(request.POST.get(f'stock_price_{stock_id}'))
-                stock_data.stock_alarm_delta = float(request.POST.get(f'delta_select'))
-                stock_data.stock_alarm_trigger_set = True # Turn on trigger alarm
+            if request.POST.get('all_alarms_set') == 'set_all':
+                current_alarm_stocks = StockData.objects.filter(stock_alarm=True)
+                price_delta = float(request.POST.get(f'delta_select'))
 
-                # Reset alarm values
-                stock_data.stock_price_down_alarm = False # reseting the up/down alerts
-                stock_data.stock_price_up_alarm = False
-                stock_data.stock_alarm_sound_on_off = False # Resetting the alarm sound
+                for stock in current_alarm_stocks:
+                    stock.stock_initial_price = float(request.POST.get(f'stock_price_{stock.pk}'))
+                    stock.stock_alarm_delta = float(request.POST.get(f'delta_select'))
+                    stock.stock_alarm_trigger_set = True # Turn on trigger alarm
+
+                    # Reset alarm values
+                    stock.stock_price_down_alarm = False # reseting the up/down alerts
+                    stock.stock_price_up_alarm = False
+                    stock.stock_alarm_sound_on_off = False # Resetting the alarm sound
+
+                    stock.save()
 
             else:
+                stock_id = request.POST.get('stock_delta_set')
+                
+                try:
+                    stock_data = StockData.objects.get(id=stock_id)
+                except Exception as e:
+                    messages.warning(request, 'Please select a stock ticker.')
+                    print('No Ticker selected.')
+                    return render(request, 'kadima/stock_alarms.html', context)
+
                 stock_data.stock_initial_price = float(request.POST.get(f'stock_price_{stock_id}'))
-                stock_data.stock_alarm_delta = float(request.POST.get(f'delta_select'))
+                stock_data.stock_alarm_delta = float(request.POST.get(f"delta_select"))
                 stock_data.stock_alarm_trigger_set = True # Turn on trigger alarm
 
                 # Reset alarm values
                 stock_data.stock_price_down_alarm = False # reseting the up/down alerts
                 stock_data.stock_price_up_alarm = False
                 stock_data.stock_alarm_sound_on_off = False # Resetting the alarm sound
-        
-            stock_data.save()
+            
+                stock_data.save()
+
+        elif 'stock_delta_reset' in request.POST:
+            stock = StockData.objects.get(id=request.POST.get('stock_delta_reset'))
+            reset_alarms(stock)
+
+        elif 'stock_alarm_reset' in request.POST:
+            saved_alarms_stocks = StockData.objects.filter(stock_alarm=True)
+            for stock in saved_alarms_stocks:
+                reset_alarms(stock)
+
+        elif 'delete_all_alarms' in request.POST:
+            alarm_stocks = StockData.objects.filter(stock_alarm=True)
+            print(f'DELETING STOCKS: {request.POST}')
+            for stock in alarm_stocks:
+                stock.stock_alarm = False
+                stock.save()
 
         elif 'stock_alarm_cancel' in request.POST:
             
             stock_id = request.POST.get('stock_alarm_cancel')
-            stock_data = StockData.objects.get(id=stock_id)
-            stock_data.stock_alarm_trigger_set = False # Turn off the trigger alarm
-            stock_data.stock_price_down_alarm = False # reseting the up/down alerts
-            stock_data.stock_price_up_alarm = False
-            stock_data.stock_alarm_sound_on_off = False # Resetting the alarm sound
-            stock_data.stock_alarm_delta = 0.0
-            stock_data.stock_initial_price = None
+            stock = StockData.objects.get(id=stock_id)
+            reset_alarms(stock)
 
-            stock_trigger_status = stock_data.stock_alarm_trigger_set
-            
-            stock_data.save()
+            stock_trigger_status = False
 
             context['trigger_set'] = stock_trigger_status
 
@@ -136,7 +169,22 @@ def stock_alarms(request):
 
             alarmed_stocks = StockData.objects.filter(stock_alarm=True)
             context['stocks'] = alarmed_stocks
-        
+
+        elif 'sort_gap' in request.POST:
+            print('>> Gap Sorting <<')
+            request.session['sort_by'] = 'gap_1'
+            context['sort_by'] = request.session['sort_by']
+
+        elif 'sort_week3' in request.POST:
+            print('>> Week3 Sorting <<')
+            request.session['sort_by'] = 'week_3'
+            context['sort_by'] = request.session['sort_by']
+
+        elif 'sort_week1' in request.POST:
+            print('>> Week1 (90 Days) Sorting <<')
+            request.session['sort_by'] = 'week_1'
+            context['sort_by'] = request.session['sort_by']
+
         else:
             alarmed_stocks = StockData.objects.filter(stock_alarm=True)
             context['stocks'] = alarmed_stocks
@@ -151,26 +199,30 @@ def stock_alarms(request):
 def history(request, table_index=1):
     context = {}
     saved_stocks = StockData.objects.filter(saved_to_history=True, table_index=table_index)
+    context['email_enabled'] = EmailSupport.objects.all().first().enabled
     context['stocks'] = saved_stocks
     context['table_index'] = table_index
+    request.session['table_index'] = table_index
 
     ib_api_connected = api_connection_status()
     context['ib_api_connected'] = ib_api_connected
-
 
     date_picker = DateForm()
 
     if request.method == 'POST':
         if 'connect_ib_api' in request.POST:
             api_connect(request)
-            context = {}
             ib_api_connected = api_connection_status()
             context['ib_api_connected'] = ib_api_connected
+
+            # Start scraping for indices data
+            indices_scrapers()
+
             return render(request, 'kadima/history.html', context)
  
         elif 'disconnect_ib_api' in request.POST:
             api_disconnect(request)
-            context = {}
+            # context = {}
             ib_api_connected = api_connection_status()
             context['ib_api_connected'] = ib_api_connected
             return render(request, 'kadima/history.html', context)
@@ -203,6 +255,28 @@ def history(request, table_index=1):
 
             context['stocks'] = saved_stocks
 
+        ## Enable email support
+        elif 'email_enable' in request.POST:
+            print('>> Enable Email <<')
+            try:
+                email_enable = EmailSupport.objects.all().first()
+                if email_enable.enabled:
+                    email_enable.enabled = False
+                    context['email_enabled'] = False
+                    email_enable.save()
+                    
+                    # Resetting all email alerts to False
+                    reset_email_alerts()
+
+                else:
+                    email_enable.enabled = True
+                    context['email_enabled'] = True
+                    email_enable.save()
+            except:
+                email_enable = EmailSupport()
+                email_enable.enabled = True
+                context['email_enabled'] = True
+                email_enable.save()
 
         elif 'delete_stock' in request.POST:
             stock_id = request.POST['delete_stock']
@@ -244,8 +318,16 @@ def home(request, table_index=1):
     context = {}
     context['table_index'] = table_index
     ib_api_connected = api_connection_status()
-
     context['ib_api_connected'] = ib_api_connected
+    request.session['table_index'] = table_index
+
+    try:
+        context['email_enabled'] = EmailSupport.objects.all().first().enabled
+        print(f'EM: {context["email_enabled"]}')
+    except:
+        email_support = EmailSupport()
+        email_support.enabled = False
+        email_support.save()
 
     stock_ref = StockData.objects.all().last()
 
@@ -255,6 +337,14 @@ def home(request, table_index=1):
     else:
         last_update = False
 
+    # Checking current sample_ period
+    try:
+        sample_period = stock_ref.sample_period_14
+    except:
+        sample_period = None
+        
+    context['sample_period_14'] = sample_period
+
     current_running_threads = threading.active_count()
     print(f"ACTIVE THREADS: ***************{current_running_threads}****************")
     
@@ -263,33 +353,26 @@ def home(request, table_index=1):
 
     # VALUES UPDATES
     #########################
-    
-    # Updating indexes data every time homepage rendered
-    indexes_update_done, indexes_info = indexes_updates()
 
-    if indexes_update_done:
-        print('Finished updating indexes')
-        context.update(indexes_info)
-    else:
-        messages.error(request, 'Failed updating indexes.')
-        logger.error('Failed updating indexes.')
-        print('Failed updating indexes.')
+    #TODO: Replace this update with current database data query.
+    # Updating indexes data every time homepage rendered
+    
+    # indexes_update_done, indexes_info = indexes_updates(request)
+
+    # if indexes_update_done:
+    #     print('Finished updating indexes')
+    #     context.update(indexes_info)
+    # else:
+    #     messages.error(request, 'Failed updating indexes.')
+    #     logger.error('Failed updating indexes.')
+    #     print('Failed updating indexes.')
 
 
     # Stock data will be updated at API connect
-
     if request.method == 'POST':
-
         if 'connect_ib_api' in request.POST:
 
             api_connect(request)
-
-            current_stocks = StockData.objects.all()
-            current_stocks_list = dict()
-            for stock in current_stocks:
-                current_stocks_list[stock.id] = stock.ticker
-            
-            ib_api_wrapper(request, updated_stock_list=current_stocks_list, action=UPADATE_STOCKS)
 
             stocks = StockData.objects.filter(table_index=table_index)
             context['stocks'] = stocks
@@ -297,6 +380,10 @@ def home(request, table_index=1):
             ib_api_connected = api_connection_status()
             context['ib_api_connected'] = ib_api_connected
             
+            # Start scraping for indices data
+            indices_scrapers()
+
+
             return render(request, 'kadima/home.html', context)
 
         elif 'update_now' in request.POST:
@@ -309,7 +396,22 @@ def home(request, table_index=1):
             api_disconnect(request)
             context['ib_api_connected'] = api_connection_status()
             return render(request, 'kadima/home.html', context)
-            
+
+        elif 'sort_gap' in request.POST:
+            print('>> Gap Sorting <<')
+            request.session['sort_by'] = 'gap_1'
+            context['sort_by'] = request.session['sort_by']
+
+        elif 'sort_week1' in request.POST:
+            print('>> Week1 Sorting <<')
+            request.session['sort_by'] = 'week_1'
+            context['sort_by'] = request.session['sort_by']
+
+        elif 'sort_week3' in request.POST:
+            print('>> Week3 Sorting <<')
+            request.session['sort_by'] = 'week_3'
+            context['sort_by'] = request.session['sort_by']
+
         elif 'add_stock' in request.POST:
             
             stocks_to_add  = request.POST.get('stock').split(',')
@@ -337,18 +439,18 @@ def home(request, table_index=1):
                 
                 stock_data.table_index = table_index
 
-                stock_data.stock_date = stock_df.index[-1]
+                # stock_data.stock_date = stock_df.index[-1]
                 stock_data.stock_displayed_date = date_obj_to_date(pd.Timestamp("today"), date_format='slash')
 
                 stock_data.ticker = stock.upper()
                 stock_data.stock_price = float("%0.2f"%stock_df['Close'].iloc[-1])
 
-                stock_data.week_1, stock_data.week_1_min, stock_data.week_1_max = week_values(stock_df, 5)
+                stock_data.week_1, stock_data.week_1_min, stock_data.week_1_max = week_values(stock_df, 90)
                 stock_data.week_2, stock_data.week_2_min, stock_data.week_2_max = week_values(stock_df, 10)
                 stock_data.week_3, stock_data.week_3_min, stock_data.week_3_max = week_values(stock_df, 15)
                 stock_data.week_5, stock_data.week_5_min, stock_data.week_5_max = week_values(stock_df, 25)
 
-                stock_data.week_1_color = week_color(stock_data.week_1)
+                stock_data.week_1_color = week_color(stock_data.week_1, week3=True)
                 stock_data.week_2_color = week_color(stock_data.week_2)
                 stock_data.week_3_color = week_color(stock_data.week_3, week3=True)
                 stock_data.week_5_color = week_color(stock_data.week_5)
@@ -364,70 +466,153 @@ def home(request, table_index=1):
                 stock_data.gap_1_color = gap_1_color
 
                 # Earning dates
-                yec = YahooEarningsCalendar()
                 try:
-                    timestmp = yec.get_next_earnings_date(stock)
-                    earnings_date_obj = datetime.datetime.fromtimestamp(timestmp)
-                    stock_data.earnings_call = earnings_date_obj
+                    try:
+                        earnings = yf.Ticker(stock).calendar[0][0]
+                    except:
+                        try:
+                            earnings = yf.Ticker(stock).calendar['Value'][0]
+                        except:
+                            print(f'No earnings found for {stock}')
+
+                    year = earnings.year
+                    month = earnings.month
+                    day = earnings.day
+                    earnings_date = str(f'{day}/{month}/{year}')
+                    
+                    earnings_ts = time.mktime(datetime.datetime.strptime(earnings_date, "%d/%m/%Y").timetuple())
+                    today_ts = datetime.datetime.timestamp(TODAY)
+                    earnings_dt = datetime.datetime.fromtimestamp(earnings_ts)
+                    today_dt = datetime.datetime.fromtimestamp(today_ts)
+
+                    if (earnings_dt - today_dt).days <= 7 and (earnings_dt - today_dt).days >= 0:
+                        stock_data.earnings_warning = "blink-bg"
+                        stock_data.earnings_call_displayed = earnings_date
+                    elif (earnings_dt - today_dt).days < 0:
+                        stock_data.earnings_warning = "PAST"
+                        stock_data.earnings_call_displayed = None
+                    else:
+                        stock_data.earnings_warning = ""
+                        stock_data.earnings_call_displayed = earnings_date
+
                 except Exception as e:
                     messages.error(request, 'Stock does not have an earnings call date defined.')
-                    earnings_date_obj = None    
+                    print(f'Stock {stock} does not have an earnings call date defined.')
+                    earnings = None    
 
-                if earnings_date_obj:
-                    stock_data.earnings_call_displayed = date_obj_to_date(earnings_date_obj, date_format='slash')
-                
-                    if (earnings_date_obj - today).days <= 7 and (earnings_date_obj - today).days >= 0:
-                        stock_data.earnings_warning = 'blink-bg'
-                    else:
-                        pass
-                else:
-                    pass
+                tan_deviation_angle = math.tan(math.radians(settings.DEVIATION_ANGLE))
 
 
-                # Stock Trend 
-                a_stock = stock_regression(stock)
-                stock_data.stock_trend = round(a_stock,2)
+                # Stock Trend - 30 days sample
+                a_stock_30, a_macd_30, a_mfi_30, rsi, week1, week2, week3 = trends(stock,30)
+
+                # a_stock_30 = stock_regression(stock, 30)
+                stock_data.stock_trend_30 = round(a_stock_30,2)
 
                 # MACD trend
-                a_macd = trend_calculator(stock, 'MACD')
-                stock_data.macd_trend = round(a_macd,2)
+                # a_macd_30 = trend_calculator(stock, 'MACD', period=30)
+                stock_data.macd_trend_30 = round(a_macd_30,2)
 
-                if (a_stock > 0 and a_macd < 0) or (a_stock < 0 and a_macd > 0):
-                    stock_data.macd_clash = True
-                    stock_data.macd_color = 'red'
+                if np.abs(a_macd_30) > tan_deviation_angle:                    
+                
+                    if (a_stock_30 > 0 and a_macd_30 < 0) or (a_stock_30 < 0 and a_macd_30 > 0):
+                        stock_data.macd_30_clash = True
+                        stock_data.macd_30_color = 'red'
+                    elif (a_stock_30 < 0 and a_macd_30 < 0) or (a_stock_30 > 0 and a_macd_30 > 0):
+                        stock_data.macd_30_clash = False
+                        stock_data.macd_30_color = 'green'
+
                 else:
-                    stock_data.macd_clash = False
-                    stock_data.macd_color = 'green'
+                    stock_data.macd_30_clash = False
+                    stock_data.macd_30_color = 'green'
 
                 # MFI trend
-                a_mfi = trend_calculator(stock, 'MFI')
-                stock_data.money_flow_trend = round(a_mfi,2)
+                # a_mfi_30 = trend_calculator(stock, 'MFI', period=30)
+                stock_data.money_flow_trend_30 = round(a_mfi_30,2)
 
-                if (a_stock > 0 and a_mfi < 0) or (a_stock < 0 and a_mfi > 0):
-                    stock_data.mfi_clash = True
-                    stock_data.mfi_color = 'red'
+
+                if np.abs(a_mfi_30) > tan_deviation_angle:                    
+
+                        if (a_stock_30 > 0 and a_mfi_30 < 0) or (a_stock_30 < 0 and a_mfi_30 > 0):
+                            stock_data.mfi_30_clash = True
+                            stock_data.mfi_30_color = 'red'
+                        elif (a_stock_30 < 0 and a_mfi_30 < 0) or (a_stock_30 > 0 and a_mfi_30 > 0):
+                            stock_data.mfi_30_clash = False
+                            stock_data.mfi_30_color = 'green'
                 else:
-                    stock_data.mfi_clash = False
-                    stock_data.mfi_color = 'green'
+                    stock_data.mfi_30_clash = False
+                    stock_data.mfi_30_color = 'green'
 
+                # Stock Trend - 14 days sample
+                a_stock_14, a_macd_14, a_mfi_14, rsi_14, week1, week2, week3= trends(stock,14) # rsi_14 is just for unpacking. it's not user.
+
+                # a_stock_14 = stock_regression(stock, 14)
+                stock_data.stock_trend_14 = round(a_stock_14,2)
+
+                # MACD trend
+                # a_macd_14 = trend_calculator(stock, 'MACD', period=14)
+                stock_data.macd_trend_14 = round(a_macd_14,2)
+
+                if np.abs(a_macd_14) > tan_deviation_angle:                    
+                
+                    if (a_stock_14 > 0 and a_macd_14 < 0) or (a_stock_14 < 0 and a_macd_14 > 0):
+                        stock_data.macd_14_clash = True
+                        stock_data.macd_14_color = 'red'
+                    elif (a_stock_14 < 0 and a_macd_14 < 0) or (a_stock_14 > 0 and a_macd_14 > 0):
+                        stock_data.macd_14_clash = False
+                        stock_data.macd_14_color = 'green'
+
+                else:
+                    stock_data.macd_14_clash = False
+                    stock_data.macd_14_color = 'green'
+
+                # MFI trend
+                # a_mfi_14 = trend_calculator(stock, 'MFI', period=14)
+                stock_data.money_flow_trend_14 = round(a_mfi_14,2)
+
+
+                if np.abs(a_mfi_30) > tan_deviation_angle:                    
+
+                        if (a_stock_14 > 0 and a_mfi_14 < 0) or (a_stock_14 < 0 and a_mfi_14 > 0):
+                            stock_data.mfi_14_clash = True
+                            stock_data.mfi_14_color = 'red'
+                        elif (a_stock_14 < 0 and a_mfi_14 < 0) or (a_stock_14 > 0 and a_mfi_14 > 0):
+                            stock_data.mfi_14_clash = False
+                            stock_data.mfi_14_color = 'green'
+                else:
+                    stock_data.mfi_14_clash = False
+                    stock_data.mfi_14_color = 'green'
+
+                # RSI
+                # rsi = last_rsi(stock, period=30)
+                stock_data.rsi = rsi
+                if rsi > 0 and rsi <=30:
+                    stock_data.rsi_color = 'red'
+                elif rsi > 30 and rsi <= 65:
+                    stock_data.rsi_color = 'orange'
+                elif rsi > 65 and rsi <=100:
+                    stock_data.rsi_color = 'green'
+                else:
+                    stock_data.rsi_color = ''
 
                 # Getting the dividend
-                try:
-                    st = yf.Ticker(stock).dividends.tail(1)
-                    stock_data.dividend = float(st.values)
-                    date_arr = str(st.index[0]).split(' ')[0].split('-')
-                    year = date_arr[0]
-                    month = date_arr[1]
-                    day = date_arr[2]
-                    stock_data.dividend_date = day + '/' + month + '/' + year
-                except:
-                    stock_data.dividend = None
-                    stock_data.dividend_date = None
+                # try:
+                #     st = yf.Ticker(stock).dividends.tail(1)
+                #     stock_data.dividend = float(st.values)
+                #     date_arr = str(st.index[0]).split(' ')[0].split('-')
+                #     year = date_arr[0]
+                #     month = date_arr[1]
+                #     day = date_arr[2]
+                #     stock_data.dividend_date = day + '/' + month + '/' + year
+                # except:
+                #     stock_data.dividend = None
+                #     stock_data.dividend_date = None
 
                 ## Adding the stock saving to DB
                 try:
                     stock_data.save()
                 except Exception as e:
+                    print(f'ERROR Adding Stock. Reason: {e}')
                     messages.error(request, f'Stock {stock} was not added. Already in the list.')
                     return render(request, 'kadima/home.html', context)
                 
@@ -447,8 +632,50 @@ def home(request, table_index=1):
 
 
             return render(request, 'kadima/home.html', context)
+
+        ## Enable email support
+        elif 'email_enable' in request.POST:
+            print('>> Enable Email <<')
+            try:
+                email_enable = EmailSupport.objects.all().first()
+                if email_enable.enabled:
+                    email_enable.enabled = False
+                    context['email_enabled'] = False
+                    email_enable.save()
+
+                    # Resetting all email alerts to False
+                    reset_email_alerts()
+
+                else:
+                    email_enable.enabled = True
+                    context['email_enabled'] = True
+                    email_enable.save()
+            except:
+                email_enable = EmailSupport()
+                email_enable.enabled = True
+                context['email_enabled'] = True
+                email_enable.save()
+
+        # Update sample period for MACD and MFI calculations
+        elif 'sample_period' in request.POST:
+            print('>> Sampling <<')
+            stocks = StockData.objects.all()
+            for stock in stocks:
+                if request.POST['sample_period'] == '14':
+                    stock.sample_period_14 = True
+                    stock.save()
+                    context['sample_period_14'] = True
+
+                else:
+                    stock.sample_period_14 = False
+                    stock.save()
+                    context['sample_period_14'] = False
         
+        
+        
+        # Stock Delete
         elif 'delete_stock' in request.POST:
+            print('>> Deleting <<')
             old_stocks = StockData.objects.all()
             old_stocks_list = []
             for stock in old_stocks:
@@ -472,7 +699,9 @@ def home(request, table_index=1):
 
             return render(request, 'kadima/home.html', context)
 
+        # Save stock to history
         elif 'save_stock' in request.POST:
+            print('>> Saving <<')
             stock_id = request.POST['save_stock']
             stock_data = StockData.objects.get(id=stock_id)
             stock_data.saved_to_history = True  
@@ -484,9 +713,11 @@ def home(request, table_index=1):
             return render(request, 'kadima/home.html', context)
 
         elif 'alarm_stock' in request.POST:
+            print('>> Alarm Stock <<')
             stock_id = request.POST['alarm_stock']
             stock_data = StockData.objects.get(id=stock_id)
-            stock_data.stock_alarm = True  
+            stock_data.stock_alarm = True
+            stock_data.stock_load_price = stock_data.stock_current_price
             stock_data.save()
             messages.info(request, f"Stock {stock_data.ticker} was added to alarm page. You can trigger value alarms on the Alarms page.")
 
@@ -521,7 +752,16 @@ def api_connect(request):
         print('Sleeping...')
         timer += 1 
 
-    # Updating valuse
+    # Laoad current stocks
+    current_stocks = StockData.objects.all()
+    current_stocks_list = dict()
+    for stock in current_stocks:
+        current_stocks_list[stock.id] = stock.ticker
+    
+    ib_api_wrapper(request, updated_stock_list=current_stocks_list, action=UPADATE_STOCKS)
+
+
+    # Updating values
     finish_updates = update_values(request)
 
     if finish_updates:
@@ -536,10 +776,23 @@ def api_connect(request):
     return
 
 def api_disconnect(request):
-    print('Updating values before disconnecting')
-    update_values(request)
+    # context = {}
+    # print('Updating values before disconnecting')
+    # update_values(request)
+
+    # Resetting all email alerts to False
+    reset_email_alerts()
+
+    # Resetting the alarms
+    saved_alarms_stocks = StockData.objects.filter(stock_alarm=True)
+    for stock in saved_alarms_stocks:
+        reset_alarms(stock)
 
     print('Stopping the IB API...')
     ib_api_wrapper(request,action=STOP_API )
     sleep(2)
-    return
+
+    print('Stopping Yahoo scrapers...')
+    indices_scrapers(stop=True)
+
+    return 
