@@ -650,12 +650,12 @@ class TestApp(EClient, EWrapper):
             stock = StockData.objects.get(id=reqId)
             current_dividend_date = stock.dividend_date
             
-            print(f'>>>>>>>>>>>>>> Stock: {reqId} TickType: {tickType} Dividend: {value} ')
+            # print(f'>>>>>>>>>>>>>> Stock: {reqId} TickType: {tickType} Dividend: {value} ')
 
             # Calculating new dividend date
             # divindend_date_obj = datetime.datetime.fromtimestamp(int(value))
             dividend_date_string = str(value).split(',')[2]
-            dividend = str(value).split(',')[0]
+            dividend = str(value).split(',')[1]
 
             year = dividend_date_string[0:4]
             month = dividend_date_string[4:6]
