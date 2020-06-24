@@ -655,7 +655,8 @@ class TestApp(EClient, EWrapper):
             # Calculating new dividend date
             # divindend_date_obj = datetime.datetime.fromtimestamp(int(value))
             dividend_date_string = str(value).split(',')[2]
-            dividend = str(value).split(',')[1]
+            dividend_data = str(value).split(',')[1]
+            dividend = dividend_data if dividend_data != '' else 0
 
             year = dividend_date_string[0:4]
             month = dividend_date_string[4:6]
