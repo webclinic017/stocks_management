@@ -650,9 +650,12 @@ class TestApp(EClient, EWrapper):
             stock = StockData.objects.get(id=reqId)
             current_dividend_date = stock.dividend_date
             
+            print(f'>>>>>>>>>>>>>> Stock: {reqId} TickType: {tickType} Dividend: {value} ')
+
             # Calculating new dividend date
             # divindend_date_obj = datetime.datetime.fromtimestamp(int(value))
             dividend_date_string = str(value).split(',')[2]
+            dividend = str(value).split(',')[0]
 
             year = dividend_date_string[0:4]
             month = dividend_date_string[4:6]
@@ -661,8 +664,11 @@ class TestApp(EClient, EWrapper):
             # print(f'>>>>>>>>>>>>>> Stock: {reqId} TickType: {tickType} Dividend: {value}  DATE: {divindend_date} LEN: {len(value)}')
             if len(value) > 5:
                 stock.dividend_date = divindend_date
+                stock.dividend = dividend
                 stock.save()
-
+            else:
+                stock.dividend = dividend
+                stock.save()
 
     # @iswrapper
     # def tickSize(self, reqId, tickType, size):
