@@ -651,7 +651,8 @@ class TestApp(EClient, EWrapper):
         
         super().tickByTickAllLast(reqId, tickType, time, price, size, tickAttribLast,exchange, specialConditions)
         if tickType == 1:
-            print("Last.", end='\n')
+            # print("Last.", end='\n')
+            pass
         else:
             print("AllLast.", end='')
             print(" ReqId:", reqId,
