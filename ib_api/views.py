@@ -822,7 +822,7 @@ def ib_stock_api(old_stocks_list, stocks, action):
             app.reqMarketDataType(4)
             app.reqMktData(stock_id, contract, "456", False, False, [])
 
-            app.reqTickByTickData(stock_id, contract, "Last", 0, False);
+            # app.reqTickByTickData(stock_id, contract, "Last", 0, False);
 
             # app.fundamentalData(stock_id, contract)
 
