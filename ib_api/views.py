@@ -1,3 +1,4 @@
+import time
 import datetime
 from datetime import timedelta
 from pandas_datareader import data as fin_data
@@ -602,7 +603,7 @@ class TestApp(EClient, EWrapper):
 
         # print only indeces data
         '''
-        NASDAQ = 55555
+        NAS = 55555
         DOW = 77777
         SNP = 88888
         VIX = 11111
@@ -630,7 +631,8 @@ class TestApp(EClient, EWrapper):
         
         # REPLACED WITH SCRAPER --
         # Setting last value to index 
-        if tickType == 37 and reqId > 10000:
+        # if tickType == 37 and reqId > 10000:
+        if tickType == 4 and reqId > 10000:
             index = IndicesData.objects.get(index_api_id=reqId)
             # print(f'INDEX: {reqId} CURRENT_PRICE: {price}')
             index.index_current_value = price
@@ -642,6 +644,26 @@ class TestApp(EClient, EWrapper):
                 stock = StockData.objects.get(id=reqId)
                 stock.todays_open = price
                 stock.save()
+
+
+    def tickByTickAllLast(self, reqId: int, tickType: int, time: int, price: float,
+                size: int,tickAttribLast, exchange: str, specialConditions: str):
+        
+        print(f"tickType: ***************{tickType}****************")
+        super().tickByTickAllLast(reqId, tickType, time, price, size, tickAttribLast,exchange, specialConditions)
+        if tickType == 1:
+            print("Last.", end='\n')
+        else:
+            print("AllLast.", end='')
+            print(" ReqId:", reqId,
+                  "Time:", datetime.datetime.fromtimestamp(time).strftime("%Y%m%d %H:%M:%S"),
+                  "Spec Cond:", specialConditions, "PastLimit:", tickAttribLast.pastLimit, "Unreported:", tickAttribLast.unreported)
+
+    @iswrapper
+    def tickByTickMidPoint(self, reqId: int, time: int, midPoint: float):
+        super().tickByTickMidPoint(reqId, time, midPoint)
+        print("Midpoint. ReqId:", reqId, "Time:", 
+            datetime.datetime.fromtimestamp(time).strftime("%Y%m%d %H:%M:%S"),"MidPoint:", midPoint)
 
     @iswrapper
     def tickString(self, reqId, tickType, value):
@@ -670,6 +692,7 @@ class TestApp(EClient, EWrapper):
             else:
                 stock.dividend = dividend
                 stock.save()
+                
 
     # @iswrapper
     # def tickSize(self, reqId, tickType, size):
@@ -725,6 +748,14 @@ def ib_stock_api(old_stocks_list, stocks, action):
 
         print(f"*************** Loading Indeces... ****************")
 
+        '''
+        NASDAQ = 55555
+        DOW = 77777
+        SNP = 88888
+        VIX = 11111
+        R2K = 22222
+        '''
+
         # NASDAQ
         contract.symbol = "NDX"
         contract.secType = "IND"
@@ -736,33 +767,42 @@ def ib_stock_api(old_stocks_list, stocks, action):
         # app.reqMktData(55555, contract, 233, False, False, []) 
         
         # Mark Price (used in TWS P&L computations) - no change
-        app.reqMktData(55555, contract, 221, False, False, []) 
+        app.reqMktData(NAS, contract, 221, False, False, []) 
 
         # S&P
         contract.symbol = "SPX"
         contract.secType = "IND"
         contract.currency = "USD"
         contract.exchange = "CBOE"
-        app.reqMktData(88888, contract, 221, False, False, [])
+        app.reqMktData(SNP, contract, 221, False, False, [])
+        
+        app.reqTickByTickData(SNP, contract, "Last", 0, False);
 
         # DOW JONES
         contract.symbol = "INDU"
         contract.secType = "IND"
         contract.currency = "USD"
         contract.exchange = "CME"
-        app.reqMktData(77777, contract, 221, False, False, [])
+        app.reqMktData(DOW, contract, 221, False, False, [])
+
+        app.reqTickByTickData(DOW, contract, "Last", 0, False);
+
 
         contract.symbol = "VIX"
         contract.secType = "IND"
         contract.currency = "USD"
         contract.exchange = "CBOE"
-        app.reqMktData(11111, contract, 221, False, False, [])
+        app.reqMktData(VIX, contract, 221, False, False, [])
+
+        app.reqTickByTickData(VIX, contract, "Last", 0, False);
 
         contract.symbol = "RUT"
         contract.secType = "IND"
         contract.currency = "USD"
         contract.exchange = "RUSSELL"
-        app.reqMktData(22222, contract, 221, False, False, [])
+        app.reqMktData(R2K, contract, 221, False, False, [])
+
+        app.reqTickByTickData(R2K, contract, "Last", 0, False);
 
 
         sleep(2)
@@ -781,6 +821,8 @@ def ib_stock_api(old_stocks_list, stocks, action):
             app.reqStatus[rStatus] = 'Sent'
             app.reqMarketDataType(4)
             app.reqMktData(stock_id, contract, "456", False, False, [])
+
+            app.reqTickByTickData(stock_id, contract, "Last", 0, False);
 
             # app.fundamentalData(stock_id, contract)
 

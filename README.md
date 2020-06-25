@@ -5,3 +5,14 @@ This project ccombines Django and Interactive Brokers API to manage stocks portf
 * Connecting to the IB API
 * Managing the addition and the deletion of stocks from the list.
 * Adding to history page on which there is an option to make some transactions P/L calculations
+
+
+## Latest Python sources 
+https://interactivebrokers.github.io/#
+
+## Important TWS docs locatios:
+Tick types: https://interactivebrokers.github.io/tws-api/tick_types.html#ib_dividends
+EClient: https://tinyurl.com/y73tg4t8
+EWrapper: https://tinyurl.com/y8t2ujfp
+Basic Orders examples: https://interactivebrokers.github.io/tws-api/basic_orders.html 
+Tick data: https://interactivebrokers.github.io/tws-api/tick_data.html
