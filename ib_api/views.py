@@ -421,7 +421,7 @@ def check_conditions_alerts(request):
 
         if not email_flag:
             if week3_color == 'green' and gap1_color == 'red':
-                print(f'stock: {stock.ticker}. w3: {week3_color}  g1: {gap1_color}')
+                # print(f'stock: {stock.ticker}. w3: {week3_color}  g1: {gap1_color}')
                 stock_alert = 'condition_1'
                 email_alert = True
             elif week3_color == '#FF1000' and gap1_color == 'green':
