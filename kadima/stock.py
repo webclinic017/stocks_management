@@ -93,7 +93,10 @@ class Stock():
     
     def update_stock(self):
     
-        self.stock_df = fin_data.get_data_yahoo(str(self.ticker), start=self.today - timedelta(44), end=self.today)
+        try:
+            self.stock_df = fin_data.get_data_yahoo(str(self.ticker), start=self.today - timedelta(44), end=self.today)
+        except:
+            self.stock_df = yf.download(str(self.ticker), start=self.today - timedelta(44), end=self.today)
 
         self.stock_price = round(self.stock_df.loc[self.stock_df.index[-1]]['Close'],2)
 
@@ -306,3 +309,10 @@ class Stock():
             earnings_call = None
         
         return earnings_warning, earnings_call
+
+# CLX,COST,CSCO,GOOGL,HD,HRL,JNJ,KO,MDLZ,MSFT,
+# NSRGY,NVS,PEP,PFE,PG,PSTI,UL,UN,V,WM,
+# AAPL,ALL,AWK,BAC,BMY,C,CAT,CL,CNI,
+# DIS,JPM,MMM,PGR,T,TEVA,TM,VZ,WFC
+
+# MET,VZ
