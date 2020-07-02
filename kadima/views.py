@@ -238,19 +238,19 @@ def history(request, table_index=1):
 
             stock_data = StockData.objects.get(id=stock_id)
 
-            stock_data.stocks_bought = int(request.POST.get(f'stocks_bought_{stock_id}'))
+            stock_data.stocks_bought = float(request.POST.get(f'stocks_bought_{stock_id}'))
             stock_data.purchase_price = float(request.POST.get(f'stock_purchase_price_{stock_id}'))
-            stock_data.stocks_sold = int(request.POST.get(f'stocks_sold_{stock_id}'))
+            stock_data.stocks_sold = float(request.POST.get(f'stocks_sold_{stock_id}'))
             stock_data.selling_price = float(request.POST.get(f'selling_price_{stock_id}'))
 
-            stock_data.profit = (stock_data.stocks_sold * stock_data.selling_price) - (stock_data.stocks_bought * stock_data.purchase_price)
+            stock_data.profit = round((stock_data.stocks_sold * stock_data.selling_price) - (stock_data.stocks_bought * stock_data.purchase_price),3)
 
             try:
                 stock_data.dividends = float(request.POST.get(f'dividends_{stock_id}'))
             except:
                 pass
 
-            stock_data.total_profit = stock_data.profit + stock_data.dividends
+            stock_data.total_profit = round(stock_data.profit + stock_data.dividends,3)
             stock_data.save()
 
             context['stocks'] = saved_stocks

@@ -6,6 +6,9 @@ This project ccombines Django and Interactive Brokers API to manage stocks portf
 * Managing the addition and the deletion of stocks from the list.
 * Adding to history page on which there is an option to make some transactions P/L calculations
 
+## Data sources APIs
+* yFinance: https://github.com/ranaroussi/yfinance (yf)
+* pandas datareader: https://github.com/pydata/pandas-datareader
 
 ## Latest Python sources 
 https://interactivebrokers.github.io/#

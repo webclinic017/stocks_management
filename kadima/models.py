@@ -133,9 +133,9 @@ class StockData(models.Model):
     # History Page Section
     saved_to_history = models.BooleanField(default=False)
 
-    stocks_bought = models.IntegerField(null=True, default=0)
+    stocks_bought = models.FloatField(null=True, default=0)
     purchase_price = models.FloatField(null=True, default=0.0)
-    stocks_sold  = models.IntegerField(null=True, default=0)
+    stocks_sold  = models.FloatField(null=True, default=0)
     selling_price = models.FloatField(null=True, default=0.0)
     profit = models.FloatField(null=True, default=0.0)
     dividends = models.FloatField(null=True, default=0.0)

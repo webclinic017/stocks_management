@@ -634,7 +634,7 @@ class TestApp(EClient, EWrapper):
         # if tickType == 37 and reqId > 10000:
         if tickType == 4 and reqId > 10000:
             index = IndicesData.objects.get(index_api_id=reqId)
-            # print(f'INDEX: {reqId} CURRENT_PRICE: {price}')
+            print(f'INDEX: {reqId} CURRENT_PRICE: {price}')
             index.index_current_value = price
             index.save()
 
