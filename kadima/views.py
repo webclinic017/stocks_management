@@ -207,8 +207,6 @@ def history(request, table_index=1):
     ib_api_connected = api_connection_status()
     context['ib_api_connected'] = ib_api_connected
 
-    date_picker = DateForm()
-
     if request.method == 'POST':
         if 'connect_ib_api' in request.POST:
             api_connect(request)
@@ -292,19 +290,37 @@ def history(request, table_index=1):
 
         # Filter history stocks according to dates range
         elif 'date_picker' in request.POST:
-            start_date = request.POST['datetimepicker1']
-            end_date = request.POST['datetimepicker2']
 
-            start = date_obj_to_date(start_date,'dash')
-            end = date_obj_to_date(end_date,'dash')
+            if request.POST['datetimepicker1']:
+                start_date_arr = request.POST['datetimepicker1'].split('-')
+                start_year, start_month, start_day  = start_date_arr
+                start = datetime.datetime(day=int(start_day), month=int(start_month), year=int(start_year))
+            else:
+                messages.error(request, 'Please pick a start date for the filter.')
+                return redirect(request.META['HTTP_REFERER'])
 
-            print(f"START: ***************{start}****************")
+            if request.POST['datetimepicker2']:
+                end_date_arr = request.POST['datetimepicker2'].split('-')
+                end_year, end_month, end_day  = end_date_arr
+                end = datetime.datetime(day=int(end_day), month=int(end_month), year=int(end_year))
+            else:
+                messages.error(request, 'Please pick a end date for the filter.')
+                return redirect(request.META['HTTP_REFERER'])
 
-            filtered_stocks = StockData.objects.filter(saved_to_history=True, stock_date_range=[start, end])
+
+            filtered_stocks = StockData.objects.filter(saved_to_history=True, stock_date__range=[start, end])
             context['stocks'] = filtered_stocks
 
             # return HttpResponseRedirect(request.path_info)
             return render(request, 'kadima/history.html', context)
+
+        elif 'reset_filter' in request.POST:
+            history_stocks = StockData.objects.filter(saved_to_history=True)
+            context['stocks'] = history_stocks
+
+            # return HttpResponseRedirect(request.path_info)
+            return render(request, 'kadima/history.html', context)
+
 
         else:
             saved_stocks = StockData.objects.filter(saved_to_history=True)

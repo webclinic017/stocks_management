@@ -1,8 +1,17 @@
 {% extends 'kadima/base.html' %}
 {% block content %}
+
 <div class="content" id="historyTable">
     <div class="row">
         <div class="col-md-12">
+            {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-{{ message.tags }} display-message border " id="trigger_alerts">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            {% endif %}
+    
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
         <div class="card  card-plain">
@@ -10,41 +19,35 @@
                 <h2 class="card-title">Stock History Table - {{ table_index }}</h2>
             </div>
             <div class="row">
-                <div class="col-md-5 pr-md-1">
+                <div class="col-md-8 pr-md-1">
                     <form method="POST" enctype="multipart/form-data">{% csrf_token %}
                         <div class="row">
                             <h4></h4>
                         </div>
                         <div class="row">
 
-                            <div class="col-md-3 pr-md-1">
+                            <div class="col-md-3">
                                 <div class="form-group">
-                                    <input id="datetimepicker1" name="datetimepicker1" type="text">
+                                    <input name="datetimepicker1" type="date">
                                 </div>
                             </div>
             
-                            <div class="col-md-3 pr-md-1">
+                            <div class="col-md-3">
                                 <div class="form-group">
-                                    <input style="float: left;" id="datetimepicker2" name="datetimepicker2" type="text">
+                                    <input name="datetimepicker2" type="date">
                                 </div>
                             </div>
-                            <div class="col-md-5 pr-md-1">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <input id="date_picker" name="date_picker" type="submit" class="btn btn-default" value="Filter Dates">
                                 </div>
                             </div>
 
-                            <script>
-                                $(function () {
-                                    $("#datetimepicker1").datetimepicker();
-                                });
-                            </script>
-                            <script>
-                                $(function () {
-                                    $("#datetimepicker2").datetimepicker();
-                                });
-                            </script>
-
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <input id="date_picker" name="reset_filter" type="submit" class="btn btn-warning" value="Reset Filter">
+                                </div>
+                            </div>
                         </div>
                     </form>
                 </div>
