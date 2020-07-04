@@ -112,62 +112,62 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for stock in stocks %}
+                        {% for h_stock in history_stocks %}
                             <tr class="border-top border-1">
                                 <td class="border-top border-1">
-                                    {{ stock.stock_date }}
+                                    {{ h_stock.stock.stock_date }}
                                 </td>                            
                                 <td class="border-top border-1">
-                                    {{ stock.ticker }}
+                                    {{ h_stock.stock.ticker }}
                                 </td>
                                 <td class="border-top border-1">
-                                    {{ stock.stock_price }}
+                                    {{ h_stock.stock.stock_price }}
                                 </td>
-                                <td class="border-top border-right border-3" style="background-color: {{ stock.week_1_color }};">
-                                    {{ stock.week_1 }}%
+                                <td class="border-top border-right border-3" style="background-color: {{ h_stock.stock.week_1_color }};">
+                                    {{ h_stock.stock.week_1 }}%
                                 </td>
-                                <td class="border-right border-top border-3" style="background-color: {{ stock.week_2_color }}; ">
-                                    {{ stock.week_2 }}%
+                                <td class="border-right border-top border-3" style="background-color: {{ h_stock.stock.week_2_color }}; ">
+                                    {{ h_stock.stock.week_2 }}%
                                 </td >
-                                <td class="border-top border-right border-3" style="background-color: {{ stock.week_3_color }}; ">
-                                    {{ stock.week_3 }}%
+                                <td class="border-top border-right border-3" style="background-color: {{ h_stock.stock.week_3_color }}; ">
+                                    {{ h_stock.stock.week_3 }}%
                                 </td>
-                                <td class="border-top border-right border-3" style="background-color: {{ stock.week_5_color }}; ">
-                                    {{ stock.week_5 }}%
+                                <td class="border-top border-right border-3" style="background-color: {{ h_stock.stock.week_5_color }}; ">
+                                    {{ h_stock.stock.week_5 }}%
                                 </td>
-                                <td class="border-top border-right border-3" style="background-color: {{ stock.gap_1_color }}; ">
-                                    {{ stock.gap_1 }}%
+                                <td class="border-top border-right border-3" style="background-color: {{ h_stock.stock.gap_1_color }}; ">
+                                    {{ h_stock.stock.gap_1 }}%
                                 </td>
                                 <td class="{{ stock.earnings_warning }} border-top border-1" style="height: 100%;">
-                                    {{ stock.earnings_call_displayed }}
+                                    {{ h_stock.stock.earnings_call_displayed }}
                                 </td>
                                 <td class="border-top border-1">
-                                    <input type="text" class="form-control" name="stocks_bought_{{ stock.id }}" placeholder="{{ stock.stocks_bought }}">
+                                    <input type="text" class="form-control" name="stocks_bought_{{ h_stock.id }}" placeholder="{{ h_stock.stocks_bought }}">
                                 </td>
                                 <td class="border-top border-1">
-                                    <input type="text" class="form-control" name="stock_purchase_price_{{ stock.id }}" placeholder="{{ stock.purchase_price }}">
+                                    <input type="text" class="form-control" name="stock_purchase_price_{{ h_stock.id }}" placeholder="{{ h_stock.purchase_price }}">
                                 </td>
                                 <td class="border-top border-1">
-                                    <input type="text" class="form-control" name="stocks_sold_{{ stock.id }}" placeholder="{{ stock.stocks_sold }}">
+                                    <input type="text" class="form-control" name="stocks_sold_{{ h_stock.id }}" placeholder="{{ h_stock.stocks_sold }}">
                                 </td>
                                 <td class="border-top border-1">
-                                    <input type="text" class="form-control" name="selling_price_{{ stock.id }}" placeholder="{{ stock.selling_price }}">
+                                    <input type="text" class="form-control" name="selling_price_{{ h_stock.id }}" placeholder="{{ h_stock.selling_price }}">
                                 </td>
                                 <td class="border-top border-1">
-                                    {{ stock.profit }}
+                                    {{ h_stock.profit }}
                                 </td>
                                 <td class="border-top border-1">
-                                <input type="text" class="form-control" name="dividends_{{ stock.id }}" placeholder="{{ stock.dividends }}">
+                                <input type="text" class="form-control" name="dividends_{{ h_stock.id }}" placeholder="{{ h_stock.dividends }}">
                                 </td>
                                 <td class="border-top border-1">
-                                    {{ stock.total_profit }}
+                                    {{ h_stock.total_profit }}
                                 </td>
 
                                 <td class="border-top border-1">
-                                    <button type="submit" value="{{ stock.id }}" name="update_stock_{{ stock.id }}" class="btn btn-fill btn-secondary">Update</button>
+                                    <button type="submit" value="{{ h_stock.id }}" name="update_stock" class="btn btn-fill btn-secondary">Update</button>
                                 </td>
                                 <td class="border-top border-1">
-                                    <button type="submit" value="{{ stock.id }}" name="delete_stock" class="tim-icons icon-trash-simple"></button>
+                                    <button type="submit" value="{{ h_stock.id }}" name="delete_stock" class="tim-icons icon-trash-simple"></button>
                                 </td class="border-top border-1">
                                 
                             </tr>

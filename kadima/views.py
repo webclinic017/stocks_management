@@ -34,7 +34,7 @@ import yfinance as yf
 from ib_api.views import stock_data_api, alarm_trigger, api_connection_status,ib_api_wrapper
 from kadima.k_utils import week_values, gap_1_check,date_obj_to_date, reset_email_alerts, week_color, reset_alarms, indices_scrapers
 
-from .models import StockData, IndicesData, EmailSupport
+from .models import StockData, IndicesData, EmailSupport, HistoryStock
 from .forms import DateForm
 from .ml_models import trends
 from .value_updates import indexes_updates, update_values
@@ -198,9 +198,11 @@ def stock_alarms(request):
 
 def history(request, table_index=1):
     context = {}
-    saved_stocks = StockData.objects.filter(saved_to_history=True, table_index=table_index)
+    # saved_stocks = StockData.objects.filter(saved_to_history=True, table_index=table_index)
+    history_stocks = HistoryStock.objects.filter(table_index=table_index)
+
     context['email_enabled'] = EmailSupport.objects.all().first().enabled
-    context['stocks'] = saved_stocks
+    context['history_stocks'] = history_stocks
     context['table_index'] = table_index
     request.session['table_index'] = table_index
 
@@ -227,14 +229,16 @@ def history(request, table_index=1):
     
         elif 'update_stock' in str(request.POST):
 
-            for k in request.POST.keys():
-                if 'update_stock' in k:
-                    stock_id = k.split('_')[-1]
-                else:
-                    print(f'ERROR:failed getting stock ID')
-                    logger.error(f'ERROR:failed getting stock ID')
+            # for k in request.POST.keys():
+            #     if 'update_stock' in k:
+            #         stock_id = k.split('_')[-1]
+            #     else:
+            #         print(f'ERROR:failed getting stock ID')
+            #         logger.error(f'ERROR:failed getting stock ID')
 
-            stock_data = StockData.objects.get(id=stock_id)
+            stock_id = request.POST.get('update_stock')
+
+            stock_data = HistoryStock.objects.get(id=stock_id)
 
             stock_data.stocks_bought = float(request.POST.get(f'stocks_bought_{stock_id}'))
             stock_data.purchase_price = float(request.POST.get(f'stock_purchase_price_{stock_id}'))
@@ -251,7 +255,7 @@ def history(request, table_index=1):
             stock_data.total_profit = round(stock_data.profit + stock_data.dividends,3)
             stock_data.save()
 
-            context['stocks'] = saved_stocks
+            context['stocks'] = history_stocks
 
         ## Enable email support
         elif 'email_enable' in request.POST:
@@ -278,12 +282,16 @@ def history(request, table_index=1):
 
         elif 'delete_stock' in request.POST:
             stock_id = request.POST['delete_stock']
-            stock_data = StockData.objects.get(id=stock_id)
-            stock_data.saved_to_history = False 
-            stock_data.save()
 
-            saved_stocks = StockData.objects.filter(saved_to_history=True)
-            context['stocks'] = saved_stocks
+            # stock_data = StockData.objects.get(id=stock_id)
+            # stock_data.saved_to_history = False 
+            # stock_data.save()
+            delete_from_history = HistoryStock.objects.get(id=stock_id)
+            delete_from_history.delete()
+            
+            # saved_stocks = StockData.objects.filter(saved_to_history=True)
+            history_stocks = HistoryStock.objects.filter(table_index=table_index)
+            context['history_stocks'] = history_stocks
 
             return HttpResponseRedirect(request.path_info)
 
@@ -722,6 +730,12 @@ def home(request, table_index=1):
             stock_data = StockData.objects.get(id=stock_id)
             stock_data.saved_to_history = True  
             stock_data.save()
+
+            history_stock = HistoryStock.objects.create(
+                stock=stock_data,
+                table_index=table_index
+            )            
+            
             messages.warning(request, f"Stock was saved. You can review it's data on the History page.")
 
             stocks = StockData.objects.filter(table_index=table_index).order_by('week_3')

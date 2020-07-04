@@ -198,3 +198,19 @@ class IndicesData(models.Model):
 
     def __str__(self):
             return self.index_symbol
+
+class HistoryStock(models.Model):
+    stock = models.ForeignKey(StockData, on_delete=models.CASCADE)
+    table_index = models.IntegerField()
+    time_added = models.TimeField(auto_now=True)
+
+    stocks_bought = models.FloatField(null=True, default=0)
+    purchase_price = models.FloatField(null=True, default=0.0)
+    stocks_sold  = models.FloatField(null=True, default=0)
+    selling_price = models.FloatField(null=True, default=0.0)
+    profit = models.FloatField(null=True, default=0.0)
+    dividends = models.FloatField(null=True, default=0.0)
+    total_profit = models.FloatField(null=True, default=0.0)
+    
+    def __str__(self):
+        return self.stock.ticker
