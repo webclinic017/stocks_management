@@ -62,7 +62,10 @@
                         <thead class=" text-primary">
                         <tr>
                         <th>
-                            Date
+                            Buy Date
+                        </th>
+                        <th>
+                            Sold Date
                         </th>
                         <th>
                             Stock Symbol
@@ -116,6 +119,9 @@
                             <tr class="border-top border-1">
                                 <td class="border-top border-1">
                                     {{ h_stock.stock.stock_date }}
+                                </td>                            
+                                <td class="border-top border-1">
+                                    {{ h_stock.sold_date }}
                                 </td>                            
                                 <td class="border-top border-1">
                                     {{ h_stock.stock.ticker }}

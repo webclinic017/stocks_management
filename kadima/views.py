@@ -229,30 +229,49 @@ def history(request, table_index=1):
     
         elif 'update_stock' in str(request.POST):
 
-            # for k in request.POST.keys():
-            #     if 'update_stock' in k:
-            #         stock_id = k.split('_')[-1]
-            #     else:
-            #         print(f'ERROR:failed getting stock ID')
-            #         logger.error(f'ERROR:failed getting stock ID')
-
             stock_id = request.POST.get('update_stock')
 
             stock_data = HistoryStock.objects.get(id=stock_id)
 
-            stock_data.stocks_bought = float(request.POST.get(f'stocks_bought_{stock_id}'))
-            stock_data.purchase_price = float(request.POST.get(f'stock_purchase_price_{stock_id}'))
-            stock_data.stocks_sold = float(request.POST.get(f'stocks_sold_{stock_id}'))
-            stock_data.selling_price = float(request.POST.get(f'selling_price_{stock_id}'))
+            stocks_bought = request.POST.get(f'stocks_bought_{stock_id}')
+            purchase_price = request.POST.get(f'stock_purchase_price_{stock_id}')
 
-            stock_data.profit = round((stock_data.stocks_sold * stock_data.selling_price) - (stock_data.stocks_bought * stock_data.purchase_price),3)
+            stocks_sold = request.POST.get(f'stocks_sold_{stock_id}')
+            selling_price = request.POST.get(f'selling_price_{stock_id}')
+
+            if stocks_bought:
+                stock_data.stocks_bought = float(stocks_bought)
+            
+            if purchase_price:
+                stock_data.purchase_price = float(purchase_price)
+
+            if stocks_sold:            
+                stock_data.stocks_sold = float(stocks_sold)
+            
+            if selling_price:
+                stock_data.selling_price = float(selling_price)
+
+            if stocks_bought and purchase_price and stocks_sold and selling_price:
+                stock_data.profit = round((stock_data.stocks_sold * stock_data.selling_price) - (stock_data.stocks_bought * stock_data.purchase_price),3)
+                stock_data.sold_date = str(datetime.datetime.today())
+            elif stock_data.stocks_bought and stock_data.purchase_price and stocks_sold and selling_price:
+                stock_data.profit = round((stock_data.stocks_sold * stock_data.selling_price) - (stock_data.stocks_bought * stock_data.purchase_price),3)
+                stock_data.sold_date = str(datetime.datetime.today())
+            elif stock_data.stocks_bought and stock_data.purchase_price and stock_data.stocks_sold and selling_price:
+                stock_data.profit = round((stock_data.stocks_sold * stock_data.selling_price) - (stock_data.stocks_bought * stock_data.purchase_price),3)
+                stock_data.sold_date = str(datetime.datetime.today())
+            elif stock_data.stocks_bought and stock_data.purchase_price and stocks_sold and stock_data.selling_price:
+                stock_data.profit = round((stock_data.stocks_sold * stock_data.selling_price) - (stock_data.stocks_bought * stock_data.purchase_price),3)
+                stock_data.sold_date = str(datetime.datetime.today())
 
             try:
                 stock_data.dividends = float(request.POST.get(f'dividends_{stock_id}'))
             except:
                 pass
 
-            stock_data.total_profit = round(stock_data.profit + stock_data.dividends,3)
+            if stock_data.profit:
+                stock_data.total_profit = round(stock_data.profit + stock_data.dividends,3)
+            
             stock_data.save()
 
             context['stocks'] = history_stocks

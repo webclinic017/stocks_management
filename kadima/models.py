@@ -21,6 +21,7 @@ class StockData(models.Model):
 
 
     stock_date = models.DateTimeField(auto_now=True)
+    sold_date = models.DateTimeField(null=True, blank=True)
     stock_displayed_date = models.CharField(max_length=100)
     ticker = models.CharField(max_length=100)
     stock_price = models.FloatField()
@@ -201,6 +202,7 @@ class IndicesData(models.Model):
 
 class HistoryStock(models.Model):
     stock = models.ForeignKey(StockData, on_delete=models.CASCADE)
+    sold_date = models.DateTimeField(null=True, blank=True)
     table_index = models.IntegerField()
     time_added = models.TimeField(auto_now=True)
 
