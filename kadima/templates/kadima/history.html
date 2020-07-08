@@ -5,6 +5,9 @@
         font-size: 1rem;
         font-weight: bold;
     }
+    td.h_value input::placeholder {
+        color: white;
+    }
 </style>
 
 <div class="content" id="historyTable">
@@ -165,13 +168,13 @@
                                 <td class="border-top border-1 h_value">
                                     <input type="text" class="form-control" name="selling_price_{{ h_stock.id }}" placeholder="{{ h_stock.selling_price }}">
                                 </td>
-                                <td class="border-top border-1">
+                                <td class="border-top border-1" style="font-size:1rem; font-weight:bold; color:white">
                                     {{ h_stock.profit }}
                                 </td>
                                 <td class="border-top border-1 h_value">
                                 <input type="text" class="form-control" name="dividends_{{ h_stock.id }}" placeholder="{{ h_stock.dividends }}">
                                 </td>
-                                <td class="border-top border-1">
+                                <td class="border-top border-1" style="font-size:1rem; font-weight:bold; color:white">
                                     {{ h_stock.total_profit }}
                                 </td>
 
@@ -202,7 +205,7 @@
                             <td></td>
                             <td></td>
                             <td class="border-top">Total: </td>
-                            <td class="border-top" style="font-size: 1rem; font-weight: bold ">{{ sum_total_profit }}</td>
+                            <td class="border-top" style="font-size: 1.5rem; font-weight: bold ">{{ sum_total_profit }}</td>
                         </tr>
                         </tbody>
                     </table>
