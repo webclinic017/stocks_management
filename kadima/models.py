@@ -204,7 +204,7 @@ class HistoryStock(models.Model):
     stock = models.ForeignKey(StockData, on_delete=models.CASCADE)
     sold_date = models.DateTimeField(null=True, blank=True)
     table_index = models.IntegerField()
-    time_added = models.TimeField(auto_now=True)
+    time_added = models.DateTimeField(auto_now=True)
 
     stocks_bought = models.FloatField(null=True, default=0)
     purchase_price = models.FloatField(null=True, default=0.0)

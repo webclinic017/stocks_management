@@ -16,7 +16,7 @@ class IndicesData(admin.ModelAdmin):
 
 @admin.register(HistoryStock)
 class HistoryStocks(admin.ModelAdmin):
-    list_display = ('pk', 'stock', 'table_index','sold_date',)
+    list_display = ('pk', 'stock', 'table_index','time_added', 'sold_date',)
     search_field = ('stock',)
     ordering = ('time_added',)
 

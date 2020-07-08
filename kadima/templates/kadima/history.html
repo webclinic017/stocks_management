@@ -1,5 +1,11 @@
 {% extends 'kadima/base.html' %}
 {% block content %}
+<style>
+    td.h_value input {
+        font-size: 1rem;
+        font-weight: bold;
+    }
+</style>
 
 <div class="content" id="historyTable">
     <div class="row">
@@ -118,7 +124,7 @@
                         {% for h_stock in history_stocks %}
                             <tr class="border-top border-1">
                                 <td class="border-top border-1">
-                                    {{ h_stock.stock.stock_date }}
+                                    {{ h_stock.time_added }}
                                 </td>                            
                                 <td class="border-top border-1">
                                     {{ h_stock.sold_date }}
@@ -147,22 +153,22 @@
                                 <td class="{{ stock.earnings_warning }} border-top border-1" style="height: 100%;">
                                     {{ h_stock.stock.earnings_call_displayed }}
                                 </td>
-                                <td class="border-top border-1">
+                                <td class="border-top border-1 h_value">
                                     <input type="text" class="form-control" name="stocks_bought_{{ h_stock.id }}" placeholder="{{ h_stock.stocks_bought }}">
                                 </td>
-                                <td class="border-top border-1">
+                                <td class="border-top border-1 h_value">
                                     <input type="text" class="form-control" name="stock_purchase_price_{{ h_stock.id }}" placeholder="{{ h_stock.purchase_price }}">
                                 </td>
-                                <td class="border-top border-1">
+                                <td class="border-top border-1 h_value">
                                     <input type="text" class="form-control" name="stocks_sold_{{ h_stock.id }}" placeholder="{{ h_stock.stocks_sold }}">
                                 </td>
-                                <td class="border-top border-1">
+                                <td class="border-top border-1 h_value">
                                     <input type="text" class="form-control" name="selling_price_{{ h_stock.id }}" placeholder="{{ h_stock.selling_price }}">
                                 </td>
                                 <td class="border-top border-1">
                                     {{ h_stock.profit }}
                                 </td>
-                                <td class="border-top border-1">
+                                <td class="border-top border-1 h_value">
                                 <input type="text" class="form-control" name="dividends_{{ h_stock.id }}" placeholder="{{ h_stock.dividends }}">
                                 </td>
                                 <td class="border-top border-1">
@@ -179,6 +185,25 @@
                             </tr>
 
                         {% endfor %}
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td class="border-top">Total: </td>
+                            <td class="border-top" style="font-size: 1rem; font-weight: bold ">{{ sum_total_profit }}</td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>

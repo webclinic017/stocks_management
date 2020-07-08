@@ -200,6 +200,14 @@ def history(request, table_index=1):
     context = {}
     # saved_stocks = StockData.objects.filter(saved_to_history=True, table_index=table_index)
     history_stocks = HistoryStock.objects.filter(table_index=table_index)
+    
+    # Calculate sum of all total profits
+    sum_total_profit = 0
+    if history_stocks:
+        for hs in history_stocks:
+            sum_total_profit += hs.total_profit
+        
+        context['sum_total_profit'] = sum_total_profit
 
     context['email_enabled'] = EmailSupport.objects.all().first().enabled
     context['history_stocks'] = history_stocks
@@ -210,6 +218,8 @@ def history(request, table_index=1):
     context['ib_api_connected'] = ib_api_connected
 
     if request.method == 'POST':
+
+
         if 'connect_ib_api' in request.POST:
             api_connect(request)
             ib_api_connected = api_connection_status()
@@ -274,7 +284,8 @@ def history(request, table_index=1):
             
             stock_data.save()
 
-            context['stocks'] = history_stocks
+            return redirect(request.META['HTTP_REFERER'])
+
 
         ## Enable email support
         elif 'email_enable' in request.POST:
@@ -309,8 +320,9 @@ def history(request, table_index=1):
             delete_from_history.delete()
             
             # saved_stocks = StockData.objects.filter(saved_to_history=True)
-            history_stocks = HistoryStock.objects.filter(table_index=table_index)
-            context['history_stocks'] = history_stocks
+            # history_stocks = HistoryStock.objects.filter(table_index=table_index)
+            # context['history_stocks'] = history_stocks
+            # return redirect(request.META['HTTP_REFERER'])
 
             return HttpResponseRedirect(request.path_info)
 
@@ -335,26 +347,33 @@ def history(request, table_index=1):
                 return redirect(request.META['HTTP_REFERER'])
 
 
-            filtered_stocks = StockData.objects.filter(saved_to_history=True, stock_date__range=[start, end])
-            context['stocks'] = filtered_stocks
+            filtered_stocks = HistoryStock.objects.filter(time_added__range=[start, end])
 
+            # Calculate sum of all total profits
+            sum_total_profit = 0
+            if history_stocks:
+                for hs in filtered_stocks:
+                    sum_total_profit += hs.total_profit
+                
+                context['sum_total_profit'] = sum_total_profit
+
+            context['history_stocks'] = filtered_stocks
             # return HttpResponseRedirect(request.path_info)
             return render(request, 'kadima/history.html', context)
 
         elif 'reset_filter' in request.POST:
-            history_stocks = StockData.objects.filter(saved_to_history=True)
-            context['stocks'] = history_stocks
-
+            # history_stocks = StockData.objects.filter(saved_to_history=True)
+            # context['history_stocks'] = history_stocks
             # return HttpResponseRedirect(request.path_info)
-            return render(request, 'kadima/history.html', context)
-
+            # return render(request, 'kadima/history.html', context)
+            return redirect(request.META['HTTP_REFERER'])
 
         else:
-            saved_stocks = StockData.objects.filter(saved_to_history=True)
-            context['stocks'] = saved_stocks
-            
-            return render(request, 'kadima/history.html', context)
-    
+            # saved_stocks = StockData.objects.filter(saved_to_history=True)
+            # context['history_stocks'] = saved_stocks
+            # return render(request, 'kadima/history.html', context)
+            return redirect(request.META['HTTP_REFERER'])
+
     return render(request, 'kadima/history.html', context)
 
 def home(request, table_index=1):
