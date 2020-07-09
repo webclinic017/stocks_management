@@ -28,33 +28,39 @@
                 <h2 class="card-title">Stock History Table - {{ table_index }}</h2>
             </div>
             <div class="row">
-                <div class="col-md-8 pr-md-1">
+                <div class="col-md-12 pr-md-1">
                     <form method="POST" enctype="multipart/form-data">{% csrf_token %}
                         <div class="row">
                             <h4></h4>
                         </div>
                         <div class="row">
 
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <div class="form-group">
                                     <input name="datetimepicker1" type="date">
                                 </div>
                             </div>
             
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <div class="form-group">
                                     <input name="datetimepicker2" type="date">
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <div class="form-group">
                                     <input id="date_picker" name="date_picker" type="submit" class="btn btn-default" value="Filter Dates">
                                 </div>
                             </div>
 
-                            <div class="col-md-3">
+                            <div class="col-md-2 ">
                                 <div class="form-group">
                                     <input id="date_picker" name="reset_filter" type="submit" class="btn btn-warning" value="Reset Filter">
+                                </div>
+                            </div>
+                            <div class="col-md-2"></div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <input id="export_table" name="export_table" type="submit" class="btn btn-success btn-sm" value="Export to CSV">
                                 </div>
                             </div>
                         </div>

@@ -19,3 +19,6 @@ EClient: https://tinyurl.com/y73tg4t8
 EWrapper: https://tinyurl.com/y8t2ujfp
 Basic Orders examples: https://interactivebrokers.github.io/tws-api/basic_orders.html 
 Tick data: https://interactivebrokers.github.io/tws-api/tick_data.html
+
+# Exporting table to CSV file
+https://www.youtube.com/watch?v=lE8SXffJUmI

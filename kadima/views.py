@@ -10,6 +10,7 @@ import datetime
 import re
 import arrow
 import threading
+import csv
 from time import sleep
 from math import *
 from numpy import round
@@ -368,6 +369,10 @@ def history(request, table_index=1):
             # return render(request, 'kadima/history.html', context)
             return redirect(request.META['HTTP_REFERER'])
 
+        elif 'export_table' in request.POST:
+
+            return redirect('export_data')
+
         else:
             # saved_stocks = StockData.objects.filter(saved_to_history=True)
             # context['history_stocks'] = saved_stocks
@@ -375,6 +380,42 @@ def history(request, table_index=1):
             return redirect(request.META['HTTP_REFERER'])
 
     return render(request, 'kadima/history.html', context)
+
+def file_load_view(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachement; filename="report.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Table','Buy Date', 'Sold Date', 'Stock Symbol', 'Stock Price', '90 Days', 'Week2', 'Week3','Week5',
+        'Gap1', 'Earning Call', 'Stocks Bought', 'Price/Share', 'Shares Sold', 'Selling Price', 'Profit', 'Dividends', 'Total Profit'])
+
+    history_stocks = HistoryStock.objects.all()
+    
+    # .values_list('time_added', 'sold_date',  'stock','', 'table_index','','','','','','','stocks_bought','purchase_price', 'stocks_sold', 'selling_price','profit','dividends', 'total_profit')
+
+    for h_stock in history_stocks:
+        writer.writerow([
+            h_stock.table_index,
+            h_stock.time_added,
+            h_stock.sold_date,
+            h_stock.stock.ticker,
+            h_stock.stock.stock_price,
+            h_stock.stock.week_1,
+            h_stock.stock.week_2,
+            h_stock.stock.week_3,
+            h_stock.stock.week_5,
+            h_stock.stock.gap_1,
+            h_stock.stock.earnings_call_displayed,
+            h_stock.stocks_bought,
+            h_stock.purchase_price,
+            h_stock.stocks_sold,
+            h_stock.selling_price,
+            h_stock.profit,
+            h_stock.dividends,
+            h_stock.total_profit
+             ])
+
+    return response
 
 def home(request, table_index=1):
     context = {}
