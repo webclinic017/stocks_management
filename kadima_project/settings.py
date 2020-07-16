@@ -96,6 +96,7 @@ TEMPLATES = [
                 'kadima.context_processors.tableIndex',
                 'kadima.context_processors.stockAlert',
                 'kadima.context_processors.tableSort',
+                'kadima.context_processors.indecesSection',
             ],
         },
     },
@@ -186,3 +187,4 @@ CRISPY_TEMPLATE_PACK='bootstrap4'
 LOGIN_REDIRECT_URL='/'
 LOGOUT_REDIRECT_URL='/'
 
+INDICES = config['INDICES']

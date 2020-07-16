@@ -756,54 +756,59 @@ def ib_stock_api(old_stocks_list, stocks, action):
         R2K = 22222
         '''
 
-        # NASDAQ
-        contract.symbol = "NDX"
-        contract.secType = "IND"
-        contract.currency = "USD"
-        contract.exchange = "NASDAQ"
+        indeces = settings.INDICES
+        if indeces == 'SHOW':
+            # NASDAQ
+            contract.symbol = "NDX"
+            contract.secType = "IND"
+            contract.currency = "USD"
+            contract.exchange = "NASDAQ"
 
-        # RTVolume - contains the last trade price, last trade size, last trade time, total volume, VWAP, and single trade flag. - Gives 0
-        # Reference: https://tinyurl.com/y73tg4t8
-        # app.reqMktData(55555, contract, 233, False, False, []) 
+            # RTVolume - contains the last trade price, last trade size, last trade time, total volume, VWAP, and single trade flag. - Gives 0
+            # Reference: https://tinyurl.com/y73tg4t8
+            # app.reqMktData(55555, contract, 233, False, False, []) 
+            
+            # Mark Price (used in TWS P&L computations) - no change
+            app.reqMktData(NAS, contract, 221, False, False, []) 
+
+            # S&P
+            contract.symbol = "SPX"
+            contract.secType = "IND"
+            contract.currency = "USD"
+            contract.exchange = "CBOE"
+            app.reqMktData(SNP, contract, 221, False, False, [])
+            
+            app.reqTickByTickData(SNP, contract, "Last", 0, False);
+
+            # DOW JONES
+            contract.symbol = "INDU"
+            contract.secType = "IND"
+            contract.currency = "USD"
+            contract.exchange = "CME"
+            app.reqMktData(DOW, contract, 221, False, False, [])
+
+            app.reqTickByTickData(DOW, contract, "Last", 0, False);
+
+
+            contract.symbol = "VIX"
+            contract.secType = "IND"
+            contract.currency = "USD"
+            contract.exchange = "CBOE"
+            app.reqMktData(VIX, contract, 221, False, False, [])
+
+            app.reqTickByTickData(VIX, contract, "Last", 0, False);
+
+            contract.symbol = "RUT"
+            contract.secType = "IND"
+            contract.currency = "USD"
+            contract.exchange = "RUSSELL"
+            app.reqMktData(R2K, contract, 221, False, False, [])
+
+            app.reqTickByTickData(R2K, contract, "Last", 0, False);
         
-        # Mark Price (used in TWS P&L computations) - no change
-        app.reqMktData(NAS, contract, 221, False, False, []) 
-
-        # S&P
-        contract.symbol = "SPX"
-        contract.secType = "IND"
-        contract.currency = "USD"
-        contract.exchange = "CBOE"
-        app.reqMktData(SNP, contract, 221, False, False, [])
-        
-        app.reqTickByTickData(SNP, contract, "Last", 0, False);
-
-        # DOW JONES
-        contract.symbol = "INDU"
-        contract.secType = "IND"
-        contract.currency = "USD"
-        contract.exchange = "CME"
-        app.reqMktData(DOW, contract, 221, False, False, [])
-
-        app.reqTickByTickData(DOW, contract, "Last", 0, False);
-
-
-        contract.symbol = "VIX"
-        contract.secType = "IND"
-        contract.currency = "USD"
-        contract.exchange = "CBOE"
-        app.reqMktData(VIX, contract, 221, False, False, [])
-
-        app.reqTickByTickData(VIX, contract, "Last", 0, False);
-
-        contract.symbol = "RUT"
-        contract.secType = "IND"
-        contract.currency = "USD"
-        contract.exchange = "RUSSELL"
-        app.reqMktData(R2K, contract, 221, False, False, [])
-
-        app.reqTickByTickData(R2K, contract, "Last", 0, False);
-
+        else:
+            # NO Indices
+            pass
 
         sleep(2)
 

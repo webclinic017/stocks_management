@@ -1,3 +1,4 @@
+from django.conf import settings
 from ib_api.views import api_connection_status, trading_status
 # from kadima.value_updates import update_gaps_wrapper
 from .models import StockData
@@ -48,4 +49,8 @@ def isTrading(request):
     context = {}
     context['is_trading'] = trading_status()
     return context
-    
+
+def indecesSection(request):
+    context = {}
+    context['show_indeces'] = settings.INDICES
+    return context

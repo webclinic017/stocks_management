@@ -24,6 +24,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponseNotFound, HttpResponseBadRequest, HttpResponse, HttpResponseRedirect, Http404
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login
 from django.conf import settings
 from django.urls import reverse_lazy, reverse
 from django.contrib import messages
@@ -61,6 +62,10 @@ def alarm_stocks_selector(request):
     return render(request, 'kadima/partials/_alarm_stocks_selector.html', context)
 
 def stock_alarms(request):
+    user = authenticate(username='yaacov', password='Kadima2020!')
+    if user is not None:
+        login(request, user)
+
     context = {}
     alarmed_stocks = StockData.objects.filter(stock_alarm=True)
     context['stocks'] = alarmed_stocks
@@ -198,6 +203,10 @@ def stock_alarms(request):
 
 
 def history(request, table_index=1):
+    user = authenticate(username='yaacov', password='Kadima2020!')
+    if user is not None:
+        login(request, user)
+
     context = {}
     # saved_stocks = StockData.objects.filter(saved_to_history=True, table_index=table_index)
     history_stocks = HistoryStock.objects.filter(table_index=table_index)
@@ -418,6 +427,10 @@ def file_load_view(request):
     return response
 
 def home(request, table_index=1):
+    user = authenticate(username='yaacov', password='Kadima2020!')
+    if user is not None:
+        login(request, user)
+
     context = {}
     context['table_index'] = table_index
     ib_api_connected = api_connection_status()
