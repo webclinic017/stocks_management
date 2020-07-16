@@ -8,7 +8,6 @@ import matplotlib.pyplot as plt
 import numpy as np 
 import datetime
 import re
-import arrow
 import threading
 import csv
 from time import sleep
