@@ -475,24 +475,24 @@ def stock_data_api(request, table_index=1, sort=None):
             week3, w3_color = week_check(stock.week_3_min, stock.week_3_max, stock_dick[stock.id], week3=True)
             week5, w5_color = week_check(stock.week_5_min, stock.week_5_max, stock_dick[stock.id])
 
-            if trading_status():
+            # if trading_status():
                 # Updating new minimum prices to the DB
-                if week1 == 0:
-                    stock.week_1_min = stock_dick[stock.id]
-                if week2 == 0:
-                    stock.week_2_min = stock_dick[stock.id]
-                if week3 == 0:
-                    stock.week_3_min = stock_dick[stock.id]
-                if week5 == 0:
-                    stock.week_5_min = stock_dick[stock.id]
+            if week1 == 0:
+                stock.week_1_min = stock_dick[stock.id]
+            if week2 == 0:
+                stock.week_2_min = stock_dick[stock.id]
+            if week3 == 0:
+                stock.week_3_min = stock_dick[stock.id]
+            if week5 == 0:
+                stock.week_5_min = stock_dick[stock.id]
 
-                stock.stock_current_price = stock_dick[stock.id]
+            stock.stock_current_price = stock_dick[stock.id]
 
-                stock.save()
+            stock.save()
 
-            else:
-                # No Trading 
-                pass
+            # else:
+            #     # No Trading 
+            #     pass
             
             stocks_db_dict[stock.id] = {
                 'id': stock.id,
