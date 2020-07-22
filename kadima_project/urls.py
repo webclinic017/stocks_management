@@ -36,7 +36,9 @@ urlpatterns = [
 
 
     path('table_index=<table_index>/', views_kadima.home, name='table-2'),
+    path('table_index=<table_index>/', views_kadima.home, name='table-3'),
     path('history/<int:table_index>', views_kadima.history, name='history'),
+    path('history-all/', views_kadima.history_all, name='history-all'),
     path(r'export/', views_kadima.file_load_view, name='export_data'),
 
     # IB API URLS

@@ -200,6 +200,12 @@ def stock_alarms(request):
 
     return render(request, 'kadima/stock_alarms.html', context)
 
+def history_all(request):
+    context = {}
+    all_history_stocks = HistoryStock.objects.all()
+    context['all_history_stocks'] = all_history_stocks
+    return render(request, 'kadima/history-all.html', context)
+
 
 def history(request, table_index=1):
     user = authenticate(username='yaacov', password='Kadima2020!')
@@ -209,7 +215,7 @@ def history(request, table_index=1):
     context = {}
     # saved_stocks = StockData.objects.filter(saved_to_history=True, table_index=table_index)
     history_stocks = HistoryStock.objects.filter(table_index=table_index)
-    
+
     # Calculate sum of all total profits
     sum_total_profit = 0
     if history_stocks:

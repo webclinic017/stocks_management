@@ -1,0 +1,242 @@
+{% extends 'kadima/base.html' %}
+{% block content %}
+<style>
+    td.h_value input {
+        font-size: 1rem;
+        font-weight: bold;
+    }
+    td.h_value input::placeholder {
+        color: white;
+    }
+</style>
+
+<div class="content" id="historyTable">
+    <div class="row">
+        <div class="col-md-12">
+            {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-{{ message.tags }} display-message border " id="trigger_alerts">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            {% endif %}
+    
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+        <div class="card  card-plain">
+            <div class="card-header">
+                <h2 class="card-title">Stock History Table - {{ table_index }}</h2>
+            </div>
+            <div class="row">
+                <div class="col-md-12 pr-md-1">
+                    <form method="POST" enctype="multipart/form-data">{% csrf_token %}
+                        <div class="row">
+                            <h4></h4>
+                        </div>
+                        <div class="row">
+
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <input name="datetimepicker1" type="date">
+                                </div>
+                            </div>
+            
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <input name="datetimepicker2" type="date">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <input id="date_picker" name="date_picker" type="submit" class="btn btn-default" value="Filter Dates">
+                                </div>
+                            </div>
+
+                            <div class="col-md-2 ">
+                                <div class="form-group">
+                                    <input id="date_picker" name="reset_filter" type="submit" class="btn btn-warning" value="Reset Filter">
+                                </div>
+                            </div>
+                            <div class="col-md-2"></div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <input id="export_table" name="export_table" type="submit" class="btn btn-success btn-sm" value="Export to CSV">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        
+            <div class="card-body">
+            <!-- <div class="table-responsive" id="stocks_history"> -->
+            <!-- STREAMING DATA -->
+            <!-- </div> -->
+                <div class="table-responsive" id="stocks_history">
+                    <table class="table tablesorter " id="stocks_history">
+                        <thead class=" text-primary">
+                        <tr>
+                        <th>
+                            Buy Date
+                        </th>
+                        <th>
+                            Sold Date
+                        </th>
+                        <th>
+                            Stock Symbol
+                        </th>
+                        <th class="text-center">
+                            Stock Price
+                        </th>
+                        <th class="text-center">
+                            Week 1
+                        </th>
+                        <th class="text-center">
+                            Week 2
+                        </th>
+                        <th class="text-center">
+                            Week 3
+                        </th>
+                        <th class="text-center">
+                            Week 5
+                        </th>
+                        <th class="text-center">
+                            Gap 1
+                        </th>
+                        <th>
+                            Earning Call 
+                        </th>
+                        <th>
+                            Stocks Bought
+                        </th>
+                        <th>
+                            Price per Share
+                        </th>
+                        <th>
+                            Shares Sold
+                        </th>   
+                        <th>
+                            Selling Price
+                        </th>   
+                        <th>
+                            Profit
+                        </th>   
+                        <th>
+                            Dividends
+                        </th>   
+                        <th>
+                            Total Profit
+                        </th>   
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for h_stock in all_history_stocks %}
+                            <tr class="border-top border-1">
+                                <td class="border-top border-1">
+                                    {{ h_stock.time_added }}
+                                </td>                            
+                                <td class="border-top border-1">
+                                    {{ h_stock.sold_date }}
+                                </td>                            
+                                <td class="border-top border-1">
+                                    {{ h_stock.stock.ticker }}
+                                </td>
+                                <td class="border-top border-1">
+                                    {{ h_stock.stock.stock_price }}
+                                </td>
+                                <td class="border-top border-right border-3" style="background-color: {{ h_stock.stock.week_1_color }};">
+                                    {{ h_stock.stock.week_1 }}%
+                                </td>
+                                <td class="border-right border-top border-3" style="background-color: {{ h_stock.stock.week_2_color }}; ">
+                                    {{ h_stock.stock.week_2 }}%
+                                </td >
+                                <td class="border-top border-right border-3" style="background-color: {{ h_stock.stock.week_3_color }}; ">
+                                    {{ h_stock.stock.week_3 }}%
+                                </td>
+                                <td class="border-top border-right border-3" style="background-color: {{ h_stock.stock.week_5_color }}; ">
+                                    {{ h_stock.stock.week_5 }}%
+                                </td>
+                                <td class="border-top border-right border-3" style="background-color: {{ h_stock.stock.gap_1_color }}; ">
+                                    {{ h_stock.stock.gap_1 }}%
+                                </td>
+                                <td class="{{ stock.earnings_warning }} border-top border-1" style="height: 100%;">
+                                    {{ h_stock.stock.earnings_call_displayed }}
+                                </td>
+                                <td class="border-top border-1 h_value">
+                                    <input type="text" class="form-control" name="stocks_bought_{{ h_stock.id }}" placeholder="{{ h_stock.stocks_bought }}">
+                                </td>
+                                <td class="border-top border-1 h_value">
+                                    <input type="text" class="form-control" name="stock_purchase_price_{{ h_stock.id }}" placeholder="{{ h_stock.purchase_price }}">
+                                </td>
+                                <td class="border-top border-1 h_value">
+                                    <input type="text" class="form-control" name="stocks_sold_{{ h_stock.id }}" placeholder="{{ h_stock.stocks_sold }}">
+                                </td>
+                                <td class="border-top border-1 h_value">
+                                    <input type="text" class="form-control" name="selling_price_{{ h_stock.id }}" placeholder="{{ h_stock.selling_price }}">
+                                </td>
+                                <td class="border-top border-1" style="font-size:1rem; font-weight:bold; color:white">
+                                    {{ h_stock.profit }}
+                                </td>
+                                <td class="border-top border-1 h_value">
+                                <input type="text" class="form-control" name="dividends_{{ h_stock.id }}" placeholder="{{ h_stock.dividends }}">
+                                </td>
+                                <td class="border-top border-1" style="font-size:1rem; font-weight:bold; color:white">
+                                    {{ h_stock.total_profit }}
+                                </td>
+
+                                <td class="border-top border-1">
+                                    <button type="submit" value="{{ h_stock.id }}" name="update_stock" class="btn btn-fill btn-secondary">Update</button>
+                                </td>
+                                <td class="border-top border-1">
+                                    <button type="submit" value="{{ h_stock.id }}" name="delete_stock" class="tim-icons icon-trash-simple"></button>
+                                </td class="border-top border-1">
+                                
+                            </tr>
+
+                        {% endfor %}
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td class="border-top">Total: </td>
+                            <td class="border-top" style="font-size: 1.5rem; font-weight: bold ">{{ sum_total_profit }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        </form>
+        </div>
+    </div>
+</div>
+
+{% if user.is_authenticated %}
+{%  else %}
+<script>
+    var childNodes = document.getElementById("historyTable").getElementsByTagName('*');
+    for (var node of childNodes) {
+        node.disabled = true;
+}
+</script>
+{% endif %}
+
+<style>
+    .border-3 {
+        border-width:1px !important;
+        border-color: black;
+    }
+</style>
+{% endblock content %}
