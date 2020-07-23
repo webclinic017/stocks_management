@@ -200,21 +200,22 @@ def stock_alarms(request):
 
     return render(request, 'kadima/stock_alarms.html', context)
 
+# def history_all(request):
+#     context = {}
+#     all_history_stocks = HistoryStock.objects.all()
+#     context['all_history_stocks'] = all_history_stocks
+#     return render(request, 'kadima/history-all.html', context)
+
+
+# def history(request, table_index=1):
 def history_all(request):
-    context = {}
-    all_history_stocks = HistoryStock.objects.all()
-    context['all_history_stocks'] = all_history_stocks
-    return render(request, 'kadima/history-all.html', context)
-
-
-def history(request, table_index=1):
     user = authenticate(username='yaacov', password='Kadima2020!')
     if user is not None:
         login(request, user)
 
     context = {}
-    # saved_stocks = StockData.objects.filter(saved_to_history=True, table_index=table_index)
-    history_stocks = HistoryStock.objects.filter(table_index=table_index)
+    # history_stocks = HistoryStock.objects.filter(table_index=table_index)
+    history_stocks = HistoryStock.objects.all()
 
     # Calculate sum of all total profits
     sum_total_profit = 0
@@ -226,13 +227,14 @@ def history(request, table_index=1):
 
     context['email_enabled'] = EmailSupport.objects.all().first().enabled
     context['history_stocks'] = history_stocks
-    context['table_index'] = table_index
-    request.session['table_index'] = table_index
+    # context['table_index'] = table_index
+    # request.session['table_index'] = table_index
 
     ib_api_connected = api_connection_status()
     context['ib_api_connected'] = ib_api_connected
 
     if request.method == 'POST':
+        print('HHH')
 
 
         if 'connect_ib_api' in request.POST:
@@ -331,9 +333,9 @@ def history(request, table_index=1):
             # stock_data = StockData.objects.get(id=stock_id)
             # stock_data.saved_to_history = False 
             # stock_data.save()
+            print(f"*************** {stock_id}****************")
             delete_from_history = HistoryStock.objects.get(id=stock_id)
             delete_from_history.delete()
-            
             # saved_stocks = StockData.objects.filter(saved_to_history=True)
             # history_stocks = HistoryStock.objects.filter(table_index=table_index)
             # context['history_stocks'] = history_stocks
@@ -374,7 +376,8 @@ def history(request, table_index=1):
 
             context['history_stocks'] = filtered_stocks
             # return HttpResponseRedirect(request.path_info)
-            return render(request, 'kadima/history.html', context)
+            # return render(request, 'kadima/history.html', context)      
+            return render(request, 'kadima/history-all.html', context)
 
         elif 'reset_filter' in request.POST:
             # history_stocks = StockData.objects.filter(saved_to_history=True)
@@ -393,7 +396,8 @@ def history(request, table_index=1):
             # return render(request, 'kadima/history.html', context)
             return redirect(request.META['HTTP_REFERER'])
 
-    return render(request, 'kadima/history.html', context)
+    # return render(request, 'kadima/history.html', context)
+    return render(request, 'kadima/history-all.html', context)
 
 def file_load_view(request):
     response = HttpResponse(content_type='text/csv')
