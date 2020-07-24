@@ -234,7 +234,6 @@ def history_all(request):
     context['ib_api_connected'] = ib_api_connected
 
     if request.method == 'POST':
-        print('HHH')
 
 
         if 'connect_ib_api' in request.POST:
@@ -333,7 +332,6 @@ def history_all(request):
             # stock_data = StockData.objects.get(id=stock_id)
             # stock_data.saved_to_history = False 
             # stock_data.save()
-            print(f"*************** {stock_id}****************")
             delete_from_history = HistoryStock.objects.get(id=stock_id)
             delete_from_history.delete()
             # saved_stocks = StockData.objects.filter(saved_to_history=True)
@@ -720,20 +718,6 @@ def home(request, table_index=1):
                 else:
                     stock_data.rsi_color = ''
 
-                # Getting the dividend
-                # try:
-                #     st = yf.Ticker(stock).dividends.tail(1)
-                #     stock_data.dividend = float(st.values)
-                #     date_arr = str(st.index[0]).split(' ')[0].split('-')
-                #     year = date_arr[0]
-                #     month = date_arr[1]
-                #     day = date_arr[2]
-                #     stock_data.dividend_date = day + '/' + month + '/' + year
-                # except:
-                #     stock_data.dividend = None
-                #     stock_data.dividend_date = None
-
-                ## Adding the stock saving to DB
                 try:
                     stock_data.save()
                 except Exception as e:
@@ -807,7 +791,8 @@ def home(request, table_index=1):
                 old_stocks_list.append(stock.id)
 
             # Deleting a stock from DB
-            StockData.objects.filter(id=request.POST['delete_stock']).delete()
+            delete_stock = StockData.objects.filter(pk=request.POST["delete_stock"])
+            delete_stock.delete()
             new_stocks = StockData.objects.filter(table_index=table_index).order_by('week_3')
             context['stocks'] = new_stocks
 
@@ -833,11 +818,23 @@ def home(request, table_index=1):
             stock_data.save()
 
             history_stock = HistoryStock.objects.create(
-                stock=stock_data,
-                table_index=table_index
+                table_index=table_index,
+                ticker=stock_data.ticker,
+                stock_price=stock_data.stock_price,
+                week_1=stock_data.week_1,
+                week_1_color=stock_data.week_1_color,
+                week_2=stock_data.week_2,
+                week_2_color=stock_data.week_2_color,
+                week_3=stock_data.week_3,
+                week_3_color=stock_data.week_3_color,
+                week_5=stock_data.week_5,
+                week_5_color=stock_data.week_5_color,
+                gap_1=stock_data.gap_1,
+                gap_1_color=stock_data.gap_1_color,
+                earnings_call_displayed=stock_data.earnings_call_displayed
             )            
             
-            messages.warning(request, f"Stock was saved. You can review it's data on the History page.")
+            messages.success(request, f"Stock was saved. You can review it's data on the History page.")
 
             stocks = StockData.objects.filter(table_index=table_index).order_by('week_3')
             context['stocks'] = stocks

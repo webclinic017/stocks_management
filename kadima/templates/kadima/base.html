@@ -73,17 +73,20 @@
         <div class="row">
           <div class="col-sm-7">
             <div class="row pt-3" style="color: white; font-size:1rem">
-              <div class="col-3">
+              <div class="col-2">
                 <a href="{% url 'home' %}" style="color: white;">Table 1</a>
               </div>
-              <div class="col-3" >
+              <div class="col-2" >
                 <a href="{% url 'table-2' table_index=2 %}" style="color: white;">Table 2</a>
               </div>
-              <div class="col-3" >
+              <div class="col-2" >
                 <a href="{% url 'table-3' table_index=3 %}" style="color: white;">Table 3</a>
               </div>
-              <div class="col-3" >
-                <a href="{% url 'stock-alarms' %}" style="color: white;">Stock Alarms</a>
+              <div class="col-2" >
+                <a href="{% url 'stock-alarms' %}" style="color: white;">Alarms</a>
+              </div>
+              <div class="col-2" >
+                <a href="{% url 'history-all' %}" style="color: white;">History</a>
               </div>
             </div>
 

@@ -201,9 +201,29 @@ class IndicesData(models.Model):
             return self.index_symbol
 
 class HistoryStock(models.Model):
-    stock = models.ForeignKey(StockData, on_delete=models.CASCADE)
-    sold_date = models.DateTimeField(null=True, blank=True)
+    # stock = models.ForeignKey(StockData, on_delete=models.SET_NULL, null=True)
     table_index = models.IntegerField()
+    ticker = models.CharField(max_length=100)
+    stock_price = models.FloatField(null=True, default=0)
+
+    week_1 = models.FloatField(null=True, blank=True)
+    week_1_color = models.CharField(max_length=100, blank=True)
+
+    week_2 = models.FloatField(null=True, blank=True)
+    week_2_color = models.CharField(max_length=100, blank=True)
+    
+    week_3 = models.FloatField(null=True, blank=True)
+    week_3_color = models.CharField(max_length=100, blank=True)
+    
+    week_5 = models.FloatField(null=True, blank=True)
+    week_5_color = models.CharField(max_length=100, blank=True)
+    
+    gap_1 = models.FloatField(null=True, blank=True)
+    gap_1_color = models.CharField(max_length=100, blank=True)
+    
+    earnings_call_displayed = models.CharField(max_length=100, null=True, blank=True)
+
+    sold_date = models.DateTimeField(null=True, blank=True)
     time_added = models.DateTimeField(auto_now=True)
 
     stocks_bought = models.FloatField(null=True, default=0)
