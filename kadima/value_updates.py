@@ -39,12 +39,14 @@ def update_values(request):
     errors = {}
 
     # Indexes update
-    indexes_update_done, indexes_info = indexes_updates(request)
+    
+    # TODO: Fix this when required
+    # indexes_update_done, indexes_info = indexes_updates(request)
 
-    if indexes_update_done:
-        context.update(indexes_info)
-    else:
-        errors['indexes'] = True
+    # if indexes_update_done:
+    #     context.update(indexes_info)
+    # else:
+    #     errors['indexes'] = True
 
 
     start_run = time.perf_counter()
@@ -59,7 +61,10 @@ def update_values(request):
         stock_to_update = Stock(ticker=stock.ticker,stock_id=stock.id, table_index=stock.table_index)
                     
         print(f'Updating Stock: {stock.ticker}')
-        stock_to_update.update_stock()
+        try:
+            stock_to_update.update_stock()
+        except Exception as e:
+            print(f'Failed updating stock: {stock}. ERROR: {e}')
         print(f'Finished updating Stock: {stock.ticker}')
         
         stock.stock_displayed_date = stock_to_update.displayed_date

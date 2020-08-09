@@ -188,3 +188,5 @@ LOGIN_REDIRECT_URL='/'
 LOGOUT_REDIRECT_URL='/'
 
 INDICES = config['INDICES']
+
+SCRIPTS_PATH = os.path.join(BASE_DIR, 'scripts')

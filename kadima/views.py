@@ -33,7 +33,8 @@ from django.utils import timezone
 import yfinance as yf
 
 from ib_api.views import stock_data_api, alarm_trigger, api_connection_status,ib_api_wrapper
-from kadima.k_utils import week_values, gap_1_check,date_obj_to_date, reset_email_alerts, week_color, reset_alarms, indices_scrapers
+from kadima.k_utils import (week_values, gap_1_check,date_obj_to_date, reset_email_alerts, 
+                            week_color, reset_alarms, indices_scrapers, tws_start, tws_stop,)
 
 from .models import StockData, IndicesData, EmailSupport, HistoryStock
 from .forms import DateForm
@@ -76,7 +77,7 @@ def stock_alarms(request):
     if request.method  == 'POST':
 
         if 'connect_ib_api' in request.POST:
-            
+
             # Connect the IB API 
             api_connect(request)
             ib_api_connected = api_connection_status()
@@ -237,6 +238,7 @@ def history_all(request):
 
 
         if 'connect_ib_api' in request.POST:
+
             api_connect(request)
             ib_api_connected = api_connection_status()
             context['ib_api_connected'] = ib_api_connected
@@ -870,6 +872,15 @@ def home(request, table_index=1):
 
 
 def api_connect(request):
+    
+    # Starting the TWS
+    tws_start()
+    timer = 1
+    while timer < 40:
+        sleep(1)
+        print('Starting TWS...')
+        timer += 1
+
     print('Connecting API...')
             
     ib_api_wrapper(request)
@@ -920,7 +931,10 @@ def api_disconnect(request):
     ib_api_wrapper(request,action=STOP_API )
     sleep(2)
 
-    print('Stopping Yahoo scrapers...')
-    indices_scrapers(stop=True)
+    print('Stopping TWS...')
+    tws_stop()
+
+    # print('Stopping Yahoo scrapers...')
+    # indices_scrapers(stop=True)
 
     return 
