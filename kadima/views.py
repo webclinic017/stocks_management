@@ -15,7 +15,6 @@ from math import *
 from numpy import round
 
 from datetime import timedelta
-from pandas_datareader import data as fin_data
 
 from concurrent.futures import ProcessPoolExecutor, as_completed, ThreadPoolExecutor
 
@@ -554,8 +553,10 @@ def home(request, table_index=1):
                 print(f'Adding stock: {stock}')
                 context['stock'] = stock
                 try:
-                    stock_df = fin_data.get_data_yahoo(stock, start=MAX_PAST, end=TODAY)
+                    stock_df = yf.download(stock, period='1mo')
                 except Exception as e:
+                    print(f"Failed getting stock. ERROR: {e}")
+                    logger.error(f"Failed getting stock. ERROR: {e}")
                     messages.error(request, 'Stock does not exists')
                     # return render(request, 'kadima/home.html', context)
                     continue

@@ -12,7 +12,6 @@ from django.conf import settings
 from django.utils import timezone
 from django.contrib import messages
 
-from pandas_datareader import data as fin_data
 from yahoo_earnings_calendar import YahooEarningsCalendar
 
 

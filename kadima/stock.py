@@ -4,7 +4,9 @@ import json
 import math
 import pandas as pd
 import numpy as np
-from pandas_datareader import data as fin_data
+# from pandas_datareader import data as fin_data
+import yfinance as yf
+
 from time import sleep
 from datetime import timedelta
 from concurrent.futures import ProcessPoolExecutor, as_completed, ThreadPoolExecutor
@@ -94,9 +96,11 @@ class Stock():
     def update_stock(self):
     
         try:
-            self.stock_df = fin_data.get_data_yahoo(str(self.ticker), start=self.today - timedelta(44), end=self.today)
-        except:
             self.stock_df = yf.download(str(self.ticker), start=self.today - timedelta(44), end=self.today)
+        except Exception as e:
+            print(f'Failed getting yfinance stock data for update. Error: {e}')
+            return 
+            
 
         self.stock_price = round(self.stock_df.loc[self.stock_df.index[-1]]['Close'],2)
 

@@ -11,7 +11,7 @@ from django.conf import settings
 from django.core.mail import send_mail
 
 from .models import StockData
-from pandas_datareader import data as fin_data
+
 import datetime
 from datetime import timedelta
 from time import sleep

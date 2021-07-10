@@ -1,7 +1,5 @@
 import time
 import datetime
-from datetime import timedelta
-from pandas_datareader import data as fin_data
 
 import threading
 import json

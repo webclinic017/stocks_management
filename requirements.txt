@@ -11,7 +11,7 @@ django-cors-headers==3.2.1
 djangorestframework==3.11.0
 eventkit==0.8.6
 finta==0.4.1
-ibapi==9.76.1
+ibapi
 ib-insync==0.9.59
 idna==2.8
 inflection==0.3.1
