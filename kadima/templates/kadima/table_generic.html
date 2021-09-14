@@ -1,4 +1,4 @@
-{% for stock in stocks|dictsort:'gap_1' %}
+{% for stock in stocks %}
   {% if stock_alert == 'condition_3'%}
     <tr class="fast-blink-row-buy">
   {% elif stock_alert == 'condition_4'%}
