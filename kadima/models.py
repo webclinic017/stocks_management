@@ -9,16 +9,17 @@ from django.contrib.auth.models import User
 #     def __str__(self):
 #         return self.username
 
+
 class EmailSupport(models.Model):
     enabled = models.BooleanField(default=False)
 
     def __str__(self):
         return self.enabled
 
+
 class StockData(models.Model):
 
     table_index = models.IntegerField(default=0)
-
 
     stock_date = models.DateTimeField(auto_now=True)
     sold_date = models.DateTimeField(null=True, blank=True)
@@ -71,19 +72,18 @@ class StockData(models.Model):
     gap_2_color = models.CharField(max_length=100, blank=True)
     gap_3_color = models.CharField(max_length=100, blank=True)
 
-
-    # Technical Indicators 
+    # Technical Indicators
     macd_30_clash = models.BooleanField(null=True, default=False, blank=True)
     macd_14_clash = models.BooleanField(null=True, default=False, blank=True)
     macd_30_color = models.CharField(max_length=100, blank=True)
     macd_14_color = models.CharField(max_length=100, blank=True)
-    
+
     mfi_30_clash = models.BooleanField(null=True, default=False, blank=True)
     mfi_14_clash = models.BooleanField(null=True, default=False, blank=True)
     mfi_30_color = models.CharField(max_length=100, blank=True)
     mfi_14_color = models.CharField(max_length=100, blank=True)
 
-    rsi = models.FloatField()
+    rsi = models.FloatField(blank=True, null=True)
     rsi_color = models.CharField(max_length=10, blank=True, null=True)
 
     # Company information
@@ -91,20 +91,38 @@ class StockData(models.Model):
     earnings_call_displayed = models.CharField(max_length=100, null=True, blank=True)
     earnings_warning = models.CharField(max_length=100, null=True, blank=True)
 
-    dividend_date = models.CharField(max_length=100,null=True, blank=True)
+    dividend_date = models.CharField(max_length=100, null=True, blank=True)
     dividend = models.FloatField(null=True, blank=True)
     dividend_warning = models.CharField(max_length=100, null=True, blank=True)
-    
+
     # Trigger & alarm page
-    stock_alarm = models.BooleanField(default=False) # Flag whether the stock is in the stock_alarm page
-    stock_alarm_delta = models.FloatField(null=True, blank=True) # delta amount to add to the current price 
-    stock_initial_price = models.FloatField(null=True, blank=True) # stock price at trigger set
-    stock_current_price = models.FloatField(null=True, blank=True) # stock price when adding to alarms list
-    stock_load_price = models.FloatField(null=True, blank=True) # stock price when adding to alarms list
-    stock_price_up_alarm = models.BooleanField(default=False) # True when the current price exceeds the initial price + delta
-    stock_price_down_alarm = models.BooleanField(default=False) # True when the current price goes lower the initial price + delta
-    stock_alarm_trigger_set = models.BooleanField(default=False) # True when the alarm is set/trigger armed
-    stock_alarm_sound_on_off = models.BooleanField(default=False) # Flag to control the sound (play only once)
+    stock_alarm = models.BooleanField(
+        default=False
+    )  # Flag whether the stock is in the stock_alarm page
+    stock_alarm_delta = models.FloatField(
+        null=True, blank=True
+    )  # delta amount to add to the current price
+    stock_initial_price = models.FloatField(
+        null=True, blank=True
+    )  # stock price at trigger set
+    stock_current_price = models.FloatField(
+        null=True, blank=True
+    )  # stock price when adding to alarms list
+    stock_load_price = models.FloatField(
+        null=True, blank=True
+    )  # stock price when adding to alarms list
+    stock_price_up_alarm = models.BooleanField(
+        default=False
+    )  # True when the current price exceeds the initial price + delta
+    stock_price_down_alarm = models.BooleanField(
+        default=False
+    )  # True when the current price goes lower the initial price + delta
+    stock_alarm_trigger_set = models.BooleanField(
+        default=False
+    )  # True when the alarm is set/trigger armed
+    stock_alarm_sound_on_off = models.BooleanField(
+        default=False
+    )  # Flag to control the sound (play only once)
 
     stock_alarm_1 = models.FloatField(null=True, blank=True)
     stock_alarm_2 = models.FloatField(null=True, blank=True)
@@ -136,7 +154,7 @@ class StockData(models.Model):
 
     stocks_bought = models.FloatField(null=True, default=0, blank=True)
     purchase_price = models.FloatField(null=True, default=0.0, blank=True)
-    stocks_sold  = models.FloatField(null=True, default=0, blank=True)
+    stocks_sold = models.FloatField(null=True, default=0, blank=True)
     selling_price = models.FloatField(null=True, default=0.0, blank=True)
     profit = models.FloatField(null=True, default=0.0, blank=True)
     dividends = models.FloatField(null=True, default=0.0, blank=True)
@@ -163,6 +181,7 @@ class StockData(models.Model):
     class Meta:
         unique_together = (("ticker", "table_index"),)
 
+
 class IndicesData(models.Model):
     index_symbol = models.CharField(max_length=10, primary_key=True)
     sample_date = models.DateTimeField(auto_now=True)
@@ -178,7 +197,7 @@ class IndicesData(models.Model):
     index_week2 = models.FloatField(null=True, blank=True)
     index_week2_min = models.FloatField(null=True, blank=True)
     index_week2_max = models.FloatField(null=True, blank=True)
-    
+
     index_week3 = models.FloatField(null=True, blank=True)
     index_week3_min = models.FloatField(null=True, blank=True)
     index_week3_max = models.FloatField(null=True, blank=True)
@@ -198,7 +217,8 @@ class IndicesData(models.Model):
     index_mfi_color = models.CharField(max_length=50, null=True, blank=True)
 
     def __str__(self):
-            return self.index_symbol
+        return self.index_symbol
+
 
 class HistoryStock(models.Model):
     # stock = models.ForeignKey(StockData, on_delete=models.SET_NULL, null=True)
@@ -211,16 +231,16 @@ class HistoryStock(models.Model):
 
     week_2 = models.FloatField(null=True, blank=True)
     week_2_color = models.CharField(max_length=100, blank=True)
-    
+
     week_3 = models.FloatField(null=True, blank=True)
     week_3_color = models.CharField(max_length=100, blank=True)
-    
+
     week_5 = models.FloatField(null=True, blank=True)
     week_5_color = models.CharField(max_length=100, blank=True)
-    
+
     gap_1 = models.FloatField(null=True, blank=True)
     gap_1_color = models.CharField(max_length=100, blank=True)
-    
+
     earnings_call_displayed = models.CharField(max_length=100, null=True, blank=True)
 
     sold_date = models.DateTimeField(null=True, blank=True)
@@ -228,11 +248,11 @@ class HistoryStock(models.Model):
 
     stocks_bought = models.FloatField(null=True, default=0)
     purchase_price = models.FloatField(null=True, default=0.0)
-    stocks_sold  = models.FloatField(null=True, default=0)
+    stocks_sold = models.FloatField(null=True, default=0)
     selling_price = models.FloatField(null=True, default=0.0)
     profit = models.FloatField(null=True, default=0.0)
     dividends = models.FloatField(null=True, default=0.0)
     total_profit = models.FloatField(null=True, default=0.0)
-    
+
     def __str__(self):
         return self.stock.ticker
