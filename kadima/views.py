@@ -564,6 +564,7 @@ def home(request, table_index=1):
     print(f"ACTIVE THREADS: ***************{current_running_threads}****************")
 
     stocks = StockData.objects.filter(table_index=table_index)
+    print(f"STOCKS: {stocks}")
     context["stocks"] = stocks
 
     # VALUES UPDATES
