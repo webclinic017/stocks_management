@@ -1,3 +1,4 @@
+import logging
 import time
 import random
 import json
@@ -43,11 +44,14 @@ from kadima.stock import Stock
 from scraper.views import YahooScraper
 
 # Create and configure logger
-import logging
+# import logging
 
-LOG_FORMAT = '%(levelname)s %(asctime)s - %(message)s'
-logging.basicConfig(filename='./log.log',level=logging.INFO,format=LOG_FORMAT, filemode='w')
-logger = logging.getLogger()
+# LOG_FORMAT = '%(levelname)s %(asctime)s - %(message)s'
+# logging.basicConfig(filename='./log.log',level=logging.INFO,format=LOG_FORMAT, filemode='w')
+# logger = logging.getLogger()
+
+logger = logging.getLogger(__file__)
+
 
 TODAY = datetime.datetime.today()
 MAX_PAST = TODAY - timedelta(30)
@@ -494,6 +498,7 @@ def home(request, table_index=1):
 
     # Stock data will be updated at API connect
     if request.method == 'POST':
+        
         if 'connect_ib_api' in request.POST:
 
             api_connect(request)
@@ -537,211 +542,218 @@ def home(request, table_index=1):
             context['sort_by'] = request.session['sort_by']
 
         elif 'add_stock' in request.POST:
+            try:
             
-            stocks_to_add  = request.POST.get('stock').split(',')
+                stocks_to_add  = request.POST.get('stock').split(',')
 
-            # Checking list of current stocks in the DB
-            old_stocks = StockData.objects.all()
-            old_stocks_list = []
-            for stock in old_stocks:
-                old_stocks_list.append(stock.id)
+                # Checking list of current stocks in the DB
+                old_stocks = StockData.objects.all()
+                old_stocks_list = []
+                for stock in old_stocks:
+                    old_stocks_list.append(stock.id)
 
-            for stock in stocks_to_add:
-                
-                stock = stock.strip()            
-                
-                print(f'Adding stock: {stock}')
-                context['stock'] = stock
-                try:
-                    stock_df = yf.download(stock, period='1mo')
-                except Exception as e:
-                    print(f"Failed getting stock. ERROR: {e}")
-                    logger.error(f"Failed getting stock. ERROR: {e}")
-                    messages.error(request, 'Stock does not exists')
-                    # return render(request, 'kadima/home.html', context)
-                    continue
-                
-                stock_data = StockData()
-                
-                stock_data.table_index = table_index
-
-                # stock_data.stock_date = stock_df.index[-1]
-                stock_data.stock_displayed_date = date_obj_to_date(pd.Timestamp("today"), date_format='slash')
-
-                stock_data.ticker = stock.upper()
-                stock_data.stock_price = float("%0.2f"%stock_df['Close'].iloc[-1])
-
-                stock_data.week_1, stock_data.week_1_min, stock_data.week_1_max = week_values(stock_df, 90)
-                stock_data.week_2, stock_data.week_2_min, stock_data.week_2_max = week_values(stock_df, 10)
-                stock_data.week_3, stock_data.week_3_min, stock_data.week_3_max = week_values(stock_df, 15)
-                stock_data.week_5, stock_data.week_5_min, stock_data.week_5_max = week_values(stock_df, 25)
-
-                stock_data.week_1_color = week_color(stock_data.week_1, week3=True)
-                stock_data.week_2_color = week_color(stock_data.week_2)
-                stock_data.week_3_color = week_color(stock_data.week_3, week3=True)
-                stock_data.week_5_color = week_color(stock_data.week_5)
-
-
-                prev_close = round(stock_df.loc[stock_df.index[-2]]['Close'],2)
-                todays_open = round(stock_df.loc[stock_df.index[-1]]['Open'],2)
-                stock_data.prev_close = prev_close
-                stock_data.todays_open = todays_open
-
-                gap_1, gap_1_color = gap_1_check(prev_close, todays_open)
-                stock_data.gap_1 = gap_1
-                stock_data.gap_1_color = gap_1_color
-
-                # Earning dates
-                try:
-                    try:
-                        earnings = yf.Ticker(stock).calendar[0][0]
-                    except:
-                        try:
-                            earnings = yf.Ticker(stock).calendar['Value'][0]
-                        except:
-                            print(f'No earnings found for {stock}')
-
-                    year = earnings.year
-                    month = earnings.month
-                    day = earnings.day
-                    earnings_date = str(f'{day}/{month}/{year}')
+                for stock in stocks_to_add:
                     
-                    earnings_ts = time.mktime(datetime.datetime.strptime(earnings_date, "%d/%m/%Y").timetuple())
-                    today_ts = datetime.datetime.timestamp(TODAY)
-                    earnings_dt = datetime.datetime.fromtimestamp(earnings_ts)
-                    today_dt = datetime.datetime.fromtimestamp(today_ts)
+                    stock = stock.strip()            
+                    
+                    print(f'Adding stock: {stock}')
+                    logger.info(f"Adding stock: {stock}")
+                    context['stock'] = stock
+                    try:
+                        stock_df = yf.download(stock, period='1mo')
+                    except Exception as e:
+                        print(f"Failed getting stock. ERROR: {e}")
+                        logger.error(f"Failed getting stock. ERROR: {e}")
+                        messages.error(request, 'Stock does not exists')
+                        # return render(request, 'kadima/home.html', context)
+                        continue
+                    
+                    stock_data = StockData()
+                    
+                    stock_data.table_index = table_index
 
-                    if (earnings_dt - today_dt).days <= 7 and (earnings_dt - today_dt).days >= 0:
-                        stock_data.earnings_warning = "blink-bg"
-                        stock_data.earnings_call_displayed = earnings_date
-                    elif (earnings_dt - today_dt).days < 0:
-                        stock_data.earnings_warning = "PAST"
-                        stock_data.earnings_call_displayed = None
+                    # stock_data.stock_date = stock_df.index[-1]
+                    stock_data.stock_displayed_date = date_obj_to_date(pd.Timestamp("today"), date_format='slash')
+
+                    stock_data.ticker = stock.upper()
+                    stock_data.stock_price = float("%0.2f"%stock_df['Close'].iloc[-1])
+
+                    stock_data.week_1, stock_data.week_1_min, stock_data.week_1_max = week_values(stock_df, 90)
+                    stock_data.week_2, stock_data.week_2_min, stock_data.week_2_max = week_values(stock_df, 10)
+                    stock_data.week_3, stock_data.week_3_min, stock_data.week_3_max = week_values(stock_df, 15)
+                    stock_data.week_5, stock_data.week_5_min, stock_data.week_5_max = week_values(stock_df, 25)
+
+                    stock_data.week_1_color = week_color(stock_data.week_1, week3=True)
+                    stock_data.week_2_color = week_color(stock_data.week_2)
+                    stock_data.week_3_color = week_color(stock_data.week_3, week3=True)
+                    stock_data.week_5_color = week_color(stock_data.week_5)
+
+
+                    prev_close = round(stock_df.loc[stock_df.index[-2]]['Close'],2)
+                    todays_open = round(stock_df.loc[stock_df.index[-1]]['Open'],2)
+                    stock_data.prev_close = prev_close
+                    stock_data.todays_open = todays_open
+
+                    gap_1, gap_1_color = gap_1_check(prev_close, todays_open)
+                    stock_data.gap_1 = gap_1
+                    stock_data.gap_1_color = gap_1_color
+
+                    # Earning dates
+                    try:
+                        try:
+                            earnings = yf.Ticker(stock).calendar[0][0]
+                        except:
+                            try:
+                                earnings = yf.Ticker(stock).calendar['Value'][0]
+                            except:
+                                print(f'No earnings found for {stock}')
+
+                        year = earnings.year
+                        month = earnings.month
+                        day = earnings.day
+                        earnings_date = str(f'{day}/{month}/{year}')
+                        
+                        earnings_ts = time.mktime(datetime.datetime.strptime(earnings_date, "%d/%m/%Y").timetuple())
+                        today_ts = datetime.datetime.timestamp(TODAY)
+                        earnings_dt = datetime.datetime.fromtimestamp(earnings_ts)
+                        today_dt = datetime.datetime.fromtimestamp(today_ts)
+
+                        if (earnings_dt - today_dt).days <= 7 and (earnings_dt - today_dt).days >= 0:
+                            stock_data.earnings_warning = "blink-bg"
+                            stock_data.earnings_call_displayed = earnings_date
+                        elif (earnings_dt - today_dt).days < 0:
+                            stock_data.earnings_warning = "PAST"
+                            stock_data.earnings_call_displayed = None
+                        else:
+                            stock_data.earnings_warning = ""
+                            stock_data.earnings_call_displayed = earnings_date
+
+                    except Exception as e:
+                        messages.error(request, 'Stock does not have an earnings call date defined.')
+                        print(f'Stock {stock} does not have an earnings call date defined.')
+                        earnings = None    
+
+                    tan_deviation_angle = math.tan(math.radians(settings.DEVIATION_ANGLE))
+
+
+                    # Stock Trend - 30 days sample
+                    a_stock_30, a_macd_30, a_mfi_30, rsi, week1, week2, week3 = trends(stock,30)
+
+                    # a_stock_30 = stock_regression(stock, 30)
+                    stock_data.stock_trend_30 = round(a_stock_30,2)
+
+                    # MACD trend
+                    # a_macd_30 = trend_calculator(stock, 'MACD', period=30)
+                    stock_data.macd_trend_30 = round(a_macd_30,2)
+
+                    if np.abs(a_macd_30) > tan_deviation_angle:                    
+                    
+                        if (a_stock_30 > 0 and a_macd_30 < 0) or (a_stock_30 < 0 and a_macd_30 > 0):
+                            stock_data.macd_30_clash = True
+                            stock_data.macd_30_color = 'red'
+                        elif (a_stock_30 < 0 and a_macd_30 < 0) or (a_stock_30 > 0 and a_macd_30 > 0):
+                            stock_data.macd_30_clash = False
+                            stock_data.macd_30_color = 'green'
+
                     else:
-                        stock_data.earnings_warning = ""
-                        stock_data.earnings_call_displayed = earnings_date
-
-                except Exception as e:
-                    messages.error(request, 'Stock does not have an earnings call date defined.')
-                    print(f'Stock {stock} does not have an earnings call date defined.')
-                    earnings = None    
-
-                tan_deviation_angle = math.tan(math.radians(settings.DEVIATION_ANGLE))
-
-
-                # Stock Trend - 30 days sample
-                a_stock_30, a_macd_30, a_mfi_30, rsi, week1, week2, week3 = trends(stock,30)
-
-                # a_stock_30 = stock_regression(stock, 30)
-                stock_data.stock_trend_30 = round(a_stock_30,2)
-
-                # MACD trend
-                # a_macd_30 = trend_calculator(stock, 'MACD', period=30)
-                stock_data.macd_trend_30 = round(a_macd_30,2)
-
-                if np.abs(a_macd_30) > tan_deviation_angle:                    
-                
-                    if (a_stock_30 > 0 and a_macd_30 < 0) or (a_stock_30 < 0 and a_macd_30 > 0):
-                        stock_data.macd_30_clash = True
-                        stock_data.macd_30_color = 'red'
-                    elif (a_stock_30 < 0 and a_macd_30 < 0) or (a_stock_30 > 0 and a_macd_30 > 0):
                         stock_data.macd_30_clash = False
                         stock_data.macd_30_color = 'green'
 
-                else:
-                    stock_data.macd_30_clash = False
-                    stock_data.macd_30_color = 'green'
-
-                # MFI trend
-                # a_mfi_30 = trend_calculator(stock, 'MFI', period=30)
-                stock_data.money_flow_trend_30 = round(a_mfi_30,2)
+                    # MFI trend
+                    # a_mfi_30 = trend_calculator(stock, 'MFI', period=30)
+                    stock_data.money_flow_trend_30 = round(a_mfi_30,2)
 
 
-                if np.abs(a_mfi_30) > tan_deviation_angle:                    
+                    if np.abs(a_mfi_30) > tan_deviation_angle:                    
 
-                        if (a_stock_30 > 0 and a_mfi_30 < 0) or (a_stock_30 < 0 and a_mfi_30 > 0):
-                            stock_data.mfi_30_clash = True
-                            stock_data.mfi_30_color = 'red'
-                        elif (a_stock_30 < 0 and a_mfi_30 < 0) or (a_stock_30 > 0 and a_mfi_30 > 0):
-                            stock_data.mfi_30_clash = False
-                            stock_data.mfi_30_color = 'green'
-                else:
-                    stock_data.mfi_30_clash = False
-                    stock_data.mfi_30_color = 'green'
+                            if (a_stock_30 > 0 and a_mfi_30 < 0) or (a_stock_30 < 0 and a_mfi_30 > 0):
+                                stock_data.mfi_30_clash = True
+                                stock_data.mfi_30_color = 'red'
+                            elif (a_stock_30 < 0 and a_mfi_30 < 0) or (a_stock_30 > 0 and a_mfi_30 > 0):
+                                stock_data.mfi_30_clash = False
+                                stock_data.mfi_30_color = 'green'
+                    else:
+                        stock_data.mfi_30_clash = False
+                        stock_data.mfi_30_color = 'green'
 
-                # Stock Trend - 14 days sample
-                a_stock_14, a_macd_14, a_mfi_14, rsi_14, week1, week2, week3= trends(stock,14) # rsi_14 is just for unpacking. it's not user.
+                    # Stock Trend - 14 days sample
+                    a_stock_14, a_macd_14, a_mfi_14, rsi_14, week1, week2, week3= trends(stock,14) # rsi_14 is just for unpacking. it's not user.
 
-                # a_stock_14 = stock_regression(stock, 14)
-                stock_data.stock_trend_14 = round(a_stock_14,2)
+                    # a_stock_14 = stock_regression(stock, 14)
+                    stock_data.stock_trend_14 = round(a_stock_14,2)
 
-                # MACD trend
-                # a_macd_14 = trend_calculator(stock, 'MACD', period=14)
-                stock_data.macd_trend_14 = round(a_macd_14,2)
+                    # MACD trend
+                    # a_macd_14 = trend_calculator(stock, 'MACD', period=14)
+                    stock_data.macd_trend_14 = round(a_macd_14,2)
 
-                if np.abs(a_macd_14) > tan_deviation_angle:                    
-                
-                    if (a_stock_14 > 0 and a_macd_14 < 0) or (a_stock_14 < 0 and a_macd_14 > 0):
-                        stock_data.macd_14_clash = True
-                        stock_data.macd_14_color = 'red'
-                    elif (a_stock_14 < 0 and a_macd_14 < 0) or (a_stock_14 > 0 and a_macd_14 > 0):
+                    if np.abs(a_macd_14) > tan_deviation_angle:                    
+                    
+                        if (a_stock_14 > 0 and a_macd_14 < 0) or (a_stock_14 < 0 and a_macd_14 > 0):
+                            stock_data.macd_14_clash = True
+                            stock_data.macd_14_color = 'red'
+                        elif (a_stock_14 < 0 and a_macd_14 < 0) or (a_stock_14 > 0 and a_macd_14 > 0):
+                            stock_data.macd_14_clash = False
+                            stock_data.macd_14_color = 'green'
+
+                    else:
                         stock_data.macd_14_clash = False
                         stock_data.macd_14_color = 'green'
 
-                else:
-                    stock_data.macd_14_clash = False
-                    stock_data.macd_14_color = 'green'
-
-                # MFI trend
-                # a_mfi_14 = trend_calculator(stock, 'MFI', period=14)
-                stock_data.money_flow_trend_14 = round(a_mfi_14,2)
+                    # MFI trend
+                    # a_mfi_14 = trend_calculator(stock, 'MFI', period=14)
+                    stock_data.money_flow_trend_14 = round(a_mfi_14,2)
 
 
-                if np.abs(a_mfi_30) > tan_deviation_angle:                    
+                    if np.abs(a_mfi_30) > tan_deviation_angle:                    
 
-                        if (a_stock_14 > 0 and a_mfi_14 < 0) or (a_stock_14 < 0 and a_mfi_14 > 0):
-                            stock_data.mfi_14_clash = True
-                            stock_data.mfi_14_color = 'red'
-                        elif (a_stock_14 < 0 and a_mfi_14 < 0) or (a_stock_14 > 0 and a_mfi_14 > 0):
-                            stock_data.mfi_14_clash = False
-                            stock_data.mfi_14_color = 'green'
-                else:
-                    stock_data.mfi_14_clash = False
-                    stock_data.mfi_14_color = 'green'
+                            if (a_stock_14 > 0 and a_mfi_14 < 0) or (a_stock_14 < 0 and a_mfi_14 > 0):
+                                stock_data.mfi_14_clash = True
+                                stock_data.mfi_14_color = 'red'
+                            elif (a_stock_14 < 0 and a_mfi_14 < 0) or (a_stock_14 > 0 and a_mfi_14 > 0):
+                                stock_data.mfi_14_clash = False
+                                stock_data.mfi_14_color = 'green'
+                    else:
+                        stock_data.mfi_14_clash = False
+                        stock_data.mfi_14_color = 'green'
 
-                # RSI
-                # rsi = last_rsi(stock, period=30)
-                stock_data.rsi = rsi
-                if rsi > 0 and rsi <=30:
-                    stock_data.rsi_color = 'red'
-                elif rsi > 30 and rsi <= 65:
-                    stock_data.rsi_color = 'orange'
-                elif rsi > 65 and rsi <=100:
-                    stock_data.rsi_color = 'green'
-                else:
-                    stock_data.rsi_color = ''
+                    # RSI
+                    # rsi = last_rsi(stock, period=30)
+                    stock_data.rsi = rsi
+                    if rsi > 0 and rsi <=30:
+                        stock_data.rsi_color = 'red'
+                    elif rsi > 30 and rsi <= 65:
+                        stock_data.rsi_color = 'orange'
+                    elif rsi > 65 and rsi <=100:
+                        stock_data.rsi_color = 'green'
+                    else:
+                        stock_data.rsi_color = ''
 
-                try:
-                    stock_data.save()
-                except Exception as e:
-                    print(f'ERROR Adding Stock. Reason: {e}')
-                    messages.error(request, f'Stock {stock} was not added. Already in the list.')
-                    return render(request, 'kadima/home.html', context)
+                    try:
+                        stock_data.save()
+                    except Exception as e:
+                        print(f'ERROR Adding Stock. Reason: {e}')
+                        messages.error(request, f'Stock {stock} was not added. Already in the list.')
+                        return render(request, 'kadima/home.html', context)
+                    
+
+
+                new_stocks = StockData.objects.filter(table_index=table_index).order_by('week_3')
+                context['stocks'] = new_stocks
+                    
+                ## Updating the streaming IB API data with added stock
+                new_stocks_api = StockData.objects.all()
+                new_stocks_list = dict()
+                for stock in new_stocks_api:
+                    new_stocks_list[stock.id] = stock.ticker
                 
+                if api_connection_status():
+                    ib_api_wrapper(request,old_stocks_list, new_stocks_list, action=UPADATE_STOCKS)
 
 
-            new_stocks = StockData.objects.filter(table_index=table_index).order_by('week_3')
-            context['stocks'] = new_stocks
-                
-            ## Updating the streaming IB API data with added stock
-            new_stocks_api = StockData.objects.all()
-            new_stocks_list = dict()
-            for stock in new_stocks_api:
-                new_stocks_list[stock.id] = stock.ticker
             
-            if api_connection_status():
-                ib_api_wrapper(request,old_stocks_list, new_stocks_list, action=UPADATE_STOCKS)
-
+            except Exception as e:
+                print(f"Failed adding stock. ERROR: {e}")
+                logger.error(f"Failed adding stock. ERROR: {e}")
 
             return render(request, 'kadima/home.html', context)
 

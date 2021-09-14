@@ -8,7 +8,6 @@ import lxml
 
 from math import *
 from datetime import timedelta
-# from pandas_datareader import data
 import yfinance as yf
 # from yahoo_earnings_calendar import YahooEarningsCalendar
 from finta import TA

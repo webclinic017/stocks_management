@@ -4,7 +4,6 @@ import json
 import math
 import pandas as pd
 import numpy as np
-# from pandas_datareader import data as fin_data
 import yfinance as yf
 
 from time import sleep

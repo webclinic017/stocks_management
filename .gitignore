@@ -8,3 +8,6 @@ kadima/__pycache__/*
 *.sqlite
 venv_kadima/*
 material
+*.pem
+archive/*
+*.log

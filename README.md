@@ -4,7 +4,11 @@ This project ccombines Django and Interactive Brokers API to manage stocks portf
 # AWS
 account: kadimagrouppanama@gmail.com
 
+# Server
+ssh -i kadima_aws.pem ubuntu@3.15.26.164
 
+# IP
+http://3.15.26.164:8001/
 
 ## Capabilities include: 
 * Connecting to the IB API
@@ -13,7 +17,10 @@ account: kadimagrouppanama@gmail.com
 
 ## Data sources APIs
 * yFinance: https://github.com/ranaroussi/yfinance (yf)
-* pandas datareader: https://github.com/pydata/pandas-datareader
+> Need to install yFinance with: 
+
+pip install yfinance --upgrade --no-cache-dir
+
 
 ## Latest Python sources 
 https://interactivebrokers.github.io/#

@@ -24,7 +24,7 @@ class StockData(models.Model):
     sold_date = models.DateTimeField(null=True, blank=True)
     stock_displayed_date = models.CharField(max_length=100)
     ticker = models.CharField(max_length=100)
-    stock_price = models.FloatField()
+    stock_price = models.FloatField(null=True, blank=True)
 
     prev_close = models.FloatField(null=True, blank=True)
     todays_open = models.FloatField(null=True, blank=True)
