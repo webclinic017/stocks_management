@@ -2,5 +2,6 @@
 	"SECRET_KEY":"y^o_+8j2k#)v_r*04pyd04yoibat&s=#ircmn87eb7l3#34u&t",
 	"IB_PORT":4004,
 	"IB_CLIENT_ID":0,
-	"INDICES": "NO_SHOW"
+	"INDICES": "NO_SHOW",
+	"EMAIL_HOST_PASSWORD": "Kadima2021!"
 }

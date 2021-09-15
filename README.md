@@ -26,6 +26,7 @@ pip install yfinance --upgrade --no-cache-dir
 https://interactivebrokers.github.io/#
 
 ## Important TWS docs locatios:
+Installation: https://dimon.ca/how-to-setup-ibc-and-tws-on-headless-ubuntu-in-10-minutes/
 Tick types: https://interactivebrokers.github.io/tws-api/tick_types.html#ib_dividends
 EClient: https://tinyurl.com/y73tg4t8
 EWrapper: https://tinyurl.com/y8t2ujfp

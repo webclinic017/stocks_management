@@ -1,4 +1,5 @@
 import datetime
+from os import execlp
 import time
 import logging
 import math
@@ -132,7 +133,10 @@ def update_values(request):
         stock.rsi = stock_to_update.rsi
         stock.rsi_color = stock_to_update.rsi_color
 
-        stock.save()
+        try:
+            stock.save()
+        except Exception as e:
+            logger.error(f">>>>>>>>>>> FAILED saving stock <<<<<<<<<<< ")
 
     finish_run = time.perf_counter()
     print(
