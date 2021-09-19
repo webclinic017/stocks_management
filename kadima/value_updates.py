@@ -136,6 +136,7 @@ def update_values(request):
         try:
             stock.save()
         except Exception as e:
+            print(f">>>>>>>>>>> FAILED saving stock <<<<<<<<<<< ")
             logger.error(f">>>>>>>>>>> FAILED saving stock <<<<<<<<<<< ")
 
     finish_run = time.perf_counter()
@@ -146,6 +147,14 @@ def update_values(request):
     >>>>>>>>>>
     """
     )
+    logger.info(
+        f"""
+    >>>>>>>>>>
+    Finished updating {len(current_stocks)} stocks gaps. Durations: {round(finish_run - start_run,2)} seconds.
+    >>>>>>>>>>
+    """
+    )
+
     return True
 
 

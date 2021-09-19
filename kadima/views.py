@@ -35,6 +35,7 @@ from django.conf import settings
 from django.urls import reverse_lazy, reverse
 from django.contrib import messages
 from django.utils import timezone
+from django.db.models import Q
 
 # from yahoo_earnings_calendar import YahooEarningsCalendar
 import yfinance as yf
@@ -564,7 +565,16 @@ def home(request, table_index=1):
     print(f"ACTIVE THREADS: ***************{current_running_threads}****************")
 
     stocks = StockData.objects.filter(table_index=table_index)
-    print(f"STOCKS: {stocks}")
+    none_stocks = StockData.objects.filter(
+        Q(table_index=table_index)
+        & (Q(gap_1=None) | Q(week_1=None) | Q(week_3=None) | Q(stock_price=None))
+    )
+
+    if len(none_stocks) > 0:
+        missing_data = True
+    else:
+        missing_data = False
+
     context["stocks"] = stocks
 
     # VALUES UPDATES
@@ -614,18 +624,36 @@ def home(request, table_index=1):
 
         elif "sort_gap" in request.POST:
             print(">> Gap Sorting <<")
-            request.session["sort_by"] = "gap_1"
-            context["sort_by"] = request.session["sort_by"]
+            if missing_data:
+                messages.error(
+                    request,
+                    "Table might not sort poperly due to missing stock information. Please remove stocks with None and try again.",
+                )
+                return redirect(request.META["HTTP_REFERER"])
+            else:
+                context["sort_by"] = "gap_1"
 
         elif "sort_week1" in request.POST:
             print(">> Week1 Sorting <<")
-            request.session["sort_by"] = "week_1"
-            context["sort_by"] = request.session["sort_by"]
+            if missing_data:
+                messages.error(
+                    request,
+                    "Table might not sort poperly due to missing stock information. Please remove stocks with None and try again.",
+                )
+                return redirect(request.META["HTTP_REFERER"])
+            else:
+                context["sort_by"] = "week_1"
 
         elif "sort_week3" in request.POST:
             print(">> Week3 Sorting <<")
-            request.session["sort_by"] = "week_3"
-            context["sort_by"] = request.session["sort_by"]
+            if missing_data:
+                messages.error(
+                    request,
+                    "Table might not sort poperly due to missing stock information. Please remove stocks with None and try again.",
+                )
+                return redirect(request.META["HTTP_REFERER"])
+            else:
+                context["sort_by"] = "week_3"
 
         elif "add_stock" in request.POST:
             try:
