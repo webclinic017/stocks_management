@@ -575,6 +575,9 @@ def home(request, table_index=1):
     else:
         missing_data = False
 
+    # default sorting
+    context["sort_by"] = "ticker"
+
     context["stocks"] = stocks
 
     # VALUES UPDATES
