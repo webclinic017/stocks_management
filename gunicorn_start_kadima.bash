@@ -6,7 +6,7 @@ SOCKFILE=/home/ubuntu/stocks_management/venv_kadima/run/gunicorn.sock  # we will
 USER=ubuntu                                         # the user to run as
 GROUP=ubuntu                                        # the group to run as
 NUM_WORKERS=3                                      # how many worker processes should Gunicorn spawn
-TIMEOUT=120
+TIMEOUT=400
 DJANGO_SETTINGS_MODULE=kadima_project.settings      # which settings file should Django use
 DJANGO_WSGI_MODULE=kadima_project.wsgi              # WSGI module name
 echo "Starting $NAME as `whoami`"
