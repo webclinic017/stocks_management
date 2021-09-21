@@ -68,7 +68,7 @@ def update_values(request):
             logger.error(f"Failed updating stock: {stock}. ERROR: {e}")
 
         print(f"Finished updating Stock: {stock.ticker}")
-        logger.error(f"Finished updating Stock: {stock.ticker}")
+        logger.info(f"Finished updating Stock: {stock.ticker}")
 
         stock.stock_displayed_date = stock_to_update.displayed_date
         stock.stock_price = stock_to_update.stock_price

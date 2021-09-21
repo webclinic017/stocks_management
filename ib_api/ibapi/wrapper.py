@@ -52,7 +52,7 @@ class EWrapper:
         communication or when TWS wants to send a message to the client."""
 
         self.logAnswer(current_fn_name(), vars())
-        logger.error("ERRORDDDDDDDDDDDD %s %s %s", reqId, errorCode, errorString)
+        logger.error("ERROR %s %s %s", reqId, errorCode, errorString)
 
     def winError(self, text: str, lastError: int):
         self.logAnswer(current_fn_name(), vars())
