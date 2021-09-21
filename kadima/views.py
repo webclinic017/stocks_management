@@ -575,6 +575,9 @@ def home(request, table_index=1):
     else:
         missing_data = False
 
+    # default sorting
+    context["sort_by"] = "ticker"
+
     context["stocks"] = stocks
 
     # VALUES UPDATES
@@ -631,8 +634,7 @@ def home(request, table_index=1):
                 )
                 return redirect(request.META["HTTP_REFERER"])
             else:
-                request.session["sort_by"] = "gap_1"
-                context["sort_by"] = request.session["sort_by"]
+                context["sort_by"] = "gap_1"
 
         elif "sort_week1" in request.POST:
             print(">> Week1 Sorting <<")
@@ -643,8 +645,7 @@ def home(request, table_index=1):
                 )
                 return redirect(request.META["HTTP_REFERER"])
             else:
-                request.session["sort_by"] = "week_1"
-                context["sort_by"] = request.session["sort_by"]
+                context["sort_by"] = "week_1"
 
         elif "sort_week3" in request.POST:
             print(">> Week3 Sorting <<")
@@ -655,8 +656,7 @@ def home(request, table_index=1):
                 )
                 return redirect(request.META["HTTP_REFERER"])
             else:
-                request.session["sort_by"] = "week_3"
-                context["sort_by"] = request.session["sort_by"]
+                context["sort_by"] = "week_3"
 
         elif "add_stock" in request.POST:
             try:
