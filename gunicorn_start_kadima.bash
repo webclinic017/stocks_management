@@ -6,6 +6,9 @@ SOCKFILE=/home/ubuntu/stocks_management/venv_kadima/run/gunicorn.sock  # we will
 USER=ubuntu                                         # the user to run as
 GROUP=ubuntu                                        # the group to run as
 NUM_WORKERS=3                                      # how many worker processes should Gunicorn spawn
+WORKER_CLASS=gevent
+WORKER_CONNECTIONS=1000
+THREADS=8
 TIMEOUT=400
 DJANGO_SETTINGS_MODULE=kadima_project.settings      # which settings file should Django use
 DJANGO_WSGI_MODULE=kadima_project.wsgi              # WSGI module name
@@ -29,6 +32,8 @@ test -d $RUNDIR || mkdir -p $RUNDIR
 exec gunicorn ${DJANGO_WSGI_MODULE}:application \
   --name $NAME \
   --workers $NUM_WORKERS \
+  --threads $THREADS \
+  --worker-connections $WORKER_CONNECTIONS \
   --user=$USER --group=$GROUP \
   --timeout $TIMEOUT \
   --bind=unix:$SOCKFILE \
