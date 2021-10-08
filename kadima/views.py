@@ -1083,7 +1083,7 @@ def api_connect(request):
     # Starting the TWS
     tws_start()
     timer = 1
-    while timer < 180:
+    while timer < 210:
         sleep(1)
         print("Starting TWS...")
         timer += 1
