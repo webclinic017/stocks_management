@@ -25,7 +25,7 @@
             {% csrf_token %}
         <div class="card  card-plain">
             <div class="card-header">
-                <h2 class="card-title">Stock History Table - {{ table_index }}</h2>
+                <h2 class="card-title">Stocks History</h2>
             </div>
             <div class="row">
                 <div class="col-md-12 pr-md-1">
@@ -139,28 +139,28 @@
                                     {{ h_stock.sold_date }}
                                 </td>                            
                                 <td class="border-top border-1">
-                                    {{ h_stock.stock.ticker }}
+                                    {{ h_stock.ticker }}
                                 </td>
                                 <td class="border-top border-1">
-                                    {{ h_stock.stock.stock_price }}
+                                    {{ h_stock.stock_price }}
                                 </td>
-                                <td class="border-top border-right border-3" style="background-color: {{ h_stock.stock.week_1_color }};">
-                                    {{ h_stock.stock.week_1 }}%
+                                <td class="border-top border-right border-3" style="background-color: {{ h_stock.week_1_color }};">
+                                    {{ h_stock.week_1 }}%
                                 </td>
-                                <td class="border-right border-top border-3" style="background-color: {{ h_stock.stock.week_2_color }}; ">
-                                    {{ h_stock.stock.week_2 }}%
+                                <td class="border-right border-top border-3" style="background-color: {{ h_stock.week_2_color }}; ">
+                                    {{ h_stock.week_2 }}%
                                 </td >
-                                <td class="border-top border-right border-3" style="background-color: {{ h_stock.stock.week_3_color }}; ">
-                                    {{ h_stock.stock.week_3 }}%
+                                <td class="border-top border-right border-3" style="background-color: {{ h_stock.week_3_color }}; ">
+                                    {{ h_stock.week_3 }}%
                                 </td>
-                                <td class="border-top border-right border-3" style="background-color: {{ h_stock.stock.week_5_color }}; ">
-                                    {{ h_stock.stock.week_5 }}%
+                                <td class="border-top border-right border-3" style="background-color: {{ h_stock.week_5_color }}; ">
+                                    {{ h_stock.sweek_5 }}%
                                 </td>
-                                <td class="border-top border-right border-3" style="background-color: {{ h_stock.stock.gap_1_color }}; ">
-                                    {{ h_stock.stock.gap_1 }}%
+                                <td class="border-top border-right border-3" style="background-color: {{ h_stock.gap_1_color }}; ">
+                                    {{ h_stock.gap_1 }}%
                                 </td>
                                 <td class="{{ stock.earnings_warning }} border-top border-1" style="height: 100%;">
-                                    {{ h_stock.stock.earnings_call_displayed }}
+                                    {{ h_stock.earnings_call_displayed }}
                                 </td>
                                 <td class="border-top border-1 h_value">
                                     <input type="text" class="form-control" name="stocks_bought_{{ h_stock.id }}" placeholder="{{ h_stock.stocks_bought }}">
@@ -223,23 +223,6 @@
     </div>
 </div>
 
-<!-- Source : https://bytutorial.com/blogs/css3/how-to-create-blinking-background-color-and-text-using-css3-animation -->
-
-    <!-- <script type="text/javascript">
-        (function worker() {
-            $.ajax({
-            url: 'http://127.0.0.1:8001/history-data/',
-            success: function(response) {
-                //console.log(response);
-                $('#stocks_history').html(response);
-            }
-        });		
-        // Polling the API page every second
-        setTimeout(worker, 2000);
-        })();
-    /*
-    */
-    </script> -->
 {% if user.is_authenticated %}
 {%  else %}
 <script>

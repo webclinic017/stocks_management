@@ -1,0 +1,2 @@
+00 13 * * * DISPLAY=:0 /home/alf_naboo_id/ibc.paper/twsstart.sh
+00 13 * * * echo "" > /home/ubuntu/stocks_management/django.log

@@ -40,7 +40,7 @@
 
   <div class="container-fluid" >
     <div class="row" >
-      <div class="col-sm-4">
+      <div class="col-sm-3">
         <form method="POST" action="" enctype="multipart/form-data">{% csrf_token %}
           {% if ib_api_connected %}
             <button type="submit" name="connect_ib_api" class="btn btn-success" disabled> IB API Connected </button>
@@ -71,33 +71,38 @@
       </div>
       <div class="col-sm-6 text-center" style="height: 5em;">
         <div class="row">
-          <div class="col-sm-1"></div>
-          <div class="col-sm-5">
-            <div class="row pt-4" style="color: white; font-size:1rem">
-              <div class="col-4">
+          <div class="col-sm-7">
+            <div class="row pt-3" style="color: white; font-size:1rem">
+              <div class="col-2">
                 <a href="{% url 'home' %}" style="color: white;">Table 1</a>
               </div>
-              <div class="col-4" >
+              <div class="col-2" >
                 <a href="{% url 'table-2' table_index=2 %}" style="color: white;">Table 2</a>
               </div>
-              <div class="col-4" >
-                <a href="{% url 'stock-alarms' %}" style="color: white;">Stock Alarms</a>
+              <div class="col-2" >
+                <a href="{% url 'table-3' table_index=3 %}" style="color: white;">Table 3</a>
+              </div>
+              <div class="col-2" >
+                <a href="{% url 'stock-alarms' %}" style="color: white;">Alarms</a>
+              </div>
+              <div class="col-2" >
+                <a href="{% url 'history-all' %}" style="color: white;">History</a>
               </div>
             </div>
 
           </div>
           {% if stock_alert == 'condition_3' %}
-            <div class="col-sm-3 fast-blink-row-buy">
+            <div class="col-sm-2 fast-blink-row-buy">
               <img class="pt-3 pb-3" src="{% static 'assets/img/attention.png' %}" alt="Stock alert";" style="max-width:20%">
           {% elif stock_alert == 'condition_4' %}
-            <div class="col-sm-3 fast-blink-row-sell">
+            <div class="col-sm-2 fast-blink-row-sell">
               <img class="pt-3 pb-3" src="{% static 'assets/img/attention.png' %}" alt="Stock alert";" style="max-width:20%">
           {% else %}
-              <div class="col-sm-3 ">
+              <div class="col-sm-2 ">
                 <img class="pt-3 pb-3" src="{% static 'assets/img/attention.png' %}" alt="Stock alert";" style="max-width:20%">
           {% endif %}
           </div>
-          <div class="col-sm-3 pt-2">
+          <div class="col-sm-2 pt-2">
             <h1>בס״ד</h1>
           </div>
         </div>
@@ -116,6 +121,7 @@
             Kadima Portfolio Advisor
           </a>
         </div>
+        <!-- Table 1 / Home -->
         <div class="row mt-3">
           <div class="col-6 text-right">
             <a href="{% url 'home' %}">
@@ -123,13 +129,14 @@
               <span style="color: black;">Table 1</span>
             </a>
           </div>
-          <div class="col-6">
-            <a href="{% url 'history' table_index=1 %}">
+          <!-- <div class="col-6">
+            <a href="{% url 'history' table_index=1 ">
               <i class="tim-icons icon-bullet-list-67" style="color: black;"></i>
               <span style="color: black;">History 1</span>
             </a>
-          </div>
+          </div> -->
         </div>
+        <!-- Table 2 -->
         <div class="row border-top mt-3">
           <div class="col-6 text-right mt-2">
             <a href="{% url 'table-2' table_index=2 %}">
@@ -137,16 +144,42 @@
               <span style="color: black;">Table 2</span>
             </a>
           </div>
-          <div class="col-6 mt-2">
-            <a href="{% url 'history' table_index=2 %}">
+          <!-- <div class="col-6 mt-2">
+            <a href="{% url 'history' table_index=2 ">
               <i class="tim-icons icon-bullet-list-67" style="color: black;"></i>
               <span style="color: black;">History 2</span>
+            </a>
+          </div> -->
+        </div>
+        
+        <!-- Table 3 -->
+        <div class="row border-top mt-3">
+          <div class="col-6 text-right mt-2">
+            <a href="{% url 'table-3' table_index=3 %}">
+              <i class="tim-icons icon-coins" style="color: black;"></i>
+              <span style="color: black;">Table 3</span>
+            </a>
+          </div>
+          <!-- <div class="col-6 mt-2">
+            <a href="{% url 'history' table_index=3 ">
+              <i class="tim-icons icon-bullet-list-67" style="color: black;"></i>
+              <span style="color: black;">History 3</span>
+            </a>
+          </div> -->
+        </div>
+
+        <!-- History -->
+        <div class="row border-top mt-3">
+          <div class="col-6 pt-3 text-right">
+            <a href="{% url 'history-all' %}">
+              <i class="tim-icons icon-bullet-list-67" style="color: black;"></i>
+              <span style="color: black;">History</span>
             </a>
           </div>
         </div>
 
         <!-- Table Control section -->
-        <div class="row mt-3">
+        <div class="row mt-1">
           <div class="col-12 text-center">
             {% include 'kadima/stock_control.html' with table_index=table_index %}
           </div>

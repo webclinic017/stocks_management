@@ -1,3 +1,5 @@
+import os
+import subprocess
 import sys
 import requests
 import json
@@ -9,7 +11,7 @@ from django.conf import settings
 from django.core.mail import send_mail
 
 from .models import StockData
-from pandas_datareader import data as fin_data
+
 import datetime
 from datetime import timedelta
 from time import sleep
@@ -363,3 +365,11 @@ def indices_scrapers(stop=False):
     #     current_running_threads = threading.active_count()
     #     print(f"ACTIVE THREADS WITH SCRAPERS: ***************{current_running_threads}****************")
     #     print('SCRAPERS RUNNING...')
+
+def tws_start():
+    tws = subprocess.Popen(settings.SCRIPTS_PATH + '/tws_start.sh')
+    print(f'>>>>>START TWS: {tws}')
+
+def tws_stop():
+    tws = subprocess.Popen(settings.SCRIPTS_PATH + '/tws_stop.sh')
+    print(f'>>>>>STOPPING TWS: {tws}')

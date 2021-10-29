@@ -8,7 +8,7 @@ import lxml
 
 from math import *
 from datetime import timedelta
-from pandas_datareader import data
+import yfinance as yf
 # from yahoo_earnings_calendar import YahooEarningsCalendar
 from finta import TA
 
@@ -22,7 +22,7 @@ START = today - timedelta(30)
 END = today
 
 def stock_regression(stock, period):
-    df = data.get_data_yahoo(stock.upper(), start=datetime.datetime.today() - timedelta(44), end=datetime.datetime.today())
+    df = yf.download(stock.upper(), start=datetime.datetime.today() - timedelta(44), end=datetime.datetime.today())
     df = df.tail(period).copy().reset_index()
     prices = df['Close'].tolist()
     dates = df.index.tolist()
@@ -35,7 +35,7 @@ def stock_regression(stock, period):
     return a
     
 def macd_regression(stock,period):
-    df = data.get_data_yahoo(stock.upper(), start=datetime.datetime.today() - timedelta(44), end=datetime.datetime.today())
+    df = yf.download(stock.upper(), start=datetime.datetime.today() - timedelta(44), end=datetime.datetime.today())
     df = df.tail(period).copy().reset_index()
     dates = df.index.tolist()
     dates = np.reshape(dates, (len(dates),1))
@@ -51,7 +51,7 @@ def macd_regression(stock,period):
     return macd_a
 
 def mfi_regression(stock, period):
-    df = data.get_data_yahoo(stock.upper(), start=START-timedelta(14), end=END)
+    df = yf.download(stock.upper(), start=START-timedelta(14), end=END)
     df = df.tail(period+14).copy().reset_index()
     dates = df.index.tolist()
     dates = np.reshape(dates, (len(dates),1))
@@ -66,7 +66,7 @@ def mfi_regression(stock, period):
     return mfi_a
 
 def last_rsi(stock, period):
-    df = data.get_data_yahoo(stock.upper(), start=START-timedelta(14), end=END)
+    df = yf.download(stock.upper(), start=START-timedelta(14), end=END)
     df = df.tail(period+14).copy().reset_index()
     dates = df.index.tolist()
     dates = np.reshape(dates, (len(dates),1))
@@ -89,7 +89,7 @@ def trend_calculator(stock, indicator, period):
     return a
 
 def trends(stock,period, draw=False):
-    stock_df = data.get_data_yahoo(stock.upper(), start=datetime.datetime.today()-timedelta(44), end=datetime.datetime.today())    
+    stock_df = yf.download(stock.upper(), start=datetime.datetime.today()-timedelta(44), end=datetime.datetime.today())    
     df = stock_df.tail(period).copy().reset_index()
     prices = df['Close'].tolist()
     dates = df.index.tolist()
