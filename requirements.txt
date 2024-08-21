@@ -4,20 +4,19 @@ certifi==2019.11.28
 chardet==3.0.4
 cycler==0.10.0
 dataclasses==0.6
-Django==3.0.2
+Django>=3.1.13
 django-background-tasks==1.2.5
 django-compat==1.0.15
 django-cors-headers==3.2.1
-djangorestframework==3.11.0
+djangorestframework==3.11.2
 eventkit==0.8.6
 finta==0.4.1
 ibapi
 ib-insync==0.9.59
 idna==2.8
 inflection==0.3.1
-joblib==0.14.1
 kiwisolver==1.1.0
-lxml==4.4.2
+lxml>=4.6.5
 matplotlib==3.1.2
 more-itertools==8.1.0
 multitasking==0.0.9
@@ -33,7 +32,7 @@ scipy==1.4.1
 six==1.14.0
 sklearn==0.0
 sqlparse==0.3.0
-urllib3==1.25.7
+urllib3==1.26.5
 yahoo-earnings-calendar==0.5.2
 yfinance --upgrade --no-cache-dir
 django-crispy-forms==1.9.0
